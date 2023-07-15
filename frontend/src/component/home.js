@@ -18,7 +18,7 @@ export function Home(){
         const accounts  = await ethereum.request({ method: 'eth_accounts' });
 
         if(accounts.length !== 0){
-            const account = accounts[0];
+            const account = accounts[0]; 
             console.log("Authorized Account Found! Address is：", account);
             setCurrentAccount(account);
         }
@@ -55,6 +55,7 @@ export function Home(){
 
     const [currentAccount, setCurrentAccount] = useState(null);
     const [name, setName] = useState('');
+    const [input, setInput] = useState('');
 
     const connectWalletHandler = async () => { 
         const { ethereum } = window;
@@ -84,11 +85,10 @@ export function Home(){
 
     function createSection() {
         const handleInputChange = (event) => {
-            setName(event.target.value);
-          };
+            setInput(event.target.value);
+        };
 
         const reportHandler =async () => { 
-            alert("yessssss");
         try{
             const { ethereum } = window;
 
@@ -99,6 +99,7 @@ export function Home(){
                 
                 console.log("Create account");
                 let tradeTxn = await tradeContract.createAccount(currentAccount,name);
+                setName(input);
                 console.log(tradeTxn);
             }
             else{
