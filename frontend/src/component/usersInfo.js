@@ -5,8 +5,28 @@ import { useNavigate } from 'react-router-dom';
 import contract from '../contracts/contract.json'
 import {contractAddress} from '../App'
 const abi = contract;
-export function Home(){
+
+
+function GroupCard(props){
+    //alert(props.group.identity);
+    return (
+        <div style={{height: "200px", width: "80%", background: "gray", color: "white", fontSize: "20px", padding: "10px"}} key={props.index}>
+        <div style={{marginBottom: "10px"}}>
+            {`Group ID: ${props.group.id}`}
+        </div>
+        <div>
+            {`Identity: ${props.group.identity ==0 ? "Member" : "Owner"}`}
+        </div>
+    </div>);
+
+}
+
+export function UserInfo(){
+    const [currentAccount, setCurrentAccount] = useState(null);
+    const [groupInfo, setGroupInfo] = useState([]);
+    const [name, setName] = useState('');
     const navigate = useNavigate();
+
     const checkWalletIsConnected = async () => {     
         const { ethereum } = window;
         if(!ethereum){
@@ -26,6 +46,8 @@ export function Home(){
         }
         else{
             console.log("No Authorized Account Found.");
+            navigate('/');
+           
         }
         
     }
@@ -43,6 +65,7 @@ export function Home(){
                 console.log("Create account");
                 let tradeTxn = await tradeContract.getUserInfo(currentAccount);
                 if(tradeTxn!="" || tradeTxn!=null) setName(tradeTxn);
+                else navigate('/');
             }
             else{
                 console.log("Ethereum object does not exist");
@@ -55,58 +78,19 @@ export function Home(){
 
     }
 
-    const [currentAccount, setCurrentAccount] = useState(null);
-    const [name, setName] = useState('');
-    const [input, setInput] = useState('');
-
-    const connectWalletHandler = async () => { 
-        const { ethereum } = window;
-        if(!ethereum){
-            alert("Please install the Metamask Wallet!");
-        }
-
-        try{
-            const accounts = await ethereum.request({method: 'eth_requestAccounts'});
-            console.log("Account Found! Address is：", accounts[0]);
-            setCurrentAccount(accounts[0]);
-        }
-        catch(err){
-            console.log(err);
-        }
-    }
-
-    
-
-    const connectWalletButton = () => {
-    return (
-        <button onClick={connectWalletHandler} className='cta-button connect-wallet-button'>
-        Connect Wallet
-        </button>
-    )
-    }
-
-    function createSection() {
-        const handleInputChange = (event) => {
-            setInput(event.target.value);
-        };
-        const navigateUser =() =>{
-            navigate("/userInfo");
-        }
-        const reportHandler =async () => { 
+    const getGroupInfo = async()=>{
         try{
             const { ethereum } = window;
 
             if(ethereum){
                 const provider = new ethers.BrowserProvider(ethereum);
                 const signer = await provider.getSigner();
+                if(currentAccount==null) return;
                 const tradeContract = new ethers.Contract(contractAddress, abi, signer);
                 
                 console.log("Create account");
-                setName(input);
-                
-                let tradeTxn = await tradeContract.createAccount(currentAccount,input);
-                
-                console.log(tradeTxn);
+                let tradeTxn = await tradeContract.getGroupsInfo();
+                setGroupInfo(tradeTxn);
             }
             else{
                 console.log("Ethereum object does not exist");
@@ -117,39 +101,50 @@ export function Home(){
             console.log(err);
         }
     }
-    if(!name)
-    return (
-        <div>
-            <input onChange={handleInputChange} />
-            <button onClick={reportHandler} className='cta-button mint-nft-button'>
-            Create Account
-            </button>
-        </div>
-    );
-    else 
-    return(
-        <div>
-            <div>Welcome {name}</div>
-            <button onClick={navigateUser} className='cta-button mint-nft-button'>
-            User info
-            </button>
-        </div>
-    );
+    const createGroup = async()=>{
+        try{
+            const { ethereum } = window;
 
+            if(ethereum){
+                const provider = new ethers.BrowserProvider(ethereum);
+                const signer = await provider.getSigner();
+                if(currentAccount==null) return;
+                const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+                
+                console.log("Create account");
+                let tradeTxn = await tradeContract.createGroup();
+                getGroupInfo();
+            }
+            else{
+                console.log("Ethereum object does not exist");
+            }
+
+        } 
+        catch(err){
+            console.log(err);
+        }
     }
 
     useEffect(() => {
         checkWalletIsConnected();
         if(currentAccount)
         checkUserAccount();
+        getGroupInfo();
     }, [currentAccount,name])
 
     return (
-    <div className='main-app'>
-        <h1>6452 Assignment 2</h1>
         <div>
-        {currentAccount ? createSection() : connectWalletButton()}
+            User info page
+            {groupInfo.map((group, index) => (<GroupCard group={group} key={index} index={index}></GroupCard>))}
+            <div>
+                <div>Welcome {name}</div>
+                <button onClick={createGroup} className='cta-button mint-nft-button'>
+                Create group
+                </button>
+            </div>
         </div>
-    </div>
-    )
+
+    );
+
+
 }
