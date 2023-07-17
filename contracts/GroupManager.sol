@@ -49,7 +49,7 @@ contract GroupManager is IGroupManager {
         manager = msg.sender; // Set contract creator as manager
     }
     
-    function setAccountManager(address payable otherContractAddress) public restricted {
+    function setAccountManager(address payable otherContractAddress) public groupManagerRestricted {
         accountManagerAddress = otherContractAddress;
         accountManagerContract = IAccountManager(accountManagerAddress);
     }
@@ -57,7 +57,7 @@ contract GroupManager is IGroupManager {
     function createGroup(
         address user, 
         string memory name
-    ) public returns (uint) {
+    ) public accountManagerRestricted returns (uint) {
         Group storage g = groups[++numGroups];
         //g.index = numGroups;
         g.name = name;
@@ -78,7 +78,7 @@ contract GroupManager is IGroupManager {
     function addUser(
         address user, 
         uint group
-    ) public {
+    ) public accountManagerRestricted {
         require(0 < group && group <= numGroups, "Invalid group index");
         require(getUser(user, group) == 0, "User already exists");
         require(groups[group].depositOpen, "Cannot add user when deposit is close");
@@ -148,7 +148,7 @@ contract GroupManager is IGroupManager {
     function setInterestRate(
         uint group,
         uint interestRate
-    ) public {
+    ) public accountManagerRestricted {
         require(0 < group && group <= numGroups, "Invalid group index");
         //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         require(interestRate > 0, "Interest rate needs to be higher than 0");
@@ -165,7 +165,7 @@ contract GroupManager is IGroupManager {
     function setPeriod(
         uint group,
         uint period
-    ) public {
+    ) public accountManagerRestricted {
         require(0 < group && group <= numGroups, "Invalid group index");
         //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         require(period > 0, "Period needs to be greater than 0");
@@ -182,7 +182,7 @@ contract GroupManager is IGroupManager {
     function setMonthlyPayment(
         uint group,
         uint monthlyPayment
-    ) public {
+    ) public accountManagerRestricted {
         require(0 < group && group <= numGroups, "Invalid group index");
         //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         require(monthlyPayment > 0, "Monthly payment needs to be higher than 0");
@@ -210,7 +210,7 @@ contract GroupManager is IGroupManager {
     function joinWaitingList(
         uint group,
         address user
-    ) public {
+    ) public accountManagerRestricted {
         require(groups[group].applicationOpen, "Application is not open");
         uint index = getUser(user, group);
         require(index != 0, "User does not exist");
@@ -235,7 +235,7 @@ contract GroupManager is IGroupManager {
     
     function makeLoanTransfer(
         uint group
-    ) public {
+    ) public groupManagerRestricted {
         require(0 < group && group <= numGroups, "Invalid group index");
         require(!groups[group].depositOpen, "Deposit is still open");
         uint index = getApplicationWinner(group);
@@ -253,7 +253,7 @@ contract GroupManager is IGroupManager {
     function makeTermDeposit(
         address sender,
         uint group
-    ) public payable {
+    ) public accountManagerRestricted payable {
         require(0 < group && group <= numGroups, "Invalid group index");
         
         uint index = getUser(sender, group);
@@ -300,7 +300,7 @@ contract GroupManager is IGroupManager {
     
     function returnSavings(
         uint group
-    ) public returns (address[] memory users, uint[] memory savings) {
+    ) public accountManagerRestricted returns (address[] memory users, uint[] memory savings) {
         require(0 < group && group <= numGroups, "Invalid group index");
         uint total = 0;
         uint j = 0;
@@ -353,8 +353,13 @@ contract GroupManager is IGroupManager {
     /**
      * @notice Only the manager can do
      */
-    modifier restricted() {
-        require(msg.sender == manager, "Can only be executed by the manager");
+    modifier groupManagerRestricted() {
+        require(msg.sender == manager, "Can only be executed by the group manager");
+        _;
+    }
+    
+    modifier accountManagerRestricted() {
+        require(msg.sender == accountManagerAddress, "Can only be executed by the account manager");
         _;
     }
 }
