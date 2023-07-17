@@ -7,7 +7,7 @@ interface IAccountManager {
 }
 
 interface IGroupManager {
-    function createGroup(string memory name) external;
+    function createGroup(string memory name) external returns (uint);
     function addUser(address user, uint group) external;
     //function removeUser(address user,uint group) external;
     function setPeriod(uint group, uint period) external;

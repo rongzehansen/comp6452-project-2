@@ -56,7 +56,7 @@ contract GroupManager is IGroupManager {
     
     function createGroup(
         string memory name
-    ) public {
+    ) public returns (uint) {
         Group storage g = groups[++numGroups];
         //g.index = numGroups;
         g.name = name;
@@ -71,6 +71,7 @@ contract GroupManager is IGroupManager {
         g.numUsers = 0;
         addUser(msg.sender, numGroups);
         g.owner = g.users[g.maxUserIndex];
+        return numGroups;
     }
     
     function addUser(
