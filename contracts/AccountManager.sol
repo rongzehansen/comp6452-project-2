@@ -71,7 +71,14 @@ contract AccountManager {
         voteExpel(groupId,userAddress,true);
     }
     */
-
+    function leaveGroup(uint groupId, address userAddress) external {
+        for(uint i=0; i< users[userAddress].groupInfo.length;i++){
+            if(users[userAddress].groupInfo[i].id==groupId){
+                users[userAddress].groupInfo[i]=users[userAddress].groupInfo[users[userAddress].groupInfo.length-1];
+                users[userAddress].groupInfo.pop();
+            }
+        }
+    }
 
     //User receive money
     function deposit(address target) external payable {
@@ -102,9 +109,8 @@ contract AccountManager {
     }
 
     //Apply for borrower
-    function applyBorrow() public haveAccount {
-        //TODO
-
+    function applyBorrow(uint groupId) public haveAccount {
+        groupManagerAddress.joinWaitingList(groupId, msg.sender);
     }
 
 
