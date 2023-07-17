@@ -46,19 +46,21 @@ contract AccountManager {
         users[msg.sender].balance += msg.value;
     }
 
+
     function getGroupsInfo()public haveAccount view returns(GroupInfo[] memory){
         return users[msg.sender].groupInfo;
     }
 
     function createGroup(string memory groupName)public haveAccount{
         GroupInfo  memory temp ;
-        temp.id=groupManagerAddress.createGroup(groupName);
-        temp.id=testIndex++;
+        temp.id=groupManagerAddress.createGroup(msg.sender,groupName);
         temp.identity=Identity.owner;
         users[msg.sender].groupInfo.push(temp);
         users[msg.sender].groupIdentity[temp.id].id=temp.id;
         users[msg.sender].groupIdentity[temp.id].identity=Identity.owner;
     }
+    
+    /* TODO:
     //Vote expel user
     function voteExpel(uint groupId,address userAddress,bool result) public returns (bool) {
         //TODO 等一个接口函数
@@ -68,6 +70,8 @@ contract AccountManager {
     function startExpel(uint groupId,address userAddress) public {
         voteExpel(groupId,userAddress,true);
     }
+    */
+
 
     //User receive money
     function deposit(address target) external payable {
@@ -82,13 +86,6 @@ contract AccountManager {
         users[msg.sender].balance -= amount;
     }
 
-    //transfer money to group manager
-    function transfer(uint256 amount, uint256 groupNum) private {
-        require(users[msg.sender].balance >= amount, "Insufficient funds");
-        emit Transfer(msg.sender, groupManagerContract, amount);
-        groupManagerAddress.makeTermDeposit{value: amount}(msg.sender, groupNum);
-        users[msg.sender].balance -= amount;
-    }
 
     //Set interest rate
     function setInterestRate(uint256 interestRate, uint256 groupId)
@@ -105,7 +102,10 @@ contract AccountManager {
     }
 
     //Apply for borrower
-    function applyBorrow() public haveAccount {}
+    function applyBorrow() public haveAccount {
+        //TODO
+
+    }
 
 
     //Set Monthly payment
@@ -116,8 +116,12 @@ contract AccountManager {
 
     //Pay to group
     function monthlyPayment(uint256 groupId) public haveAccount {
+        uint amount=groupManagerAddress.getMonthlyPayment(groupId);
+        require(users[msg.sender].balance >= amount, "Insufficient funds");
+        emit Transfer(msg.sender, groupManagerContract, amount);
+        groupManagerAddress.makeTermDeposit{value: amount}(msg.sender, groupId);
+        users[msg.sender].balance -= amount;
         
-        transfer(groupManagerAddress.getMonthlyPayment(groupId), groupId);
     }
 
     function participateVote(uint groupId)public haveAccount{
