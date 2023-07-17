@@ -235,7 +235,7 @@ contract GroupManager is IGroupManager {
     
     function makeLoanTransfer(
         uint group
-    ) public returns (address) {
+    ) public {
         require(0 < group && group <= numGroups, "Invalid group index");
         require(!groups[group].depositOpen, "Deposit is still open");
         uint index = getApplicationWinner(group);
@@ -243,10 +243,11 @@ contract GroupManager is IGroupManager {
         require(u.hasBorrowed == false, "You have already recieved the loan");
         groups[group].borrower = u;
         pay(accountManagerAddress, groups[group].monthlyPayment * groups[group].numUsers);
+        // external call
+        accountManagerContract.getMoney(u.userAddress, groups[group].monthlyPayment * groups[group].numUsers);
         u.hasBorrowed = true;
         groups[group].balance -= groups[group].monthlyPayment * groups[group].numUsers;
         balance -= groups[group].monthlyPayment * groups[group].numUsers;
-        return u.userAddress;
     }
     
     function makeTermDeposit(
