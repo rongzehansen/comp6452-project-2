@@ -181,7 +181,7 @@ contract AccountManager {
     }
 
     //If sender is a borrower, pay interest to other member in the group
-    function releaseFund(
+    function releaseFunds(
         address senderAddress,
         address targetAddress,
         uint256 amount
