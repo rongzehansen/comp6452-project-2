@@ -238,7 +238,7 @@ contract GroupManager is IGroupManager {
         require(0 < group && group <= numGroups, "Invalid group index");
         require(!groups[group].depositOpen, "Deposit is still open");
         uint index = getApplicationWinner(group);
-        User memory u = groups[group].users[index];
+        User storage u = groups[group].users[index];
         require(u.hasBorrowed == false, "You have already recieved the loan");
         groups[group].borrower = u;
         pay(accountManagerAddress, groups[group].monthlyPayment * groups[group].numUsers);
@@ -249,21 +249,24 @@ contract GroupManager is IGroupManager {
     }
     
     function makeTermDeposit(
-        address sender,
+        address payable sender,
         uint group
-    ) public payable {
+    ) public {
         require(0 < group && group <= numGroups, "Invalid group index");
         
         uint index = getUser(sender, group);
         require(0 < index && index <= groups[group].maxUserIndex, "Invalid user index");
         
-        User memory u = groups[group].users[index];
-        //require(accountManagerContract.getBalance(u.userAddress) >= msg.value, "You do not have sufficient amount of money to deposit");
-        require(msg.value == groups[group].monthlyPayment, "Amount received does not equal to monthlyPayment");
+        User storage u = groups[group].users[index];
+        require(accountManagerContract.getBalance(u.userAddress) >= groups[group].monthlyPayment, "You do not have sufficient amount of money to deposit");
+        //require(msg.value == groups[group].monthlyPayment, "Amount received does not equal to monthlyPayment");
         require(u.hasDeposited == false, "You have already deposited this month");
-        groups[group].balance += msg.value;
-        balance += msg.value;
-        u.savings += msg.value;
+        
+        sender.transfer(groups[group].monthlyPayment);
+        
+        groups[group].balance += groups[group].monthlyPayment;
+        balance += groups[group].monthlyPayment;
+        u.savings += groups[group].monthlyPayment;
         
         u.hasDeposited = true;
         
