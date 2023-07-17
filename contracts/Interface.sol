@@ -1,4 +1,6 @@
 /// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.0;
+
 interface IAccountManager {
     function getBalance(address userAddress) external returns (uint);
     function releaseFunds(address senderAddress, address targetAddress, uint amount) external;
