@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-
+import "./Interface.sol";
 contract AccountManager {
     constructor() {
         manager = msg.sender;
@@ -13,7 +13,6 @@ contract AccountManager {
     struct GroupInfo {
         uint256 id;
         Identity identity;
-        //uint256 balance;
     }
 
     struct User {
@@ -51,21 +50,23 @@ contract AccountManager {
         return users[msg.sender].groupInfo;
     }
 
-    function createGroup()public haveAccount{
-        
+    function createGroup(string memory groupName)public haveAccount{
         GroupInfo  memory temp ;
-        //temp.id=function call goes here
+        temp.id=groupManagerAddress.createGroup(groupName);
         temp.id=testIndex++;
         temp.identity=Identity.owner;
         users[msg.sender].groupInfo.push(temp);
         users[msg.sender].groupIdentity[temp.id].id=temp.id;
         users[msg.sender].groupIdentity[temp.id].identity=Identity.owner;
-        
-
     }
     //Vote expel user
-    function voteExpel(address userAddress) external returns (bool) {
+    function voteExpel(uint groupId,address userAddress,bool result) public returns (bool) {
         //TODO 等一个接口函数
+    }
+
+    //Start a expel event
+    function startExpel(uint groupId,address userAddress) public {
+        voteExpel(groupId,userAddress,true);
     }
 
     //User receive money
@@ -85,8 +86,8 @@ contract AccountManager {
     function transfer(uint256 amount, uint256 groupNum) private {
         require(users[msg.sender].balance >= amount, "Insufficient funds");
         emit Transfer(msg.sender, groupManagerContract, amount);
+        groupManagerAddress.makeTermDeposit{value: amount}(msg.sender, groupNum);
         users[msg.sender].balance -= amount;
-        groupManagerAddress.deposit{value: amount}(msg.sender, groupNum);
     }
 
     //Set interest rate
@@ -115,14 +116,7 @@ contract AccountManager {
 
     //Pay to group
     function monthlyPayment(uint256 groupId) public haveAccount {
-        require(
-            groupManagerAddress.releaseFund(
-                users[msg.sender].balance,
-                msg.sender,
-                groupId
-            ),
-            "Insufficient balance"
-        );
+        
         transfer(groupManagerAddress.getMonthlyPayment(groupId), groupId);
     }
 
@@ -155,7 +149,7 @@ contract AccountManager {
     }
 
     //Return savings to members
-    function returnSavings(uint256 groupId, uint256 amount) public {
+    function returnSavings(uint256 groupId) public {
         require(
             bytes(users[msg.sender].name).length != 0,
             "Account does not exist"
@@ -166,14 +160,16 @@ contract AccountManager {
                 Identity.owner,
             "You are not the owner of the group"
         );
-        transfer(amount, groupId);
-        groupManagerAddress.returnSavings(groupId, amount);
+        (address[] memory tarUsers, uint[] memory savings)=groupManagerAddress.returnSavings(groupId);
+       for(uint i=0;i< tarUsers.length;i++){
+           users[tarUsers[i]].balance+=savings[i];
+       }
     }
 
     //If sender is a borrower, pay interest to other member in the group
     function releaseFund(
         address senderAddress,
-        address payable targetAddress,
+        address targetAddress,
         uint256 amount
     )  private{
         require(
@@ -185,8 +181,9 @@ contract AccountManager {
             "Account does not exist"
         );
         require(users[senderAddress].balance >= amount, "Insufficient funds");
-        targetAddress.transfer(amount);
+        
         users[senderAddress].balance -= amount;
+        users[targetAddress].balance += amount;
     }
 
     //Get user's balance
@@ -254,41 +251,3 @@ contract AccountManager {
     }
 }
 
-interface IAccountManager {
-    function getUserInfo(address userAddress)
-        external
-        view
-        returns (string memory);
-
-    function voteExpel(address userAddress) external returns (bool);
-
-    function releaseFund(
-        address senderAddress,
-        address payable targetAddress,
-        uint256 amount
-    ) external payable;
-
-    function deposit(address target) external payable;
-}
-
-interface IGroupManager {
-    function deposit(address sender, uint256 group) external payable;
-
-    function addUser(address user, uint256 group) external;
-
-    function returnSavings(uint256 group, uint256 amount) external payable;
-
-    function getInterestRate(uint256 group) external returns (uint256);
-
-    function setInterestRate(uint256 group, uint256 interestRate) external;
-
-    function releaseFund(
-        uint256 balance,
-        address target,
-        uint256 groupId
-    ) external returns (bool);
-
-    function getMonthlyPayment(uint256 group) external view returns (uint256);
-
-    function setMonthlyPayment(uint256 group, uint256 monthlyPayment) external;
-}
