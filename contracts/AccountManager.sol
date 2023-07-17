@@ -80,6 +80,10 @@ contract AccountManager {
         }
     }
 
+    function getMoney(address targetUser, uint amount)external {
+        users[targetUser].balance+=amount;
+    }
+
     //User receive money
     function deposit(address target) external payable {
         emit Deposit(msg.sender, msg.value);
