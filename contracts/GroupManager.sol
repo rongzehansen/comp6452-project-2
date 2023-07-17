@@ -55,6 +55,7 @@ contract GroupManager is IGroupManager {
     }
     
     function createGroup(
+        address user, 
         string memory name
     ) public returns (uint) {
         Group storage g = groups[++numGroups];
@@ -69,7 +70,7 @@ contract GroupManager is IGroupManager {
         g.balance = 0;
         g.maxUserIndex = 0;
         g.numUsers = 0;
-        addUser(msg.sender, numGroups);
+        addUser(user, numGroups);
         g.owner = g.users[g.maxUserIndex];
         return numGroups;
     }
@@ -79,7 +80,6 @@ contract GroupManager is IGroupManager {
         uint group
     ) public {
         require(0 < group && group <= numGroups, "Invalid group index");
-        require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         require(getUser(user, group) == 0, "User already exists");
         User memory u;
         u.userAddress = user;
@@ -96,7 +96,7 @@ contract GroupManager is IGroupManager {
         uint group
     ) public {
         require(0 < group && group <= numGroups, "Invalid group index");
-        require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
+        
         uint index = getUser(user, group);
         require(0 < index && index <= groups[group].maxUserIndex, "Invalid user index");
         
@@ -149,7 +149,7 @@ contract GroupManager is IGroupManager {
         uint interestRate
     ) public {
         require(0 < group && group <= numGroups, "Invalid group index");
-        require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
+        //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         require(interestRate > 0, "Interest rate needs to be higher than 0");
         groups[group].interestRate = interestRate;
     }
@@ -166,7 +166,7 @@ contract GroupManager is IGroupManager {
         uint period
     ) public {
         require(0 < group && group <= numGroups, "Invalid group index");
-        require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
+        //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         require(period > 0, "Period needs to be greater than 0");
         groups[group].period = period;
     }
@@ -183,7 +183,7 @@ contract GroupManager is IGroupManager {
         uint monthlyPayment
     ) public {
         require(0 < group && group <= numGroups, "Invalid group index");
-        require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
+        //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         require(monthlyPayment > 0, "Monthly payment needs to be higher than 0");
         groups[group].monthlyPayment = monthlyPayment;
     }
@@ -192,7 +192,7 @@ contract GroupManager is IGroupManager {
         uint group
     ) public {
         require(0 < group && group <= numGroups, "Invalid group index");
-        require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
+        //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         
         groups[group].applicationOpen = true;
     }
@@ -201,7 +201,7 @@ contract GroupManager is IGroupManager {
         uint group
     ) public {
         require(0 < group && group <= numGroups, "Invalid group index");
-        require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
+        //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         
         groups[group].applicationOpen = false;
     }
@@ -235,9 +235,11 @@ contract GroupManager is IGroupManager {
     function makeLoanTransfer(
         uint group
     ) public returns (address) {
-        //
+        require(0 < group && group <= numGroups, "Invalid group index");
+        require(!groups[group].depositOpen, "Deposit is still open");
         uint index = getApplicationWinner(group);
         User memory u = groups[group].users[index];
+        require(u.hasBorrowed == false, "You have already recieved the loan");
         groups[group].borrower = u;
         pay(accountManagerAddress, groups[group].monthlyPayment * groups[group].numUsers);
         u.hasBorrowed = true;
@@ -256,13 +258,18 @@ contract GroupManager is IGroupManager {
         require(0 < index && index <= groups[group].maxUserIndex, "Invalid user index");
         
         User memory u = groups[group].users[index];
-        require(accountManagerContract.getBalance(u.userAddress) >= msg.value, "You do not have sufficient amount of money to deposit");
+        //require(accountManagerContract.getBalance(u.userAddress) >= msg.value, "You do not have sufficient amount of money to deposit");
         require(msg.value == groups[group].monthlyPayment, "Amount received does not equal to monthlyPayment");
+        require(u.hasDeposited == false, "You have already deposited this month");
         groups[group].balance += msg.value;
         balance += msg.value;
         u.savings += msg.value;
         
         u.hasDeposited = true;
+        
+        if (hasEveryoneDeposited(group)) {
+            groups[group].depositOpen = false;
+        }
         
         if (groups[group].borrower.userAddress == u.userAddress) {
             uint amount = groups[group].monthlyPayment * groups[group].interestRate / 100;
@@ -275,6 +282,18 @@ contract GroupManager is IGroupManager {
                 }
             }
         }
+    }
+    
+    function hasEveryoneDeposited(
+        uint group
+    ) private view returns(bool) {
+        require(0 < group && group <= numGroups, "Invalid group index");
+        for (uint i = 0; i <= groups[group].maxUserIndex; i++) {
+            if (!groups[group].users[i].hasDeposited) {
+                return false;
+            }
+        }
+        return true;
     }
     
     function returnSavings(

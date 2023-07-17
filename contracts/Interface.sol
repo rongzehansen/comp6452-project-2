@@ -7,7 +7,7 @@ interface IAccountManager {
 }
 
 interface IGroupManager {
-    function createGroup(string memory name) external returns (uint);
+    function createGroup(address user, string memory name) external returns (uint);
     function addUser(address user, uint group) external;
     //function removeUser(address user,uint group) external;
     function setPeriod(uint group, uint period) external;
@@ -16,6 +16,7 @@ interface IGroupManager {
     function setInterestRate(uint group, uint interestRate) external;
     function openApplication(uint group) external;
     function closeApplication(uint group) external;
+    function joinWaitingList(uint group, address user) external;
     function makeLoanTransfer(uint group) external returns (address);
     function makeTermDeposit(address sender, uint group) external payable;
     function returnSavings(uint group) external returns (address[] memory users, uint[] memory savings);
