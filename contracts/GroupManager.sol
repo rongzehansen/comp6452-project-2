@@ -300,12 +300,12 @@ contract GroupManager is IGroupManager {
     
     function returnSavings(
         uint group
-    ) public accountManagerRestricted returns (address[] memory users, uint[] memory savings) {
+    ) public returns (address[] memory, uint[] memory) {
         require(0 < group && group <= numGroups, "Invalid group index");
         uint total = 0;
         uint j = 0;
-        users = new address[](0);
-        savings = new uint[](0);
+        address[] memory users = new address[](groups[group].numUsers);
+        uint[] memory savings = new uint[](groups[group].numUsers);
         for (uint i = 0; i <= groups[group].maxUserIndex; i++) {
             if (groups[group].users[i].userAddress != address(0)) {
             
