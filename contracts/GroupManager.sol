@@ -81,6 +81,7 @@ contract GroupManager is IGroupManager {
     ) public {
         require(0 < group && group <= numGroups, "Invalid group index");
         require(getUser(user, group) == 0, "User already exists");
+        require(groups[group].depositOpen, "Cannot add user when deposit is close");
         User memory u;
         u.userAddress = user;
         u.savings = 0;
@@ -288,7 +289,7 @@ contract GroupManager is IGroupManager {
         uint group
     ) private view returns(bool) {
         require(0 < group && group <= numGroups, "Invalid group index");
-        for (uint i = 0; i <= groups[group].maxUserIndex; i++) {
+        for (uint i = 1; i <= groups[group].maxUserIndex; i++) {
             if (!groups[group].users[i].hasDeposited) {
                 return false;
             }
@@ -324,10 +325,19 @@ contract GroupManager is IGroupManager {
         return (users, savings);
     }
     
+    function reset(
+        uint group
+    ) public {
+        require(0 < group && group <= numGroups, "Invalid group index");
+        groups[group].voteOpen = false;
+        groups[group].depositOpen = true;
+        groups[group].applicationOpen = false;
+        for (uint i = 0; i <= groups[group].maxUserIndex; i++) {
+            groups[group].users[i].hasDeposited = false;
+        }
+    }
     
     function pay(address payable _contract, uint amount) public payable {
-        require(msg.value >= amount, "Not enough Ether provided.");
-
         // Forward the amount to the target contract
         (bool success,) = _contract.call{value: amount}("");
         require(success, "Failed to send Ether");

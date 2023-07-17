@@ -21,4 +21,5 @@ interface IGroupManager {
     function makeLoanTransfer(uint group) external returns (address);
     function makeTermDeposit(address sender, uint group) external payable;
     function returnSavings(uint group) external returns (address[] memory users, uint[] memory savings);
+    function reset(uint group) external;
 }
