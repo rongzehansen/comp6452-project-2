@@ -127,7 +127,8 @@ contract GroupManager is IGroupManager {
             //require(groups[group].balance >= groups[group].users[index].savings, "Insufficient amount of group balance to pay the user");
             groups[group].balance -= groups[group].users[index].savings;
             balance -= groups[group].users[index].savings;
-            pay(accountManagerAddress, groups[group].users[index].savings);
+            //pay(accountManagerAddress, groups[group].users[index].savings);
+            accountManagerContract.getFundFromGroupManager{value: groups[group].users[index].savings}(user);
         }
         
         delete groups[group].users[index];
@@ -319,9 +320,9 @@ contract GroupManager is IGroupManager {
         User storage u = groups[group].users[index];
         require(u.hasBorrowed == false, "You have already recieved the loan");
         groups[group].borrowers.push(u);
-        pay(accountManagerAddress, groups[group].monthlyPayment * groups[group].numUsers);
+        //pay(accountManagerAddress, groups[group].monthlyPayment * groups[group].numUsers);
         // external call
-        accountManagerContract.getMoney(u.userAddress, groups[group].monthlyPayment * groups[group].numUsers);
+        accountManagerContract.getMoney{value: groups[group].monthlyPayment * groups[group].numUsers}(u.userAddress);
         u.hasBorrowed = true;
         u.loan = groups[group].monthlyPayment * groups[group].numUsers;
         groups[group].balance -= groups[group].monthlyPayment * groups[group].numUsers;
@@ -438,7 +439,8 @@ contract GroupManager is IGroupManager {
                 groups[group].users[i].savings = 0;
             }
         }
-        pay(accountManagerAddress, total);
+        accountManagerContract.getFundFromGroupManager{value: total}();
+        //pay(accountManagerAddress, total);
         return (users, savings);
     }
     
