@@ -89,6 +89,9 @@ contract AccountManager {
     function getMoney(address targetUser, uint256 amount) external payable {
         users[targetUser].balance += amount;
     }
+    function getFundFromGroupManager() external payable{
+        emit Deposit(msg.sender, msg.value);
+    }
 
     //User receive money
     function deposit(address target) external payable {
@@ -162,7 +165,7 @@ contract AccountManager {
     }
 
     //Return savings to members
-    function returnSavings(uint256 groupId) public payable {
+    function returnSavings(uint256 groupId) public {
         require(
             bytes(users[msg.sender].name).length != 0,
             "Account does not exist"

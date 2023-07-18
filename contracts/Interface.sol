@@ -6,7 +6,7 @@ interface IAccountManager {
     function getBalance(address userAddress) external returns (uint);
     function releaseFunds(address senderAddress, address targetAddress, uint amount) external;
     function leaveGroup(uint groupId, address userAddress) external;
-    function returnSavings(uint256 groupId) external payable;
+    function getFundFromGroupManager() external payable;
 }
 
 interface IGroupManager {
@@ -28,4 +28,5 @@ interface IGroupManager {
     function makeTermDeposit(address sender, uint group) external payable;
     function returnSavings(uint group) external returns (address[] memory users, uint[] memory savings);
     function reset(uint group) external;
+    
 }
