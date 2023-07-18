@@ -178,6 +178,7 @@ contract GroupManager is IGroupManager {
             if (numYes / (groups[group].numUsers - 1) * 100 > 50) {
                 removeUser(groups[group].target.userAddress, group);
             }
+            delete groups[group].target;
             groups[group].status.voteOpen = false;
         }
     }
