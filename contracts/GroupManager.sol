@@ -73,7 +73,7 @@ contract GroupManager is IGroupManager {
         s.applicationOpen = false;
         g.interestRate = 5;
         g.monthlyPayment = 0;
-        //g.period = 0;
+        g.period = 0;
         g.balance = 0;
         g.maxUserIndex = 0;
         g.numUsers = 0;
@@ -124,6 +124,7 @@ contract GroupManager is IGroupManager {
         
         delete groups[group].users[index];
         groups[group].numUsers--;
+        accountManagerContract.leaveGroup(group, user);
     }
     
     function voteDismiss(
@@ -451,7 +452,7 @@ contract GroupManager is IGroupManager {
     }
     
     function random(uint x) private returns(uint) {
-        uint randomnumber = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, nonce))) % x;
+        uint randomnumber = (uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, nonce))) % x) + 1;
         nonce++;
         return randomnumber;
     }
