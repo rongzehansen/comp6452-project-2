@@ -9,7 +9,7 @@ contract GroupManager is IGroupManager {
         //uint        index;
         string      name;                   // username
         User        owner;
-        User        borrower;
+        User[]      borrowers;
         bool        voteOpen;               // default false
         bool        depositOpen;            // default true
         bool        applicationOpen;        // default false
@@ -28,7 +28,7 @@ contract GroupManager is IGroupManager {
         uint        savings;
         bool        hasDeposited;
         bool        hasBorrowed;
-        //bool        requestLoan;
+        uint        loan;
     }
     
     address payable accountManagerAddress;
@@ -87,7 +87,7 @@ contract GroupManager is IGroupManager {
         u.savings = 0;
         u.hasDeposited = false;
         u.hasBorrowed = false;
-        //u.requestLoan = false;
+        u.loan = 0;
         groups[group].users[++groups[group].maxUserIndex] = u;
         groups[group].numUsers++;
     }
@@ -241,11 +241,12 @@ contract GroupManager is IGroupManager {
         uint index = getApplicationWinner(group);
         User storage u = groups[group].users[index];
         require(u.hasBorrowed == false, "You have already recieved the loan");
-        groups[group].borrower = u;
+        groups[group].borrowers.push(u);
         pay(accountManagerAddress, groups[group].monthlyPayment * groups[group].numUsers);
         // external call
         accountManagerContract.getMoney(u.userAddress, groups[group].monthlyPayment * groups[group].numUsers);
         u.hasBorrowed = true;
+        u.loan = groups[group].monthlyPayment * groups[group].numUsers;
         groups[group].balance -= groups[group].monthlyPayment * groups[group].numUsers;
         balance -= groups[group].monthlyPayment * groups[group].numUsers;
     }
@@ -273,7 +274,7 @@ contract GroupManager is IGroupManager {
             groups[group].depositOpen = false;
         }
         
-        if (groups[group].borrower.userAddress == u.userAddress) {
+        if (getBorrorwer(sender, group) != -1) {
             uint amount = groups[group].monthlyPayment * groups[group].interestRate / 100;
             require(accountManagerContract.getBalance(u.userAddress) >= amount * (groups[group].numUsers - 1), "You do not have sufficient amount of money to release");
             for (uint i = 0; i <= groups[group].maxUserIndex; i++) {
@@ -286,6 +287,21 @@ contract GroupManager is IGroupManager {
         }
     }
     
+    function getBorrorwer(
+        address user,
+        uint group
+    ) private view returns (int) {
+        require(0 < group && group <= numGroups, "Invalid group index");
+        int index = -1;
+        for (uint i = 0; i < groups[group].borrowers.length; i++) {
+            if (groups[group].borrowers[i].userAddress == user) {
+                index = int(i);
+                break;
+            }
+        }
+        return index;
+    }
+    
     function hasEveryoneDeposited(
         uint group
     ) private view returns(bool) {
@@ -296,6 +312,22 @@ contract GroupManager is IGroupManager {
             }
         }
         return true;
+    }
+    
+    function repayLoan(
+        address sender,
+        uint group
+    ) public accountManagerRestricted payable {
+        require(0 < group && group <= numGroups, "Invalid group index");
+        uint user = getUser(sender, group);
+        require(0 < user && user <= groups[group].maxUserIndex, "Invalid user index");
+        int index = getBorrorwer(sender, group);
+        require(index != -1, "You are not the borrower");
+        User storage u = groups[group].users[user];
+        require(msg.value == u.loan, "Amount received does not equal to your loan");
+        groups[group].borrowers[uint(index)] = groups[group].borrowers[groups[group].borrowers.length - 1];
+        groups[group].borrowers.pop();
+        u.loan = 0;
     }
     
     function returnSavings(
