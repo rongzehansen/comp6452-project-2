@@ -193,10 +193,7 @@ contract AccountManager {
 
     //Return savings to members
     function returnSavings(uint256 groupId) public {
-        require(
-            bytes(users[msg.sender].name).length != 0,
-            "Account does not exist"
-        );
+        
         require(
             users[msg.sender].groupIdentity[groupId].id != 0 &&
                 users[msg.sender].groupIdentity[groupId].identity ==
