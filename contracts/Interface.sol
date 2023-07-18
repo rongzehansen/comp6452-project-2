@@ -13,7 +13,7 @@ interface IGroupManager {
     function addUser(address user, uint group) external;
     //function removeUser(address user,uint group) external;
     function voteDismiss(address initiator, address target, uint group) external;
-    function vote(address user,uint group,bool result) external;
+    function vote(address user, uint group, bool result) external;
     function getPeriod(uint group) external view returns (uint);
     function setPeriod(uint group, uint period) external;
     function getMonthlyPayment(uint group) external view returns (uint);
