@@ -3,7 +3,7 @@ import './App.css';
 import {Home} from './component/home';
 import {UserInfo} from './component/usersInfo';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-export const contractAddress = "0x2894aC41A3b23F20a85359508A8E4d3BC48bcf38";
+export const contractAddress = "0xe418482d0EBA585428b7b0a24E4B7c60162D1094";
 
 
 function App() {
