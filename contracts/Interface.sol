@@ -7,6 +7,7 @@ interface IAccountManager {
     function releaseFunds(address senderAddress, address targetAddress, uint amount) external;
     function leaveGroup(uint groupId, address userAddress) external;
     function getFundFromGroupManager() external payable;
+    function getFundFromGroupManager(address target) external payable;
 }
 
 interface IGroupManager {
