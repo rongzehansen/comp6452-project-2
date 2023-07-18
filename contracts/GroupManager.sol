@@ -148,6 +148,9 @@ contract GroupManager is IGroupManager {
         
         require(target != groups[group].owner.userAddress, "Cannot dismiss the owner of this group");
         require(getBorrorwer(target, group) == -1, "Cannot dismiss the borrower of this group");
+        
+        require(initiator != target, "Cannot dismiss yourself");
+        
         require(groups[group].balance >= groups[group].users[index].savings, "Insufficient amount of group balance to pay the user if dismissed");
         
         groups[group].target = groups[group].users[index];
@@ -170,11 +173,11 @@ contract GroupManager is IGroupManager {
         uint numYes = 0;
         if (hasEveryoneVoted(group)) {
             for (uint i = 1; i <= groups[group].maxUserIndex; i++) {
-                if (groups[group].users[index].vote) {
+                if (groups[group].users[i].vote) {
                     numYes++;
                 }
-                groups[group].users[index].vote = false;
-                groups[group].users[index].hasVoted = false;
+                groups[group].users[i].vote = false;
+                groups[group].users[i].hasVoted = false;
             }
             if (numYes / (groups[group].numUsers - 1) * 100 > 50) {
                 removeUser(groups[group].target.userAddress, group);
