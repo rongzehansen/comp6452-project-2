@@ -286,6 +286,7 @@ contract GroupManager is IGroupManager {
         //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         
         groups[group].status.applicationOpen = false;
+        makeLoanTransfer(group);
     }
     
     function joinWaitingList(
@@ -316,7 +317,7 @@ contract GroupManager is IGroupManager {
     
     function makeLoanTransfer(
         uint group
-    ) public groupManagerRestricted {
+    ) private {
         require(0 < group && group <= numGroups, "Invalid group index");
         require(!groups[group].status.depositOpen, "Deposit is still open");
         uint index = getApplicationWinner(group);

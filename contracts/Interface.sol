@@ -24,7 +24,7 @@ interface IGroupManager {
     function openApplication(uint group) external;
     function closeApplication(uint group) external;
     function joinWaitingList(uint group, address user) external;
-    function makeLoanTransfer(uint group) external;
+    //function makeLoanTransfer(uint group) external;
     function repayLoan(address sender,uint group) external payable;
     function makeTermDeposit(address sender, uint group) external payable;
     function returnSavings(uint group) external returns (address[] memory users, uint[] memory savings);
