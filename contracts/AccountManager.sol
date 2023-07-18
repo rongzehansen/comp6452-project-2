@@ -85,18 +85,45 @@ contract AccountManager {
             }
         }
     }
-
-    function getMoney(address targetUser, uint256 amount) external payable {
-        users[targetUser].balance += amount;
+    function repay(uint groupId,uint256 amount) public haveAccount{
+        require(users[msg.sender].balance >= amount, "Insufficient funds");
+        groupManagerAddress.repayLoan{value:amount}(msg.sender,groupId);
+        users[msg.sender].balance-=amount;
     }
+
+    function getMoney(address targetUser) external payable {
+        require(msg.sender==groupManagerContract,"Can only execute by group manager");
+        users[targetUser].balance += msg.value;
+    }
+
     function getFundFromGroupManager() external payable{
+        require(msg.sender==groupManagerContract,"Can only execute by group manager");
         emit Deposit(msg.sender, msg.value);
     }
-
-    //User receive money
-    function deposit(address target) external payable {
+    function getFundFromGroupManager(address target) external payable{
+        require(msg.sender==groupManagerContract,"Can only execute by group manager");
         emit Deposit(msg.sender, msg.value);
-        users[target].balance += msg.value;
+        users[target].balance+=msg.value;
+    }
+
+    function resetMonthlyEvent(uint groupId) public{
+        require(
+            users[msg.sender].groupIdentity[groupId].id != 0 &&
+                users[msg.sender].groupIdentity[groupId].identity ==
+                Identity.owner,
+            "Sender is not manager"
+        );
+        groupManagerAddress.reset(groupId);
+        groupManagerAddress.openApplication(groupId);
+    }
+    function closeApplication(uint groupId) public{
+        require(
+            users[msg.sender].groupIdentity[groupId].id != 0 &&
+                users[msg.sender].groupIdentity[groupId].identity ==
+                Identity.owner,
+            "Sender is not manager"
+        );
+        groupManagerAddress.closeApplication(groupId);
     }
 
     //User withdraw from account
@@ -186,11 +213,11 @@ contract AccountManager {
     }
 
     //If sender is a borrower, pay interest to other member in the group
-    function releaseFund(
+    function releaseFunds(
         address senderAddress,
         address targetAddress,
         uint256 amount
-    ) private {
+    ) external {
         require(
             bytes(users[senderAddress].name).length != 0,
             "Account does not exist"
