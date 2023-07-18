@@ -154,6 +154,7 @@ contract GroupManager is IGroupManager {
         uint index = getUser(user, group);
         require(0 < index && index <= groups[group].maxUserIndex, "Invalid user index");
         require(!groups[group].users[index].hasVoted, "User already voted");
+        require(user != groups[group].target.userAddress, "Target user cannot participate voting process");
         groups[group].users[index].hasVoted = true;
         groups[group].users[index].vote = result;
         uint numYes = 0;
@@ -165,7 +166,7 @@ contract GroupManager is IGroupManager {
                 groups[group].users[index].vote = false;
                 groups[group].users[index].hasVoted = false;
             }
-            if (numYes / groups[group].numUsers * 100 > 50) {
+            if (numYes / (groups[group].numUsers - 1) * 100 > 50) {
                 removeUser(groups[group].target.userAddress, group);
             }
             groups[group].status.voteOpen = false;
@@ -373,7 +374,7 @@ contract GroupManager is IGroupManager {
     ) private view returns(bool) {
         require(0 < group && group <= numGroups, "Invalid group index");
         for (uint i = 1; i <= groups[group].maxUserIndex; i++) {
-            if (!groups[group].users[i].hasVoted) {
+            if (!groups[group].users[i].hasVoted && groups[group].users[i].userAddress != groups[group].target.userAddress) {
                 return false;
             }
         }
