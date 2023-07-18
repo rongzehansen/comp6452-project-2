@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 import "./Interface.sol";
+
 contract AccountManager {
     constructor() {
         manager = msg.sender;
@@ -19,7 +20,7 @@ contract AccountManager {
         string name;
         uint256 balance;
         mapping(uint256 => GroupInfo) groupIdentity;
-        GroupInfo [] groupInfo;
+        GroupInfo[] groupInfo;
     }
 
     IGroupManager private groupManagerAddress;
@@ -29,7 +30,8 @@ contract AccountManager {
     uint256 private group;
     address private manager;
     address private groupManagerContract;
-    uint testIndex=0;
+    uint256 testIndex = 0;
+
     fallback() external payable {
         deposit();
     }
@@ -46,42 +48,46 @@ contract AccountManager {
         users[msg.sender].balance += msg.value;
     }
 
-
-    function getGroupsInfo()public haveAccount view returns(GroupInfo[] memory){
+    function getGroupsInfo()
+        public
+        view
+        haveAccount
+        returns (GroupInfo[] memory)
+    {
         return users[msg.sender].groupInfo;
     }
 
-    function createGroup(string memory groupName)public haveAccount{
-        GroupInfo  memory temp ;
-        temp.id=groupManagerAddress.createGroup(msg.sender,groupName);
-        temp.identity=Identity.owner;
+    function createGroup(string memory groupName) public haveAccount {
+        GroupInfo memory temp;
+        temp.id = groupManagerAddress.createGroup(msg.sender, groupName);
+        temp.identity = Identity.owner;
         users[msg.sender].groupInfo.push(temp);
-        users[msg.sender].groupIdentity[temp.id].id=temp.id;
-        users[msg.sender].groupIdentity[temp.id].identity=Identity.owner;
+        users[msg.sender].groupIdentity[temp.id].id = temp.id;
+        users[msg.sender].groupIdentity[temp.id].identity = Identity.owner;
     }
-    
-    /* TODO:
-    //Vote expel user
-    function voteExpel(uint groupId,address userAddress,bool result) public returns (bool) {
-        //TODO 等一个接口函数
+
+    function voteExpel(uint256 groupId, bool result) public {
+        groupManagerAddress.vote(msg.sender, groupId, result);
     }
 
     //Start a expel event
-    function startExpel(uint groupId,address userAddress) public {
-        voteExpel(groupId,userAddress,true);
+    function startExpel(uint256 groupId, address userAddress) public {
+        groupManagerAddress.voteDismiss(msg.sender, userAddress, groupId);
     }
-    */
-    function leaveGroup(uint groupId, address userAddress) external {
-        for(uint i=0; i< users[userAddress].groupInfo.length;i++){
-            if(users[userAddress].groupInfo[i].id==groupId){
-                users[userAddress].groupInfo[i]=users[userAddress].groupInfo[users[userAddress].groupInfo.length-1];
+
+    function leaveGroup(uint256 groupId, address userAddress) external {
+        for (uint256 i = 0; i < users[userAddress].groupInfo.length; i++) {
+            if (users[userAddress].groupInfo[i].id == groupId) {
+                users[userAddress].groupInfo[i] = users[userAddress].groupInfo[
+                    users[userAddress].groupInfo.length - 1
+                ];
                 users[userAddress].groupInfo.pop();
             }
         }
     }
 
-    function getMoney(address targetUser, uint amount)external {
-        users[targetUser].balance+=amount;
+    function getMoney(address targetUser, uint256 amount) external payable {
+        users[targetUser].balance += amount;
     }
 
     //User receive money
@@ -96,7 +102,6 @@ contract AccountManager {
         payable(msg.sender).transfer(amount);
         users[msg.sender].balance -= amount;
     }
-
 
     //Set interest rate
     function setInterestRate(uint256 interestRate, uint256 groupId)
@@ -113,30 +118,24 @@ contract AccountManager {
     }
 
     //Apply for borrower
-    function applyBorrow(uint groupId) public haveAccount {
+    function applyBorrow(uint256 groupId) public haveAccount {
         groupManagerAddress.joinWaitingList(groupId, msg.sender);
     }
 
-
     //Set Monthly payment
-    function setMonthlyPaymentAmount(uint256 amount,uint groupId) public{
-        groupManagerAddress.setMonthlyPayment(groupId,amount);
+    function setMonthlyPaymentAmount(uint256 amount, uint256 groupId) public {
+        groupManagerAddress.setMonthlyPayment(groupId, amount);
     }
-
 
     //Pay to group
     function monthlyPayment(uint256 groupId) public haveAccount {
-        uint amount=groupManagerAddress.getMonthlyPayment(groupId);
+        uint256 amount = groupManagerAddress.getMonthlyPayment(groupId);
         require(users[msg.sender].balance >= amount, "Insufficient funds");
         emit Transfer(msg.sender, groupManagerContract, amount);
         groupManagerAddress.makeTermDeposit{value: amount}(msg.sender, groupId);
         users[msg.sender].balance -= amount;
-        
     }
 
-    function participateVote(uint groupId)public haveAccount{
-        //TODO
-    }
 
     //Add a user to group
     function addToGroup(uint256 groupId, address userAddress)
@@ -154,8 +153,8 @@ contract AccountManager {
             "Account already joined this group"
         );
         GroupInfo memory temp;
-        temp.id=groupId;
-        temp.identity=Identity.member;
+        temp.id = groupId;
+        temp.identity = Identity.member;
         users[userAddress].groupIdentity[groupId].identity = Identity.member;
         users[userAddress].groupIdentity[groupId].id = groupId;
         users[userAddress].groupInfo.push(temp);
@@ -163,7 +162,7 @@ contract AccountManager {
     }
 
     //Return savings to members
-    function returnSavings(uint256 groupId) public {
+    function returnSavings(uint256 groupId) public payable {
         require(
             bytes(users[msg.sender].name).length != 0,
             "Account does not exist"
@@ -174,18 +173,21 @@ contract AccountManager {
                 Identity.owner,
             "You are not the owner of the group"
         );
-        (address[] memory tarUsers, uint[] memory savings)=groupManagerAddress.returnSavings(groupId);
-       for(uint i=0;i< tarUsers.length;i++){
-           users[tarUsers[i]].balance+=savings[i];
-       }
+        (
+            address[] memory tarUsers,
+            uint256[] memory savings
+        ) = groupManagerAddress.returnSavings(groupId);
+        for (uint256 i = 0; i < tarUsers.length; i++) {
+            users[tarUsers[i]].balance += savings[i];
+        }
     }
 
     //If sender is a borrower, pay interest to other member in the group
-    function releaseFunds(
+    function releaseFund(
         address senderAddress,
         address targetAddress,
         uint256 amount
-    )  private{
+    ) private {
         require(
             bytes(users[senderAddress].name).length != 0,
             "Account does not exist"
@@ -195,7 +197,7 @@ contract AccountManager {
             "Account does not exist"
         );
         require(users[senderAddress].balance >= amount, "Insufficient funds");
-        
+
         users[senderAddress].balance -= amount;
         users[targetAddress].balance += amount;
     }
@@ -264,4 +266,3 @@ contract AccountManager {
         _;
     }
 }
-

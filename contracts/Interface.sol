@@ -2,10 +2,11 @@
 pragma solidity ^0.8.0;
 
 interface IAccountManager {
-    function getMoney(address targetUser, uint amount) external;
+    function getMoney(address targetUser, uint256 amount) external payable;
     function getBalance(address userAddress) external returns (uint);
     function releaseFunds(address senderAddress, address targetAddress, uint amount) external;
     function leaveGroup(uint groupId, address userAddress) external;
+    function returnSavings(uint256 groupId) external payable;
 }
 
 interface IGroupManager {
