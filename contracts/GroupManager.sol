@@ -13,7 +13,7 @@ contract GroupManager is IGroupManager {
         Status      status;
         uint        interestRate;           // default 5%
         uint        monthlyPayment;
-        //uint        period;
+        uint        period;
         uint        balance;
         uint        maxUserIndex;
         uint        numUsers;
@@ -219,7 +219,7 @@ contract GroupManager is IGroupManager {
         groups[group].interestRate = interestRate;
     }
     
-    /*
+    
     function getPeriod(
         uint group
     ) public view returns (uint) {
@@ -236,7 +236,7 @@ contract GroupManager is IGroupManager {
         require(period > 0, "Period needs to be greater than 0");
         groups[group].period = period;
     }
-    */
+    
     
     function getMonthlyPayment(
         uint group
@@ -257,7 +257,7 @@ contract GroupManager is IGroupManager {
     
     function openApplication(
         uint group
-    ) public {
+    ) public groupManagerRestricted {
         require(0 < group && group <= numGroups, "Invalid group index");
         //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         
@@ -266,7 +266,7 @@ contract GroupManager is IGroupManager {
     
     function closeApplication(
         uint group
-    ) public {
+    ) public groupManagerRestricted {
         require(0 < group && group <= numGroups, "Invalid group index");
         //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         

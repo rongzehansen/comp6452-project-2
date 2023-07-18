@@ -14,7 +14,8 @@ interface IGroupManager {
     //function removeUser(address user,uint group) external;
     function voteDismiss(address initiator, address target, uint group) external;
     function vote(address user,uint group,bool result) external;
-    //function setPeriod(uint group, uint period) external;
+    function getPeriod(uint group) external view returns (uint);
+    function setPeriod(uint group, uint period) external;
     function getMonthlyPayment(uint group) external view returns (uint);
     function setMonthlyPayment(uint group, uint monthlyPayment) external;
     function setInterestRate(uint group, uint interestRate) external;
