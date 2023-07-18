@@ -6,16 +6,14 @@ import "./Interface.sol";
 contract GroupManager is IGroupManager {
     
     struct Group {
-        //uint        index;
         string      name;                   // username
         User        owner;
         User[]      borrowers;
-        bool        voteOpen;               // default false
-        bool        depositOpen;            // default true
-        bool        applicationOpen;        // default false
+        User        target;                 // target to dismiss
+        Status      status;
         uint        interestRate;           // default 5%
         uint        monthlyPayment;
-        uint        period;
+        //uint        period;
         uint        balance;
         uint        maxUserIndex;
         uint        numUsers;
@@ -23,11 +21,19 @@ contract GroupManager is IGroupManager {
         User[]      participants;
     }
     
+    struct Status {
+        bool        voteOpen;               // default false
+        bool        depositOpen;            // default true
+        bool        applicationOpen;        // default false
+    }
+    
     struct User {
         address     userAddress;
         uint        savings;
         bool        hasDeposited;
         bool        hasBorrowed;
+        bool        hasVoted;
+        bool        vote;
         uint        loan;
     }
     
@@ -61,15 +67,17 @@ contract GroupManager is IGroupManager {
         Group storage g = groups[++numGroups];
         //g.index = numGroups;
         g.name = name;
-        g.voteOpen = false;
-        g.depositOpen = true;
-        g.applicationOpen = false;
+        Status memory s;
+        s.voteOpen = false;
+        s.depositOpen = true;
+        s.applicationOpen = false;
         g.interestRate = 5;
         g.monthlyPayment = 0;
-        g.period = 0;
+        //g.period = 0;
         g.balance = 0;
         g.maxUserIndex = 0;
         g.numUsers = 0;
+        g.status = s;
         addUser(user, numGroups);
         g.owner = g.users[g.maxUserIndex];
         return numGroups;
@@ -81,12 +89,14 @@ contract GroupManager is IGroupManager {
     ) public accountManagerRestricted {
         require(0 < group && group <= numGroups, "Invalid group index");
         require(getUser(user, group) == 0, "User already exists");
-        require(groups[group].depositOpen, "Cannot add user when deposit is close");
+        require(groups[group].status.depositOpen, "Cannot add user when deposit is close");
         User memory u;
         u.userAddress = user;
         u.savings = 0;
         u.hasDeposited = false;
         u.hasBorrowed = false;
+        u.hasVoted = false;
+        u.vote = false;
         u.loan = 0;
         groups[group].users[++groups[group].maxUserIndex] = u;
         groups[group].numUsers++;
@@ -95,18 +105,18 @@ contract GroupManager is IGroupManager {
     function removeUser(
         address user,
         uint group
-    ) public accountManagerRestricted {
+    ) private {
         require(0 < group && group <= numGroups, "Invalid group index");
         
         uint index = getUser(user, group);
         require(0 < index && index <= groups[group].maxUserIndex, "Invalid user index");
         
         //
-        require(groups[group].users[index].userAddress != groups[group].owner.userAddress, "Cannot remove the owner of this group");
-        require(getBorrorwer(user, group) == -1, "Cannot remove the borrower of this group");
+        //require(groups[group].users[index].userAddress != groups[group].owner.userAddress, "Cannot remove the owner of this group");
+        //require(getBorrorwer(user, group) == -1, "Cannot remove the borrower of this group");
         
         if (groups[group].users[index].savings > 0) {
-            require(groups[group].balance >= groups[group].users[index].savings, "Insufficient amount of group balance to pay the user");
+            //require(groups[group].balance >= groups[group].users[index].savings, "Insufficient amount of group balance to pay the user");
             groups[group].balance -= groups[group].users[index].savings;
             balance -= groups[group].users[index].savings;
             pay(accountManagerAddress, groups[group].users[index].savings);
@@ -114,6 +124,52 @@ contract GroupManager is IGroupManager {
         
         delete groups[group].users[index];
         groups[group].numUsers--;
+    }
+    
+    function voteDismiss(
+        address initiator,
+        address target,
+        uint group
+    ) public accountManagerRestricted {
+        require(0 < group && group <= numGroups, "Invalid group index");
+        uint index = getUser(target, group);
+        require(0 < index && index <= groups[group].maxUserIndex, "Target user not in the group");
+        require(!groups[group].status.voteOpen, "Vote is open");
+        
+        require(target != groups[group].owner.userAddress, "Cannot dismiss the owner of this group");
+        require(getBorrorwer(target, group) == -1, "Cannot dismiss the borrower of this group");
+        require(groups[group].balance >= groups[group].users[index].savings, "Insufficient amount of group balance to pay the user if dismissed");
+        
+        groups[group].target = groups[group].users[index];
+        groups[group].status.voteOpen = true;
+        vote(initiator, group, true);
+    }
+    
+    function vote(
+        address user,
+        uint group,
+        bool result
+    ) public accountManagerRestricted {
+        require(0 < group && group <= numGroups, "Invalid group index");
+        uint index = getUser(user, group);
+        require(0 < index && index <= groups[group].maxUserIndex, "Invalid user index");
+        require(!groups[group].users[index].hasVoted, "User already voted");
+        groups[group].users[index].hasVoted = true;
+        groups[group].users[index].vote = result;
+        uint numYes = 0;
+        if (hasEveryoneVoted(group)) {
+            for (uint i = 1; i <= groups[group].maxUserIndex; i++) {
+                if (groups[group].users[index].vote) {
+                    numYes++;
+                }
+                groups[group].users[index].vote = false;
+                groups[group].users[index].hasVoted = false;
+            }
+            if (numYes / groups[group].numUsers * 100 > 50) {
+                removeUser(groups[group].target.userAddress, group);
+            }
+            groups[group].status.voteOpen = false;
+        }
     }
     
     function getUser(
@@ -163,6 +219,7 @@ contract GroupManager is IGroupManager {
         groups[group].interestRate = interestRate;
     }
     
+    /*
     function getPeriod(
         uint group
     ) public view returns (uint) {
@@ -179,6 +236,7 @@ contract GroupManager is IGroupManager {
         require(period > 0, "Period needs to be greater than 0");
         groups[group].period = period;
     }
+    */
     
     function getMonthlyPayment(
         uint group
@@ -203,7 +261,7 @@ contract GroupManager is IGroupManager {
         require(0 < group && group <= numGroups, "Invalid group index");
         //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         
-        groups[group].applicationOpen = true;
+        groups[group].status.applicationOpen = true;
     }
     
     function closeApplication(
@@ -212,14 +270,14 @@ contract GroupManager is IGroupManager {
         require(0 < group && group <= numGroups, "Invalid group index");
         //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         
-        groups[group].applicationOpen = false;
+        groups[group].status.applicationOpen = false;
     }
     
     function joinWaitingList(
         uint group,
         address user
     ) public accountManagerRestricted {
-        require(groups[group].applicationOpen, "Application is not open");
+        require(groups[group].status.applicationOpen, "Application is not open");
         uint index = getUser(user, group);
         require(index != 0, "User does not exist");
         require(getParticipant(user, group) == -1, "User has already joined the waiting list");
@@ -232,7 +290,7 @@ contract GroupManager is IGroupManager {
         uint group
     ) private returns (uint) {
         require(0 < group && group <= numGroups, "Invalid group index");
-        require(!groups[group].applicationOpen, "Application is still open");
+        require(!groups[group].status.applicationOpen, "Application is still open");
         uint numParticipants = groups[group].participants.length;
         uint index = random(numParticipants);
         
@@ -245,7 +303,7 @@ contract GroupManager is IGroupManager {
         uint group
     ) public groupManagerRestricted {
         require(0 < group && group <= numGroups, "Invalid group index");
-        require(!groups[group].depositOpen, "Deposit is still open");
+        require(!groups[group].status.depositOpen, "Deposit is still open");
         uint index = getApplicationWinner(group);
         User storage u = groups[group].users[index];
         require(u.hasBorrowed == false, "You have already recieved the loan");
@@ -279,7 +337,7 @@ contract GroupManager is IGroupManager {
         u.hasDeposited = true;
         
         if (hasEveryoneDeposited(group)) {
-            groups[group].depositOpen = false;
+            groups[group].status.depositOpen = false;
         }
         
         if (getBorrorwer(sender, group) != -1) {
@@ -308,6 +366,18 @@ contract GroupManager is IGroupManager {
             }
         }
         return index;
+    }
+    
+    function hasEveryoneVoted(
+        uint group
+    ) private view returns(bool) {
+        require(0 < group && group <= numGroups, "Invalid group index");
+        for (uint i = 1; i <= groups[group].maxUserIndex; i++) {
+            if (!groups[group].users[i].hasVoted) {
+                return false;
+            }
+        }
+        return true;
     }
     
     function hasEveryoneDeposited(
@@ -348,12 +418,10 @@ contract GroupManager is IGroupManager {
         uint[] memory savings = new uint[](groups[group].numUsers);
         for (uint i = 0; i <= groups[group].maxUserIndex; i++) {
             if (groups[group].users[i].userAddress != address(0)) {
-            
                 users[j] = groups[group].users[i].userAddress;
                 savings[j] = groups[group].users[i].savings;
                 j++;
                 total += groups[group].users[i].savings;
-                
                 groups[group].balance -= groups[group].users[i].savings;
                 balance -= groups[group].users[i].savings;
                 groups[group].users[i].savings = 0;
@@ -367,9 +435,9 @@ contract GroupManager is IGroupManager {
         uint group
     ) public {
         require(0 < group && group <= numGroups, "Invalid group index");
-        groups[group].voteOpen = false;
-        groups[group].depositOpen = true;
-        groups[group].applicationOpen = false;
+        groups[group].status.voteOpen = false;
+        groups[group].status.depositOpen = true;
+        groups[group].status.applicationOpen = false;
         for (uint i = 0; i <= groups[group].maxUserIndex; i++) {
             groups[group].users[i].hasDeposited = false;
         }
