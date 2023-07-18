@@ -269,7 +269,7 @@ contract GroupManager is IGroupManager {
     
     function openApplication(
         uint group
-    ) public groupManagerRestricted {
+    ) public accountManagerRestricted {
         require(0 < group && group <= numGroups, "Invalid group index");
         //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         
@@ -278,7 +278,7 @@ contract GroupManager is IGroupManager {
     
     function closeApplication(
         uint group
-    ) public groupManagerRestricted {
+    ) public accountManagerRestricted {
         require(0 < group && group <= numGroups, "Invalid group index");
         //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         
