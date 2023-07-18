@@ -11,7 +11,7 @@ interface IAccountManager {
 interface IGroupManager {
     function createGroup(address user, string memory name) external returns (uint);
     function addUser(address user, uint group) external;
-    //function removeUser(address user,uint group) external;
+    function removeUser(address user,uint group) external;
     function setPeriod(uint group, uint period) external;
     function getMonthlyPayment(uint group) external view returns (uint);
     function setMonthlyPayment(uint group, uint monthlyPayment) external;

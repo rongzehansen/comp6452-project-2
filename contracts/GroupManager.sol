@@ -95,14 +95,22 @@ contract GroupManager is IGroupManager {
     function removeUser(
         address user,
         uint group
-    ) public {
+    ) public accountManagerRestricted {
         require(0 < group && group <= numGroups, "Invalid group index");
         
         uint index = getUser(user, group);
         require(0 < index && index <= groups[group].maxUserIndex, "Invalid user index");
         
         //
-        require(groups[group].users[index].userAddress != groups[group].owner.userAddress, "Cannot remove the owner of the group");
+        require(groups[group].users[index].userAddress != groups[group].owner.userAddress, "Cannot remove the owner of this group");
+        require(getBorrorwer(user, group) == -1, "Cannot remove the borrower of this group");
+        
+        if (groups[group].users[index].savings > 0) {
+            require(groups[group].balance >= groups[group].users[index].savings, "Insufficient amount of group balance to pay the user");
+            groups[group].balance -= groups[group].users[index].savings;
+            balance -= groups[group].users[index].savings;
+            pay(accountManagerAddress, groups[group].users[index].savings);
+        }
         
         delete groups[group].users[index];
         groups[group].numUsers--;
@@ -352,9 +360,6 @@ contract GroupManager is IGroupManager {
             }
         }
         pay(accountManagerAddress, total);
-        /*
-        if (groups[group].balance > 0) {  }
-        */
         return (users, savings);
     }
     
