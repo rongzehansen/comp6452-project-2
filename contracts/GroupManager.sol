@@ -60,20 +60,12 @@ contract GroupManager is IGroupManager {
         accountManagerContract = IAccountManager(accountManagerAddress);
     }
     
-    function getUsers(
-        uint group
-    ) public view groupManagerRestricted returns (address[] memory, uint[] memory, uint[] memory) {
+    function debug_getUser(
+        uint group,
+        uint index
+    ) public view groupManagerRestricted returns (User memory user) {
         require(0 < group && group <= numGroups, "Invalid group index");
-        address[] memory addresses = new address[](groups[group].maxUserIndex + 1);
-        uint[] memory savings = new uint[](groups[group].maxUserIndex + 1);
-        uint[] memory loans = new uint[](groups[group].maxUserIndex + 1);
-        
-        for (uint i = 0; i <= groups[group].maxUserIndex; i++) {
-            addresses[i] = groups[group].users[i].userAddress;
-            savings[i] = groups[group].users[i].savings;
-            loans[i] = groups[group].users[i].loan;
-        }
-        return (addresses, savings, loans);
+        return groups[group].users[index];
     }
     
     function createGroup(
