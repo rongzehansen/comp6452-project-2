@@ -355,7 +355,7 @@ contract GroupManager is IGroupManager {
         if (getBorrorwer(sender, group) != -1) {
             uint amount = groups[group].monthlyPayment * groups[group].interestRate / 100;
             require(accountManagerContract.getBalance(u.userAddress) >= amount * (groups[group].numUsers - 1), "You do not have sufficient amount of money to release");
-            for (uint i = 0; i <= groups[group].maxUserIndex; i++) {
+            for (uint i = 1; i <= groups[group].maxUserIndex; i++) {
                 address recipient = groups[group].users[i].userAddress;
                 if (recipient != u.userAddress) {
                     // external call
