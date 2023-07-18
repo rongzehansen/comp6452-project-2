@@ -422,6 +422,9 @@ contract GroupManager is IGroupManager {
         groups[group].borrowers[uint(index)] = groups[group].borrowers[groups[group].borrowers.length - 1];
         groups[group].borrowers.pop();
         u.loan = 0;
+        
+        groups[group].balance += msg.value;
+        balance += msg.value;
     }
     
     function returnSavings(
