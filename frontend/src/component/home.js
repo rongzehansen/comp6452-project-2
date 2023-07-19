@@ -75,7 +75,31 @@ export function Home(){
         }
     }
 
+    const [payAmount, setPayAmount] = useState('');  
+
+    const paymentHandler = async () => {
+        const { ethereum } = window;
+
+        if (!ethereum) {
+            console.log("Ethereum object does not exist");
+            return;
+        }
     
+        const provider = new ethers.BrowserProvider(ethereum);
+        const signer = await provider.getSigner();
+        const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+        
+        //const amountToPay = ethers.parseEther(payAmount);
+    
+        try {
+            let paymentTxn = await tradeContract.deposit({
+                value: payAmount
+            });
+            console.log("Payment transaction:", paymentTxn);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     const connectWalletButton = () => {
     return (
@@ -89,9 +113,15 @@ export function Home(){
         const handleInputChange = (event) => {
             setInput(event.target.value);
         };
+
         const navigateUser =() =>{
             navigate("/userInfo");
         }
+
+        const handlePaymentChange = (event) => {  
+            setPayAmount(event.target.value);
+        };
+
         const reportHandler =async () => { 
         try{
             const { ethereum } = window;
@@ -117,6 +147,7 @@ export function Home(){
             console.log(err);
         }
     }
+
     if(!name)
     return (
         <div>
@@ -130,7 +161,13 @@ export function Home(){
     return(
         <div>
             <div>Welcome {name}</div>
-            <button onClick={navigateUser} className='cta-button mint-nft-button'>
+            <input placeholder="Payment Amount" onChange={handlePaymentChange}/>
+            <button onClick={paymentHandler} className='cta-button mint-nft-button'>
+            Pay
+            </button>
+            <br></br>
+            <br></br>
+            <button onClick={navigateUser} className='cta-button mint-nft-button' style={{marginBottom: "10px"}}>
             User info
             </button>
         </div>

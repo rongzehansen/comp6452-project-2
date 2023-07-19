@@ -16,7 +16,7 @@ function GroupCard(props){
     
     return (
         
-        <div style={{height: "300px", width: "80%", background: "gray", color: "white", fontSize: "20px", padding: "10px"}} key={props.index}>
+        <div style={{height: "300px", width: "80%", background: "gray", color: "white", fontSize: "20px", padding: "10px",cursor: "pointer"}} key={props.index} onClick={handleGroupDetailClick}>
         <div style={{marginBottom: "10px"}}>
             {`Group Name: ${props.groupInput}`}
         </div>
@@ -34,9 +34,7 @@ function GroupCard(props){
             </ul>
         </div>
 
-        <div>
-            <button onClick={handleGroupDetailClick} className='cta-button mint-nft-button'>Group Details</button>
-        </div>
+        
 
 
     </div>);
@@ -51,6 +49,8 @@ export function UserInfo(){
     const [groupID, setgroupID] = useState('');
     const [memberAddress, setMemberAddress] = useState('');
     const [memberInfo, setMemberInfo] = useState([]);
+    const [balance, setBalance] = useState(0);
+
     const navigate = useNavigate();
 
     const handleGroupInputChange = (event) => {
@@ -223,12 +223,30 @@ export function UserInfo(){
         
     }
 
+    const getBalance = async() => {
+        const { ethereum } = window;
+        if(ethereum) {
+            const provider = new ethers.BrowserProvider(ethereum);
+            const signer = await provider.getSigner();
+            if(currentAccount==null) return;
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            let cur_balance = await tradeContract["getBalance(address)"](currentAccount);;
+            setBalance(cur_balance);
+        } else {
+          console.log("Ethereum object does not exist");
+        }
+
+      }
+
     useEffect(() => {
         const { ethereum } = window;
         checkWalletIsConnected();
         if(currentAccount)
         checkUserAccount();
         getGroupInfo();
+        getBalance();
+        console.log(balance);
+        //alert(balance);
         if (ethereum) {
             // Subscribe to accounts change
             ethereum.on('accountsChanged', handleAccountsChanged);
@@ -238,15 +256,15 @@ export function UserInfo(){
                 ethereum.removeListener('accountsChanged', handleAccountsChanged);
             };
         }
-    }, [currentAccount,name])
+    }, [currentAccount,name,balance])
 
     return (
         <div>
             User info page
-            
             {groupInfo.map((group, index) => (<GroupCard group={group} groupInput={groupInput} key={index} index={index}></GroupCard>))}
             <div>
                 <div>Welcome {name}</div>
+                <div>Your current balance is : {balance.toString()}</div>
                 <input onChange={handleGroupInputChange} placeholder="Enter group name"/>
                 <button onClick={createGroup} className='cta-button mint-nft-button'>
                 Create group
