@@ -38,7 +38,7 @@ export function UserInfo(){
     const [groupInput, setGroupInput] = useState('');
     const [groupID, setgroupID] = useState('');
     const [memberAddress, setMemberAddress] = useState('');
-    const [userInfo, setUserInfo] = useState([]);
+    const [memberInfo, setMemberInfo] = useState([]);
     const navigate = useNavigate();
 
     const handleGroupInputChange = (event) => {
@@ -51,6 +51,16 @@ export function UserInfo(){
 
     const handleMemberAddress = (event) => {
         setMemberAddress(event.target.value);
+    };
+
+    const handleAccountsChanged = (accounts) => {
+        if (accounts.length > 0) {
+            setCurrentAccount(accounts[0]);
+            // You can also call here other actions, like refreshing user data etc.
+        } else {
+            // Handle a situation where user disconnects their wallet
+            setCurrentAccount(null);
+        }
     };
 
     const checkWalletIsConnected = async () => {     
@@ -150,7 +160,7 @@ export function UserInfo(){
             console.log(err);
         }
     }
-/*
+
     const getUserInfo = async()=>{
         try{
             const { ethereum } = window;
@@ -162,7 +172,7 @@ export function UserInfo(){
                 
                 console.log("try to get user info");
                 let tradeTxn = await tradeContract.getUserInfo(memberAddress);
-                setUserInfo(tradeTxn);
+                setMemberInfo(tradeTxn);
             }
             else{
                 console.log("Ethereum object does not exist");
@@ -173,10 +183,9 @@ export function UserInfo(){
             console.log(err);
         }
     }
-*/
+
     const addMember = async() =>{
         console.log("Adding member");
-        /*
         try{
             const { ethereum } = window;
             if(ethereum){
@@ -199,14 +208,24 @@ export function UserInfo(){
         catch(err){
             console.log(err);
         }
-        */
+        
     }
 
     useEffect(() => {
+        const { ethereum } = window;
         checkWalletIsConnected();
         if(currentAccount)
         checkUserAccount();
         getGroupInfo();
+        if (ethereum) {
+            // Subscribe to accounts change
+            ethereum.on('accountsChanged', handleAccountsChanged);
+    
+            // It's important to properly clean up to avoid memory leaks
+            return () => {
+                ethereum.removeListener('accountsChanged', handleAccountsChanged);
+            };
+        }
     }, [currentAccount,name])
 
     return (
