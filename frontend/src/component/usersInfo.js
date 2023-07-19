@@ -8,8 +8,15 @@ const abi = contract;
 
 function GroupCard(props){
     //alert(props.group.identity);
+    const navigate = useNavigate();
+
+    const handleGroupDetailClick = () => {
+        navigate(`/groupDetail`); ///${props.group.id}
+    };
+    
     return (
-        <div style={{height: "200px", width: "80%", background: "gray", color: "white", fontSize: "20px", padding: "10px"}} key={props.index}>
+        
+        <div style={{height: "300px", width: "80%", background: "gray", color: "white", fontSize: "20px", padding: "10px"}} key={props.index}>
         <div style={{marginBottom: "10px"}}>
             {`Group Name: ${props.groupInput}`}
         </div>
@@ -23,9 +30,14 @@ function GroupCard(props){
         <div>
             {`Members: `}
             <ul>
-                <p> some map functions</p>
+                <p> some map functions to list memebers</p>
             </ul>
         </div>
+
+        <div>
+            <button onClick={handleGroupDetailClick} className='cta-button mint-nft-button'>Group Details</button>
+        </div>
+
 
     </div>);
 
