@@ -31,8 +31,10 @@ export function GroupDetail(){
     const [interestRate, setInterestRate] = useState(0);
     const [inputRate, setInputRate] = useState(0);    
 
-    //setmoney part, only owner can do it
-
+    //setmonthlypayment part, only owner can do it
+    const [isSettingPayment, setIsSettingPayment] = useState(false);
+    const [monthlyMoney, setMonthlyMoney] = useState(0);
+    const [inputMoney, setInputMoney] = useState(0);    
 
     const handleAccountsChanged = (accounts) => {
         if (accounts.length > 0) {
@@ -139,6 +141,38 @@ export function GroupDetail(){
         }
     };
 
+    const getMonthlyPayment = async () => {
+        const { ethereum } = window;
+        if(ethereum) {
+            const provider = new ethers.BrowserProvider(ethereum);
+            const signer = await provider.getSigner();
+            if(currentAccount == null) return;
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            //alert(groupId);
+            let cur_money = await tradeContract.getMonthlyPayment(groupId);
+            setMonthlyMoney(cur_money);
+            //setIsSettingInterest(false);
+        } else {
+            console.log("Ethereum object does not exist");
+        }
+    };
+
+    const setMonthlyPayment = async () => {
+        const { ethereum } = window;
+        if(ethereum) {
+            const provider = new ethers.BrowserProvider(ethereum);
+            const signer = await provider.getSigner();
+            if(currentAccount == null) return;
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            await tradeContract.setMonthlyPaymentAmount(inputMoney, groupId);
+            let cur_money = await tradeContract.getMonthlyPayment(groupId);
+            setMonthlyMoney(cur_money);
+            setIsSettingPayment(false);
+        } else {
+            console.log("Ethereum object does not exist");
+        }
+    }
+
     useEffect(() => {
         const { ethereum } = window;
         checkWalletIsConnected();
@@ -146,6 +180,7 @@ export function GroupDetail(){
         checkUserAccount();
         getBalance();
         getInterest();
+        getMonthlyPayment();
         
         //console.log(interestRate);
         //alert(interestRate);
@@ -160,7 +195,7 @@ export function GroupDetail(){
         }
         setGroupId(searchParams.get('id'));
         setIdentity(searchParams.get('identity'));
-    }, [currentAccount,name,interestRate,balance,location.search])
+    }, [currentAccount,name,interestRate,monthlyMoney,balance,location.search])
 
     return (
         <div>
@@ -181,11 +216,11 @@ export function GroupDetail(){
                     </ul>
                 </div>
                 <div> Current Interest Rate is: {interestRate.toString()}%</div>
-                <div> Current Group Balance is: 10000</div>
+                <div> Everyone needs to pay is: {monthlyMoney.toString()}</div>
             </div>
             
             {identity === "1" && (
-                <div>
+                <div style={{ display: 'inline-block', marginRight: '20px' }}>
                     <button className='cta-button mint-nft-button' onClick={() => setIsSettingInterest(true) }>Set Interest Rate</button>
                     {isSettingInterest && (
                     <div>
@@ -194,9 +229,27 @@ export function GroupDetail(){
                     </div>
                     )}
                 </div>
+
+
             )}
+
+            {identity === "1" && (
+                <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                    <button className='cta-button mint-nft-button' onClick={() => setIsSettingPayment(true) }>Set Monthly Money</button>
+                        {isSettingPayment && (
+                        <div>
+                            <input type="number" placeholder="Monthly Money" value={inputMoney} onChange={e => setInputMoney(e.target.value)}/>
+                            <button onClick={setMonthlyPayment}>Confirm</button>
+                        </div>
+                        )}
+                </div>
+            )}               
+
             <br></br>
             <br></br>
+            <br></br>
+            <br></br>
+            
             <div>
             <button onClick={handleGoPrevious} className='cta-button mint-nft-button'>Back to UserInfo</button>
             </div>
