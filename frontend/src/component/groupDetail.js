@@ -28,7 +28,9 @@ export function GroupDetail(){
 
     //interest part
     const [isSettingInterest, setIsSettingInterest] = useState(false);
-    const [interestRate, setInterestRate] = useState(5);  
+    const [interestRate, setInterestRate] = useState(5);
+    const [inputRate, setInputRate] = useState(5);    
+    const [inputGroupId, setInputGroupId] = useState('');
 
     const handleAccountsChanged = (accounts) => {
         if (accounts.length > 0) {
@@ -110,8 +112,9 @@ export function GroupDetail(){
             const signer = await provider.getSigner();
             if(currentAccount == null) return;
             const tradeContract = new ethers.Contract(contractAddress, abi, signer);
-            let cur_rate = await tradeContract.setInterestRate(interestRate, groupId);
-            setInterestRate(cur_rate);
+            await tradeContract.setInterestRate(inputRate, inputGroupId);
+            //let cur_rate = await tradeContract.getInterestRate(inputGroupId);
+            setInterestRate(inputRate);//set(cur)
             setIsSettingInterest(false);
         } else {
             console.log("Ethereum object does not exist");
@@ -163,8 +166,8 @@ export function GroupDetail(){
                     <button className='cta-button mint-nft-button' onClick={() => setIsSettingInterest(true) }>Set Interest Rate</button>
                     {isSettingInterest && (
                     <div>
-                        <input type="number" placeholder="Interest Rate" value={interestRate} />
-                        <input type="number" placeholder="Group ID" value={groupId} />
+                        <input type="number" placeholder="Interest Rate" value={inputRate} onChange={e => setInputRate(e.target.value)}/>
+                        <input type="number" placeholder="Group ID" value={inputGroupId} onChange={e => setInputGroupId(e.target.value)} />
                         <button onClick={decideInterestRate}>Confirm</button>
                     </div>
                     )}
