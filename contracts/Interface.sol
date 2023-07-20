@@ -20,6 +20,7 @@ interface IGroupManager {
     function setPeriod(uint group, uint period) external;
     function getMonthlyPayment(uint group) external view returns (uint);
     function setMonthlyPayment(uint group, uint monthlyPayment) external;
+    function getInterestRate(uint group) external view returns (uint);
     function setInterestRate(uint group, uint interestRate) external;
     function openApplication(uint group) external;
     function closeApplication(uint group) external;

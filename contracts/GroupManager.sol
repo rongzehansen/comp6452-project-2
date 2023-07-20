@@ -55,6 +55,15 @@ contract GroupManager is IGroupManager {
         manager = msg.sender; // Set contract creator as manager
     }
     
+    event db_createGroup(
+        string name, 
+        address owner,       
+        Status status,
+        uint interestRate,
+        uint monthlyPayment,
+        uint period
+    );
+    
     function setAccountManager(address payable otherContractAddress) public groupManagerRestricted {
         accountManagerAddress = otherContractAddress;
         accountManagerContract = IAccountManager(accountManagerAddress);
@@ -73,7 +82,6 @@ contract GroupManager is IGroupManager {
         string memory name
     ) public accountManagerRestricted returns (uint) {
         Group storage g = groups[++numGroups];
-        //g.index = numGroups;
         g.name = name;
         Status memory s;
         s.voteOpen = false;
@@ -88,6 +96,7 @@ contract GroupManager is IGroupManager {
         g.status = s;
         addUser(user, numGroups);
         g.owner = g.users[g.maxUserIndex];
+        emit db_createGroup(g.name, user, g.status, g.interestRate, g.monthlyPayment, g.period);
         return numGroups;
     }
     
