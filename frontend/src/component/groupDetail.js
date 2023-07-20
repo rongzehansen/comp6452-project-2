@@ -24,13 +24,23 @@ export function GroupDetail(){
 
     const [currentAccount, setCurrentAccount] = useState(null);
     const [name, setName] = useState('');
+
+    //get balance num
     const [balance, setBalance] = useState(0);
 
-    //interest part
+    //setinterest part, only owner can do it 
     const [isSettingInterest, setIsSettingInterest] = useState(false);
-    const [interestRate, setInterestRate] = useState(5);
-    const [inputRate, setInputRate] = useState(5);    
-    const [inputGroupId, setInputGroupId] = useState('');
+    const [interestRate, setInterestRate] = useState(0);
+    const [inputRate, setInputRate] = useState(0);    
+
+    //setmonthlypayment part, only owner can do it
+    const [isSettingPayment, setIsSettingPayment] = useState(false);
+    const [monthlyMoney, setMonthlyMoney] = useState(0);
+    const [inputMoney, setInputMoney] = useState(0);    
+
+    //group member pay the monthly money
+
+
 
     const handleAccountsChanged = (accounts) => {
         if (accounts.length > 0) {
@@ -77,7 +87,7 @@ export function GroupDetail(){
                 
                 console.log("Create account");
                 let tradeTxn = await tradeContract.getUserInfo(currentAccount);
-                if(tradeTxn!="" || tradeTxn!=null) setName(tradeTxn);
+                if(tradeTxn!=="" || tradeTxn!=null) setName(tradeTxn);
             }
             else{
                 console.log("Ethereum object does not exist");
@@ -105,21 +115,87 @@ export function GroupDetail(){
 
       }
 
-      const decideInterestRate = async () => {
+      const getInterest = async () => {
         const { ethereum } = window;
         if(ethereum) {
             const provider = new ethers.BrowserProvider(ethereum);
             const signer = await provider.getSigner();
             if(currentAccount == null) return;
             const tradeContract = new ethers.Contract(contractAddress, abi, signer);
-            await tradeContract.setInterestRate(inputRate, inputGroupId);
-            //let cur_rate = await tradeContract.getInterestRate(inputGroupId);
-            setInterestRate(inputRate);//set(cur)
+            //alert(groupId);
+            let cur_rate = await tradeContract.getInterestRate(groupId);
+            setInterestRate(cur_rate);
+            //setIsSettingInterest(false);
+        } else {
+            console.log("Ethereum object does not exist");
+        }
+    };
+
+    const setInterest = async () => {
+        const { ethereum } = window;
+        if(ethereum) {
+            const provider = new ethers.BrowserProvider(ethereum);
+            const signer = await provider.getSigner();
+            if(currentAccount == null) return;
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            await tradeContract.setInterestRate(inputRate, groupId);
+            let cur_rate = await tradeContract.getInterestRate(groupId);
+            setInterestRate(cur_rate);
             setIsSettingInterest(false);
         } else {
             console.log("Ethereum object does not exist");
         }
     };
+
+    const getMonthlyPayment = async () => {
+        const { ethereum } = window;
+        if(ethereum) {
+            const provider = new ethers.BrowserProvider(ethereum);
+            const signer = await provider.getSigner();
+            if(currentAccount == null) return;
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            //alert(groupId);
+            let cur_money = await tradeContract.getMonthlyPayment(groupId);
+            setMonthlyMoney(cur_money);
+            //setIsSettingInterest(false);
+        } else {
+            console.log("Ethereum object does not exist");
+        }
+    };
+
+    const setMonthlyPayment = async () => {
+        const { ethereum } = window;
+        if(ethereum) {
+            const provider = new ethers.BrowserProvider(ethereum);
+            const signer = await provider.getSigner();
+            if(currentAccount == null) return;
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            await tradeContract.setMonthlyPaymentAmount(inputMoney, groupId);
+            let cur_money = await tradeContract.getMonthlyPayment(groupId);
+            setMonthlyMoney(cur_money);
+            setIsSettingPayment(false);
+        } else {
+            console.log("Ethereum object does not exist");
+        }
+    }
+
+    
+    
+    const makePayment = async () => {
+        const { ethereum } = window;
+        if(ethereum) {
+            const provider = new ethers.BrowserProvider(ethereum);
+            const signer = await provider.getSigner();
+            if(currentAccount == null) return;
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            
+            await tradeContract.monthlyPayment(groupId);
+        } else {
+            console.log("Ethereum object does not exist");
+        }
+    };
+    
+    
 
     useEffect(() => {
         const { ethereum } = window;
@@ -127,8 +203,11 @@ export function GroupDetail(){
         if(currentAccount)
         checkUserAccount();
         getBalance();
-        console.log(balance);
-        //alert(balance);
+        getInterest();
+        getMonthlyPayment();
+        
+        //console.log(interestRate);
+        //alert(interestRate);
         if (ethereum) {
             // Subscribe to accounts change
             ethereum.on('accountsChanged', handleAccountsChanged);
@@ -140,7 +219,7 @@ export function GroupDetail(){
         }
         setGroupId(searchParams.get('id'));
         setIdentity(searchParams.get('identity'));
-    }, [currentAccount,name,balance,location.search])
+    }, [currentAccount,name,interestRate,monthlyMoney,balance,location.search])
 
     return (
         <div>
@@ -149,32 +228,57 @@ export function GroupDetail(){
             <div style={{height: "300px", width: "80%", background: "gray", color: "white", fontSize: "20px", padding: "10px"}}>
             <div>
                 <div>Group ID: {groupId}</div>
-                <div>Identity: {identity ==0 ? "Member" : "Owner"}</div>
+                <div>Identity: {identity ===0 ? "Member" : "Owner"}</div>
             </div>
             <div>Your current balance is : {balance.toString()}</div>
                 <div>
                     {`Members: `}
                     <ul>
-                        <p> some functions to list memebers details</p>
+                        <div> some functions to list memebers details</div>
+                        <div> Member 1</div>
+                        <div> Member 2</div>
                     </ul>
                 </div>
-                <div> Current Interest Rate is: {interestRate}%</div>
+                <div> Current Interest Rate is: {interestRate.toString()}%</div>
+                <div> Everyone needs to pay is: {monthlyMoney.toString()}</div>
             </div>
             
             {identity === "1" && (
-                <div>
+                <div style={{ display: 'inline-block', marginRight: '20px' }}>
                     <button className='cta-button mint-nft-button' onClick={() => setIsSettingInterest(true) }>Set Interest Rate</button>
                     {isSettingInterest && (
                     <div>
                         <input type="number" placeholder="Interest Rate" value={inputRate} onChange={e => setInputRate(e.target.value)}/>
-                        <input type="number" placeholder="Group ID" value={inputGroupId} onChange={e => setInputGroupId(e.target.value)} />
-                        <button onClick={decideInterestRate}>Confirm</button>
+                        <button onClick={setInterest}>Confirm</button>
                     </div>
                     )}
                 </div>
+
+
             )}
+
+            {identity === "1" && (
+                <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                    <button className='cta-button mint-nft-button' onClick={() => setIsSettingPayment(true) }>Set Monthly Money Amount</button>
+                        {isSettingPayment && (
+                        <div>
+                            <input type="number" placeholder="Monthly Money" value={inputMoney} onChange={e => setInputMoney(e.target.value)}/>
+                            <button onClick={setMonthlyPayment}>Confirm</button>
+                        </div>
+                        )}
+                </div>
+            )}               
+
             <br></br>
             <br></br>
+            <br></br>
+
+            <button onClick={makePayment} className='cta-button mint-nft-button'>Pay the money</button>
+
+            <br></br>
+            <br></br>
+            <br></br>
+
             <div>
             <button onClick={handleGoPrevious} className='cta-button mint-nft-button'>Back to UserInfo</button>
             </div>
