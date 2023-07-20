@@ -24,6 +24,8 @@ export function GroupDetail(){
 
     const [currentAccount, setCurrentAccount] = useState(null);
     const [name, setName] = useState('');
+
+    //get balance num
     const [balance, setBalance] = useState(0);
 
     //setinterest part, only owner can do it 
@@ -35,6 +37,10 @@ export function GroupDetail(){
     const [isSettingPayment, setIsSettingPayment] = useState(false);
     const [monthlyMoney, setMonthlyMoney] = useState(0);
     const [inputMoney, setInputMoney] = useState(0);    
+
+    //group member pay the monthly money
+
+
 
     const handleAccountsChanged = (accounts) => {
         if (accounts.length > 0) {
@@ -81,7 +87,7 @@ export function GroupDetail(){
                 
                 console.log("Create account");
                 let tradeTxn = await tradeContract.getUserInfo(currentAccount);
-                if(tradeTxn!="" || tradeTxn!=null) setName(tradeTxn);
+                if(tradeTxn!=="" || tradeTxn!=null) setName(tradeTxn);
             }
             else{
                 console.log("Ethereum object does not exist");
@@ -173,6 +179,24 @@ export function GroupDetail(){
         }
     }
 
+    
+    
+    const makePayment = async () => {
+        const { ethereum } = window;
+        if(ethereum) {
+            const provider = new ethers.BrowserProvider(ethereum);
+            const signer = await provider.getSigner();
+            if(currentAccount == null) return;
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            
+            await tradeContract.monthlyPayment(groupId);
+        } else {
+            console.log("Ethereum object does not exist");
+        }
+    };
+    
+    
+
     useEffect(() => {
         const { ethereum } = window;
         checkWalletIsConnected();
@@ -204,7 +228,7 @@ export function GroupDetail(){
             <div style={{height: "300px", width: "80%", background: "gray", color: "white", fontSize: "20px", padding: "10px"}}>
             <div>
                 <div>Group ID: {groupId}</div>
-                <div>Identity: {identity ==0 ? "Member" : "Owner"}</div>
+                <div>Identity: {identity ===0 ? "Member" : "Owner"}</div>
             </div>
             <div>Your current balance is : {balance.toString()}</div>
                 <div>
@@ -235,7 +259,7 @@ export function GroupDetail(){
 
             {identity === "1" && (
                 <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                    <button className='cta-button mint-nft-button' onClick={() => setIsSettingPayment(true) }>Set Monthly Money</button>
+                    <button className='cta-button mint-nft-button' onClick={() => setIsSettingPayment(true) }>Set Monthly Money Amount</button>
                         {isSettingPayment && (
                         <div>
                             <input type="number" placeholder="Monthly Money" value={inputMoney} onChange={e => setInputMoney(e.target.value)}/>
@@ -248,8 +272,13 @@ export function GroupDetail(){
             <br></br>
             <br></br>
             <br></br>
+
+            <button onClick={makePayment} className='cta-button mint-nft-button'>Pay the money</button>
+
             <br></br>
-            
+            <br></br>
+            <br></br>
+
             <div>
             <button onClick={handleGoPrevious} className='cta-button mint-nft-button'>Back to UserInfo</button>
             </div>
