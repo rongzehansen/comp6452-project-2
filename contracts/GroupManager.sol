@@ -56,11 +56,35 @@ contract GroupManager is IGroupManager {
     }
     
     event db_createGroup(
+        uint index,
         string name, 
         address owner,       
         Status status,
         uint interestRate,
         uint monthlyPayment,
+        uint period,
+        uint timeCreated
+    );
+    
+    event db_updateStatus(
+        uint index,
+        bool voteOpen,
+        bool depositOpen,
+        bool applicationOpen
+    );
+    
+    event db_updateInterestRate(
+        uint index,
+        uint interestRate
+    );
+    
+    event db_updateMonthlyPayment(
+        uint index,
+        uint monthlyPayment
+    );
+    
+    event db_updatePeriod(
+        uint index,
         uint period
     );
     
@@ -96,7 +120,7 @@ contract GroupManager is IGroupManager {
         g.status = s;
         addUser(user, numGroups);
         g.owner = g.users[g.maxUserIndex];
-        emit db_createGroup(g.name, user, g.status, g.interestRate, g.monthlyPayment, g.period);
+        emit db_createGroup(numGroups, g.name, user, g.status, g.interestRate, g.monthlyPayment, g.period, block.timestamp);
         return numGroups;
     }
     
@@ -164,6 +188,7 @@ contract GroupManager is IGroupManager {
         
         groups[group].target = groups[group].users[index];
         groups[group].status.voteOpen = true;
+        emit db_updateStatus(group, groups[group].status.voteOpen, groups[group].status.depositOpen, groups[group].status.applicationOpen);
         vote(initiator, group, true);
     }
     
@@ -193,6 +218,7 @@ contract GroupManager is IGroupManager {
             }
             delete groups[group].target;
             groups[group].status.voteOpen = false;
+            emit db_updateStatus(group, groups[group].status.voteOpen, groups[group].status.depositOpen, groups[group].status.applicationOpen);
         }
     }
     
@@ -241,6 +267,7 @@ contract GroupManager is IGroupManager {
         //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         require(interestRate > 0, "Interest rate needs to be higher than 0");
         groups[group].interestRate = interestRate;
+        emit db_updateInterestRate(group, interestRate);
     }
     
     
@@ -259,6 +286,7 @@ contract GroupManager is IGroupManager {
         //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         require(period > 0, "Period needs to be greater than 0");
         groups[group].period = period;
+        emit db_updatePeriod(group, period);
     }
     
     
@@ -277,6 +305,7 @@ contract GroupManager is IGroupManager {
         //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         require(monthlyPayment > 0, "Monthly payment needs to be higher than 0");
         groups[group].monthlyPayment = monthlyPayment;
+        emit db_updateMonthlyPayment(group, monthlyPayment);
     }
     
     function openApplication(
@@ -286,6 +315,7 @@ contract GroupManager is IGroupManager {
         //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         
         groups[group].status.applicationOpen = true;
+        emit db_updateStatus(group, groups[group].status.voteOpen, groups[group].status.depositOpen, groups[group].status.applicationOpen);
     }
     
     function closeApplication(
@@ -295,6 +325,7 @@ contract GroupManager is IGroupManager {
         //require(msg.sender == groups[group].owner.userAddress, "You are not the owner of this group");
         
         groups[group].status.applicationOpen = false;
+        emit db_updateStatus(group, groups[group].status.voteOpen, groups[group].status.depositOpen, groups[group].status.applicationOpen);
         makeLoanTransfer(group);
     }
     
@@ -363,6 +394,7 @@ contract GroupManager is IGroupManager {
         
         if (hasEveryoneDeposited(group)) {
             groups[group].status.depositOpen = false;
+            emit db_updateStatus(group, groups[group].status.voteOpen, groups[group].status.depositOpen, groups[group].status.applicationOpen);
         }
         
         if (getBorrorwer(sender, group) != -1) {
@@ -467,6 +499,7 @@ contract GroupManager is IGroupManager {
         groups[group].status.voteOpen = false;
         groups[group].status.depositOpen = true;
         groups[group].status.applicationOpen = false;
+        emit db_updateStatus(group, groups[group].status.voteOpen, groups[group].status.depositOpen, groups[group].status.applicationOpen);
         for (uint i = 0; i <= groups[group].maxUserIndex; i++) {
             groups[group].users[i].hasDeposited = false;
         }
