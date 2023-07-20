@@ -4,7 +4,7 @@ import {Home} from './component/home';
 import {UserInfo} from './component/usersInfo';
 import {GroupDetail} from './component/groupDetail';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-export const contractAddress = "0xe418482d0EBA585428b7b0a24E4B7c60162D1094";
+export const contractAddress = "0x228ecf90bA6a4085593F174Ae19Aa2dfE93BE763";
 
 
 function App() {
