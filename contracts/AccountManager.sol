@@ -65,7 +65,12 @@ contract AccountManager {
         users[msg.sender].groupIdentity[temp.id].id = temp.id;
         users[msg.sender].groupIdentity[temp.id].identity = Identity.owner;
     }
-
+    function getInterestRate(uint groupId)public view returns(uint){
+        return groupManagerAddress.getInterestRate(groupId);
+    }
+    function getMonthlyPayment(uint groupId)public view returns(uint){
+        return groupManagerAddress.getMonthlyPayment(groupId);
+    }
     function voteExpel(uint256 groupId, bool result) public {
         groupManagerAddress.vote(msg.sender, groupId, result);
     }
@@ -193,10 +198,6 @@ contract AccountManager {
 
     //Return savings to members
     function returnSavings(uint256 groupId) public {
-        require(
-            bytes(users[msg.sender].name).length != 0,
-            "Account does not exist"
-        );
         require(
             users[msg.sender].groupIdentity[groupId].id != 0 &&
                 users[msg.sender].groupIdentity[groupId].identity ==
