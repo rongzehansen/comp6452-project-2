@@ -11,7 +11,8 @@ function GroupCard(props){
     const navigate = useNavigate();
 
     const handleGroupDetailClick = () => {
-        navigate(`/groupDetail`); ///${props.group.id}
+        navigate(`/groupDetail?id=${props.group.id}&identity=${props.group.identity}`);
+        
     };
     
     return (
@@ -26,16 +27,6 @@ function GroupCard(props){
         <div style={{marginBottom: "10px"}}>
             {`Identity: ${props.group.identity ==0 ? "Member" : "Owner"}`}
         </div>
-
-        <div>
-            {`Members: `}
-            <ul>
-                <p> some map functions to list memebers</p>
-            </ul>
-        </div>
-
-        
-
 
     </div>);
 
