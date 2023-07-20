@@ -15,8 +15,8 @@ function App() {
 
   useEffect(() => {
     const init = async () => {
-      
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const { ethereum } = window;
+      const provider = new ethers.BrowserProvider(ethereum);
       const signer = await provider.getSigner();
 
       // Initialize the GroupManager contract
@@ -25,6 +25,7 @@ function App() {
       
       groupManagerContract.on("db_createGroup", (from, value, event) => {
         console.log(from, value);
+        alert(event);
         console.log(event.blockNumber);
       });
       groupManagerContract.on("db_updateStatus", (from, value, event) => {
