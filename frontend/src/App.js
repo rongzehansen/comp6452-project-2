@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
 
 export const contractAddress = "0x228ecf90bA6a4085593F174Ae19Aa2dfE93BE763";
-export const groupManagerContractAddress = "0xbE70957C20914625a60040b7075C900C6756939f";
+export const groupManagerContractAddress = "0x68eC2AeD475fA9Ad7E6630C2164e4c482Ec79760";
 function App() {
 
   
