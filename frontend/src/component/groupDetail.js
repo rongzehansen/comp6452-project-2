@@ -351,18 +351,20 @@ export function GroupDetail(){
 
             <br></br>
             <br></br>
-            <br></br>
-
-            <button onClick={makePayment} className='cta-button mint-nft-button' style={{ display: 'inline-block', marginRight: '20px' }}>Pay the money</button>
-            <button onClick={applyBorrow} className='cta-button mint-nft-button' style={{ display: 'inline-block', marginRight: '20px' }}>Apply waitlist</button>
-            <button className='cta-button mint-nft-button' onClick={() => setIsRepaying(true) }>Repay Loan</button>
-                {isRepaying && (
-                    <div>
-                        <input type="number" placeholder="Repay Amount" value={repayAmount} onChange={e => setRepayAmount(e.target.value)}/>
-                        <button onClick={returnMoney}>Confirm</button>
-                    </div>
-                )}
-
+            <br></br>         
+            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                <button onClick={makePayment} className='cta-button mint-nft-button' style={{ marginRight: '20px' }}>Pay the money</button>
+                <button onClick={applyBorrow} className='cta-button mint-nft-button' style={{ marginRight: '20px' }}>Apply waitlist</button>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                    <button className='cta-button mint-nft-button' onClick={() => setIsRepaying(true)}>Repay Loan</button>
+                    {isRepaying && (
+                        <div>
+                            <input type="number" placeholder="Repay Amount" value={repayAmount} onChange={e => setRepayAmount(e.target.value)}/>
+                            <button onClick={returnMoney}>Confirm</button>
+                        </div>
+                    )}
+                </div>
+            </div>
             <br></br>
             <br></br>
             <br></br>
