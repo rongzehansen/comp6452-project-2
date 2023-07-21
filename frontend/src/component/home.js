@@ -6,6 +6,7 @@ import contract from '../contracts/contract.json'
 import { contractAddress, groupManagerContractAddress } from '../App';
 import groupManagerContractABI from '../contracts/groupManagerContractABI.json';
 const abi = contract;
+
 export function Home() {
   const navigate = useNavigate();
   const checkWalletIsConnected = async () => {
@@ -236,29 +237,36 @@ export function Home() {
           console.log("Ethereum object does not exist");
       }
     };
+    
 
     if (!name)
       return (
         
-        <div class="input-group mb-3">
-          <input onChange={handleInputChange} type="text" class="form-control" placeholder="Create Account" aria-label="Recipient's username" aria-describedby="button-addon2"/>
-          <button onClick={reportHandler} class="btn btn-outline-secondary" type="button" id="button-addon2">
-            Create Account
-          </button>
-        </div>
+          <div  class="input-group mb-3" >
+            
+            <input  onChange={handleInputChange} type="text" class="form-control" placeholder="Create Account" aria-label="Recipient's username" aria-describedby="button-addon2"/>
+            <button onClick={reportHandler} class="btn btn-outline-secondary" type="button" id="button-addon2">
+              Create Account
+            </button>
+          </div>
+        
       );
     else
       return (
         <div>
           <div>Welcome {name}</div>
-          <div class="input-group mb-3">
+          
+          <div class="input-group mb-3" style={{width:"500px",margin:"auto"}}>
           <input onChange={handlePaymentChange} type="text" class="form-control" placeholder="Payment amount" aria-label="Recipient's username" aria-describedby="button-addon2"/>
           <button onClick={paymentHandler} class="btn btn-outline-secondary" type="button" id="button-addon2">Pay</button>
+          
           </div>
           <br></br> 
-          <br></br>                    
+          <br></br>     
+          <div class="input-group mb-3" style={{width:"500px",margin:"auto"}}>         
           <input placeholder="Withdraw Amount" onChange={e => setWithdrawAmount(e.target.value)} class="form-control"/>
-          <button onClick={withdraw} className='cta-button mint-nft-button'>Withdraw</button>
+          <button onClick={withdraw} class="btn btn-outline-secondary">Withdraw</button>
+          </div>      
           <br></br> 
           <br></br> 
           <button onClick={navigateUser} className="btn btn-success" style={{ marginBottom: "10px" }}>
