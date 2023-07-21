@@ -301,6 +301,25 @@
 				"type": "uint256"
 			}
 		],
+		"name": "getBorrorwers",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "",
+				"type": "address[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			}
+		],
 		"name": "getInterestRate",
 		"outputs": [
 			{
