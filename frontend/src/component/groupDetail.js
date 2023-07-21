@@ -44,8 +44,6 @@ export function GroupDetail(){
     const [isVotingExpel, setIsVotingExpel] = useState(false);
     const [userAddress, setUserAddress] = useState('');
     const [voteResult, setVoteResult] = useState(null);
-    const [voteStatus, setVoteStatus] = useState('closed');
-    const [nowKicking, setNowKicking] = useState(null);
 
 
 
@@ -243,8 +241,6 @@ export function GroupDetail(){
             if(currentAccount == null) return;
             const tradeContract = new ethers.Contract(contractAddress, abi, signer);
             await tradeContract.startExpel(groupId, userAddress);
-            setVoteStatus('open');
-            setNowKicking(userAddress);
             setIsVotingExpel(true); 
         } else {
             console.log("Ethereum object does not exist");
@@ -259,8 +255,6 @@ export function GroupDetail(){
             if(currentAccount == null) return;
             const tradeContract = new ethers.Contract(contractAddress, abi, signer);
             await tradeContract.voteExpel(groupId, voteResult);
-            setVoteStatus('closed');
-            setNowKicking(null);
         } else {
             console.log("Ethereum object does not exist");
         }
@@ -299,7 +293,7 @@ export function GroupDetail(){
             <div style={{height: "300px", width: "80%", background: "gray", color: "white", fontSize: "20px", padding: "10px"}}>
             <div>
                 <div>Group ID: {groupId}</div>
-                <div>Identity: {identity ===0 ? "Member" : "Owner"}</div>
+                <div>Identity: {identity ==0 ? "Member" : "Owner"}</div>
             </div>
             <div>Your current balance is : {balance.toString()}</div>
                 <div>
