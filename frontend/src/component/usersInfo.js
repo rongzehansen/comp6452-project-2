@@ -7,6 +7,7 @@ import {contractAddress} from '../App'
 const abi = contract;
 
 function GroupCard(props){
+    
     //alert(props.group.identity);
     const navigate = useNavigate();
 
