@@ -89,6 +89,8 @@ contract AccountManager {
                 users[userAddress].groupInfo.pop();
             }
         }
+        users[userAddress].groupIdentity[groupId].id=0;
+        users[userAddress].groupIdentity[groupId].identity=Identity.member;
     }
     function repay(uint groupId,uint256 amount) public haveAccount{
         require(users[msg.sender].balance >= amount, "Insufficient funds");
