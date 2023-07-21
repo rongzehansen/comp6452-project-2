@@ -52,6 +52,10 @@ export function GroupDetail(){
     // display who is the borrower
     const [borrower, setBorrower] = useState('');
 
+    //withdraw, get wei back to metamask
+    const [isWithdrawing, setIsWithdrawing] = useState(false);
+    const [withdrawAmount, setWithdrawAmount] = useState(0);
+
 
 
     const handleAccountsChanged = (accounts) => {
@@ -332,6 +336,31 @@ export function GroupDetail(){
         }
     };
     
+    const returnSaving = async () => {
+        const { ethereum } = window;
+        if(ethereum) {
+            const provider = new ethers.BrowserProvider(ethereum);
+            const signer = await provider.getSigner();
+            if(currentAccount == null) return;
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            await tradeContract.returnSavings(groupId);
+        } else {
+            console.log("Ethereum object does not exist");
+        }
+    };
+    
+    const withdraw = async () => {
+        const { ethereum } = window;
+        if(ethereum) {
+            const provider = new ethers.BrowserProvider(ethereum);
+            const signer = await provider.getSigner();
+            if(currentAccount == null) return;
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            await tradeContract.withdraw(withdrawAmount);
+        } else {
+            console.log("Ethereum object does not exist");
+        }
+    };
 
     useEffect(() => {
         const { ethereum } = window;
@@ -401,7 +430,13 @@ export function GroupDetail(){
                 <div style={{ display: 'inline-block', marginRight: '20px' }}>
                     <button className='cta-button mint-nft-button' onClick={closeApplication}>Close Borrow Application</button>
                 </div>
-            )}                  
+            )}   
+
+            {identity === "1" && (
+                <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                    <button className='cta-button mint-nft-button' onClick={returnSaving}>Return Saving</button>
+                </div>
+            )}    
 
             <br></br>
             <br></br>
@@ -409,7 +444,7 @@ export function GroupDetail(){
             <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                 <button onClick={makePayment} className='cta-button mint-nft-button' style={{ marginRight: '20px' }}>Pay the money</button>
                 <button onClick={applyBorrow} className='cta-button mint-nft-button' style={{ marginRight: '20px' }}>Apply waitlist</button>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                <div style={{ display: 'inline-block', marginRight: '20px' }}>
                     <button className='cta-button mint-nft-button' onClick={() => setIsRepaying(true)}>Repay Loan</button>
                     {isRepaying && (
                         <div>
@@ -417,6 +452,16 @@ export function GroupDetail(){
                             <button onClick={returnMoney}>Confirm</button>
                         </div>
                     )}
+                </div>
+
+                <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                <button className='cta-button mint-nft-button' onClick={() => setIsWithdrawing(true)}>Withdraw</button>
+                {isWithdrawing && (
+                    <div>
+                        <input type="number" placeholder="Withdraw Amount" value={withdrawAmount} onChange={e => setWithdrawAmount(e.target.value)}/>
+                        <button onClick={withdraw}>Confirm</button>
+                    </div>
+                )}
                 </div>
             </div>
             <br></br>
@@ -450,6 +495,8 @@ export function GroupDetail(){
             <br></br>
             <br></br>
             <br></br>
+
+
 
             <div>
             <button onClick={handleGoPrevious} className='cta-button mint-nft-button'>Back to UserInfo</button>
