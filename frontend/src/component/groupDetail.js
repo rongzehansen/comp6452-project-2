@@ -38,7 +38,14 @@ export function GroupDetail(){
     const [monthlyMoney, setMonthlyMoney] = useState(0);
     const [inputMoney, setInputMoney] = useState(0);    
 
-    //group member pay the monthly money
+    //group member pay the monthly money, done
+    //group member start a kick vote and they will vote yes or no
+    const [isStartingExpel, setIsStartingExpel] = useState(false);
+    const [isVotingExpel, setIsVotingExpel] = useState(false);
+    const [userAddress, setUserAddress] = useState('');
+    const [voteResult, setVoteResult] = useState(null);
+    const [voteStatus, setVoteStatus] = useState('closed');
+    const [nowKicking, setNowKicking] = useState(null);
 
 
 
@@ -227,6 +234,37 @@ export function GroupDetail(){
         </div>);
 
     }
+
+    const startExpel = async () => {
+        const { ethereum } = window;
+        if(ethereum) {
+            const provider = new ethers.BrowserProvider(ethereum);
+            const signer = await provider.getSigner();
+            if(currentAccount == null) return;
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            await tradeContract.startExpel(groupId, userAddress);
+            setVoteStatus('open');
+            setNowKicking(userAddress);
+            setIsVotingExpel(true); 
+        } else {
+            console.log("Ethereum object does not exist");
+        }
+    };
+    
+    const voteExpel = async () => {
+        const { ethereum } = window;
+        if(ethereum) {
+            const provider = new ethers.BrowserProvider(ethereum);
+            const signer = await provider.getSigner();
+            if(currentAccount == null) return;
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            await tradeContract.voteExpel(groupId, voteResult);
+            setVoteStatus('closed');
+            setNowKicking(null);
+        } else {
+            console.log("Ethereum object does not exist");
+        }
+    };
     
     
 
@@ -295,6 +333,35 @@ export function GroupDetail(){
             <br></br>
 
             <button onClick={makePayment} className='cta-button mint-nft-button'>Pay the money</button>
+
+            <br></br>
+            <br></br>
+            <br></br>
+
+            <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                <button className='cta-button mint-nft-button' onClick={() => setIsStartingExpel(true) } disabled={isVotingExpel}>Start Expel</button>
+                {isStartingExpel && (
+                <div>
+                    <input type="text" placeholder="User Address" value={userAddress} onChange={e => setUserAddress(e.target.value)}/>
+                    <button onClick={startExpel}>Confirm</button>
+                </div>
+                )}
+        </div>
+
+            <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                <button className='cta-button mint-nft-button' onClick={() => setIsVotingExpel(true) } disabled={!isStartingExpel}>Vote Expel</button>
+                {isVotingExpel && (
+                <div>
+                    <label>
+                        <input type="radio" value={true} checked={voteResult === true} onChange={e => setVoteResult(true)}/> Yes
+                    </label>
+                    <label>
+                        <input type="radio" value={false} checked={voteResult === false} onChange={e => setVoteResult(false)}/> No
+                    </label>
+                    <button onClick={voteExpel}>Confirm</button>
+                </div>
+                )}
+            </div>
 
             <br></br>
             <br></br>
