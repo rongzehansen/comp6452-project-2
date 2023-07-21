@@ -239,9 +239,10 @@ export function Home() {
 
     if (!name)
       return (
-        <div>
-          <input onChange={handleInputChange} class="form-control"/>
-          <button onClick={reportHandler} className='cta-button mint-nft-button'>
+        
+        <div class="input-group mb-3">
+          <input onChange={handleInputChange} type="text" class="form-control" placeholder="Create Account" aria-label="Recipient's username" aria-describedby="button-addon2"/>
+          <button onClick={reportHandler} class="btn btn-outline-secondary" type="button" id="button-addon2">
             Create Account
           </button>
         </div>
@@ -250,8 +251,10 @@ export function Home() {
       return (
         <div>
           <div>Welcome {name}</div>
-          <input placeholder="Payment Amount" onChange={handlePaymentChange} class="form-control"/>
-          <button onClick={paymentHandler} className='cta-button mint-nft-button'>Pay</button>
+          <div class="input-group mb-3">
+          <input onChange={handlePaymentChange} type="text" class="form-control" placeholder="Payment amount" aria-label="Recipient's username" aria-describedby="button-addon2"/>
+          <button onClick={paymentHandler} class="btn btn-outline-secondary" type="button" id="button-addon2">Pay</button>
+          </div>
           <br></br> 
           <br></br>                    
           <input placeholder="Withdraw Amount" onChange={e => setWithdrawAmount(e.target.value)} class="form-control"/>
