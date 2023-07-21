@@ -45,6 +45,10 @@ export function GroupDetail(){
     const [userAddress, setUserAddress] = useState('');
     const [voteResult, setVoteResult] = useState(null);
 
+    //return the money to group account
+    const [repayAmount, setRepayAmount] = useState(0); 
+    const [isRepaying, setIsRepaying] = useState(false);
+
 
 
     const handleAccountsChanged = (accounts) => {
@@ -184,8 +188,6 @@ export function GroupDetail(){
         }
     }
 
-    
-    
     const makePayment = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -260,7 +262,32 @@ export function GroupDetail(){
         }
     };
     
-    
+    const applyBorrow = async () => {
+        const { ethereum } = window;
+        if(ethereum) {
+            const provider = new ethers.BrowserProvider(ethereum);
+            const signer = await provider.getSigner();
+            if(currentAccount == null) return;
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            await tradeContract.applyBorrow(groupId);
+        } else {
+            console.log("Ethereum object does not exist");
+        }
+    };
+
+    const returnMoney = async () => {
+        const { ethereum } = window;
+        if(ethereum) {
+            const provider = new ethers.BrowserProvider(ethereum);
+            const signer = await provider.getSigner();
+            if(currentAccount == null) return;
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            await tradeContract.repay(groupId, repayAmount);
+            setIsRepaying(false);
+        } else {
+            console.log("Ethereum object does not exist");
+        }
+    };
 
     useEffect(() => {
         const { ethereum } = window;
@@ -326,7 +353,15 @@ export function GroupDetail(){
             <br></br>
             <br></br>
 
-            <button onClick={makePayment} className='cta-button mint-nft-button'>Pay the money</button>
+            <button onClick={makePayment} className='cta-button mint-nft-button' style={{ display: 'inline-block', marginRight: '20px' }}>Pay the money</button>
+            <button onClick={applyBorrow} className='cta-button mint-nft-button' style={{ display: 'inline-block', marginRight: '20px' }}>Apply waitlist</button>
+            <button className='cta-button mint-nft-button' onClick={() => setIsRepaying(true) }>Repay Loan</button>
+                {isRepaying && (
+                    <div>
+                        <input type="number" placeholder="Repay Amount" value={repayAmount} onChange={e => setRepayAmount(e.target.value)}/>
+                        <button onClick={returnMoney}>Confirm</button>
+                    </div>
+                )}
 
             <br></br>
             <br></br>
