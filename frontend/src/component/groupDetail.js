@@ -49,6 +49,9 @@ export function GroupDetail(){
     const [repayAmount, setRepayAmount] = useState(0); 
     const [isRepaying, setIsRepaying] = useState(false);
 
+    // display who is the borrower
+    const [borrower, setBorrower] = useState('');
+
 
 
     const handleAccountsChanged = (accounts) => {
@@ -315,6 +318,21 @@ export function GroupDetail(){
         }
     };
 
+    const getBorrower = async () => {
+        const { ethereum } = window;
+        if(ethereum) {
+            const provider = new ethers.BrowserProvider(ethereum);
+            const signer = await provider.getSigner();
+            if(currentAccount == null) return;
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            let borrower_address = await tradeContract.getBorrowers(groupId);
+            setBorrower(borrower_address);
+        } else {
+            console.log("Ethereum object does not exist");
+        }
+    };
+    
+
     useEffect(() => {
         const { ethereum } = window;
         checkWalletIsConnected();
@@ -323,7 +341,7 @@ export function GroupDetail(){
         getBalance();
         getInterest();
         getMonthlyPayment();
-        
+        getBorrower();
         //console.log(interestRate);
         //alert(interestRate);
         if (ethereum) {
@@ -354,11 +372,11 @@ export function GroupDetail(){
                     <ul>
                         <div> some functions to list memebers details</div>
                         <div> Member 1</div>
-                        <div> Member 2</div>
                     </ul>
                 </div>
                 <InputComponent/>
                 <div> Everyone needs to pay is: {monthlyMoney.toString()}</div>
+                <div>Borrower: {borrower.toString()}</div>
             </div>
 
             {identity === "1" && (
