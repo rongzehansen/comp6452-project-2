@@ -240,7 +240,7 @@ export function Home() {
     if (!name)
       return (
         <div>
-          <input onChange={handleInputChange} />
+          <input onChange={handleInputChange} class="form-control"/>
           <button onClick={reportHandler} className='cta-button mint-nft-button'>
             Create Account
           </button>
@@ -250,15 +250,15 @@ export function Home() {
       return (
         <div>
           <div>Welcome {name}</div>
-          <input placeholder="Payment Amount" onChange={handlePaymentChange} />
+          <input placeholder="Payment Amount" onChange={handlePaymentChange} class="form-control"/>
           <button onClick={paymentHandler} className='cta-button mint-nft-button'>Pay</button>
           <br></br> 
           <br></br>                    
-          <input placeholder="Withdraw Amount" onChange={e => setWithdrawAmount(e.target.value)}/>
+          <input placeholder="Withdraw Amount" onChange={e => setWithdrawAmount(e.target.value)} class="form-control"/>
           <button onClick={withdraw} className='cta-button mint-nft-button'>Withdraw</button>
           <br></br> 
           <br></br> 
-          <button onClick={navigateUser} className='cta-button mint-nft-button' style={{ marginBottom: "10px" }}>
+          <button onClick={navigateUser} className="btn btn-success" style={{ marginBottom: "10px" }}>
             User info
           </button>
         </div>
@@ -277,7 +277,7 @@ export function Home() {
 
   return (
     <div className='main-app'>
-      <h1>6452 Assignment 2</h1>
+      <h1 className="text-primary">6452 Assignment 2</h1>
       <div>
         {currentAccount ? createSection() : connectWalletButton()}
       </div>
