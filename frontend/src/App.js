@@ -7,7 +7,7 @@ import { GroupDetail } from './component/groupDetail';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
 
-export const contractAddress = "0x2a6b403e6BC43247397336930F6D6CBe82451805";
+export const contractAddress = "0xf30fa15fB2e1E51ed1de5ec8A6f867dA5e673f42";
 export const groupManagerContractAddress = "0x99746867044a055525D7EB8DA37AC93Dfa4491b9";
 function App() {
 
