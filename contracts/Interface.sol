@@ -14,6 +14,7 @@ interface IGroupManager {
     function createGroup(address user, string memory name) external returns (uint);
     function addUser(address user, uint group) external;
     //function removeUser(address user,uint group) external;
+    function getBorrorwers(uint group) external view returns (address[] memory);
     function voteDismiss(address initiator, address target, uint group) external;
     function vote(address user, uint group, bool result) external;
     function getPeriod(uint group) external view returns (uint);
@@ -30,5 +31,4 @@ interface IGroupManager {
     function makeTermDeposit(address sender, uint group) external payable;
     function returnSavings(uint group) external returns (address[] memory users, uint[] memory savings);
     function reset(uint group) external;
-    
 }

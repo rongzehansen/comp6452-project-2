@@ -169,6 +169,17 @@ contract GroupManager is IGroupManager {
         accountManagerContract.leaveGroup(group, user);
     }
     
+    function getBorrorwers(
+        uint group
+    ) public accountManagerRestricted view returns (address[] memory) {
+        require(0 < group && group <= numGroups, "Invalid group index");
+        address[] memory borrowers = new address[](groups[group].borrowers.length);
+        for (uint i = 0; i < groups[group].borrowers.length; i++) {
+            borrowers[i] = groups[group].borrowers[i].userAddress;
+        }
+        return borrowers;
+    }
+    
     function voteDismiss(
         address initiator,
         address target,
