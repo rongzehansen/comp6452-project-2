@@ -75,6 +75,9 @@ contract AccountManager {
         groupManagerAddress.vote(msg.sender, groupId, result);
     }
 
+    function getBorrowers(uint groupId) public view  returns(address[] memory){
+        return groupManagerAddress.getBorrorwers(groupId);
+    }
     //Start a expel event
     function startExpel(uint256 groupId, address userAddress) public {
         groupManagerAddress.voteDismiss(msg.sender, userAddress, groupId);

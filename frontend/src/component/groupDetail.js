@@ -218,7 +218,7 @@ export function GroupDetail(){
             setIsSettingInterest(false);
         }
         if(isSettingInterest==false && identity!==0) return(<div onClick={()=>setIsSettingInterest(true)}>
-            Current Interest Rate is: {inputRate}
+            Current Interest Rate is: {interestRate.toString()}
         </div>);
         return (<div onBlur={()=>handleBlur()}>
             <div> Current Interest Rate is:</div>
