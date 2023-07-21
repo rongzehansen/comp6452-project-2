@@ -59,7 +59,7 @@ export function Home(){
     const [currentAccount, setCurrentAccount] = useState(null);
     const [name, setName] = useState('');
     const [input, setInput] = useState('');
-
+    const [params, setParams] = useState([]);
     const connectWalletHandler = async () => { 
         const { ethereum } = window;
         if(!ethereum){
@@ -69,6 +69,7 @@ export function Home(){
         try{
             const accounts = await ethereum.request({method: 'eth_requestAccounts'});
             console.log("Account Found! Address is：", accounts[0]);
+            if(currentAccount && currentAccount == accounts[0]) return;
             setCurrentAccount(accounts[0]);
         }
         catch(err){
@@ -110,6 +111,17 @@ export function Home(){
     )
     }
     const init = async () => {
+        function checkParam(list1,list2){
+            if(list1.length!==list2.length) return false;
+            for(let i=0;i<list1.length;i++){
+                if(i=== 7 || i===8) continue;
+                if(list1[i]!==list2[i]) {
+                    alert(i.toString() +" "+ list1[i]+" "+list2[i]);
+                    return false;
+                }
+            }
+            return true;
+        }
         const { ethereum } = window;
         if(!ethereum){
           console.log("Please install the Metamask Wallet!");
@@ -124,7 +136,12 @@ export function Home(){
         //setGroupManagerContract(groupManagerContract);
   
         groupManagerContract.on("db_createGroup", (...args) => {
-          console.log(args);
+        if(!checkParam(args,params)){
+            alert(args);
+            setParams(args);
+            console.log(args);
+        }
+          
         });
         groupManagerContract.on("db_updateStatus", (...args) => {
           console.log(args);
@@ -139,12 +156,13 @@ export function Home(){
           console.log(args);
         });
         return () => {
-          groupManagerContract.removeAllListeners("db_createGroup");
-          groupManagerContract.removeAllListeners("db_updateStatus");
-          groupManagerContract.removeAllListeners("db_updateInterestRate");
-          groupManagerContract.removeAllListeners("db_updateMonthlyPayment");
-          groupManagerContract.removeAllListeners("db_updatePeriod");
-        };
+            groupManagerContract.removeAllListeners("db_createGroup");
+            groupManagerContract.removeAllListeners("db_updateStatus");
+            groupManagerContract.removeAllListeners("db_updateInterestRate");
+            groupManagerContract.removeAllListeners("db_updateMonthlyPayment");
+            groupManagerContract.removeAllListeners("db_updatePeriod");
+          };
+        
       }
 
     function createSection() {
