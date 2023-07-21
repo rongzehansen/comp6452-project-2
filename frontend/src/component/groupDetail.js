@@ -289,6 +289,32 @@ export function GroupDetail(){
         }
     };
 
+    const resetMonthlyEvent = async () => {
+        const { ethereum } = window;
+        if(ethereum) {
+            const provider = new ethers.BrowserProvider(ethereum);
+            const signer = await provider.getSigner();
+            if(currentAccount == null) return;
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            await tradeContract.resetMonthlyEvent(groupId);
+        } else {
+            console.log("Ethereum object does not exist");
+        }
+    };
+
+    const closeApplication = async () => {
+        const { ethereum } = window;
+        if(ethereum) {
+            const provider = new ethers.BrowserProvider(ethereum);
+            const signer = await provider.getSigner();
+            if(currentAccount == null) return;
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            await tradeContract.closeApplication(groupId);
+        } else {
+            console.log("Ethereum object does not exist");
+        }
+    };
+
     useEffect(() => {
         const { ethereum } = window;
         checkWalletIsConnected();
@@ -334,8 +360,6 @@ export function GroupDetail(){
                 <InputComponent/>
                 <div> Everyone needs to pay is: {monthlyMoney.toString()}</div>
             </div>
-            
-            
 
             {identity === "1" && (
                 <div style={{ display: 'inline-block', marginRight: '20px' }}>
@@ -347,7 +371,19 @@ export function GroupDetail(){
                         </div>
                         )}
                 </div>
-            )}               
+            )}
+
+            {identity === "1" && (
+                <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                    <button className='cta-button mint-nft-button' onClick={resetMonthlyEvent}>Reset Monthly Event</button>
+                </div>
+            )}     
+
+            {identity === "1" && (
+                <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                    <button className='cta-button mint-nft-button' onClick={closeApplication}>Close Borrow Application</button>
+                </div>
+            )}                  
 
             <br></br>
             <br></br>
@@ -365,7 +401,6 @@ export function GroupDetail(){
                     )}
                 </div>
             </div>
-            <br></br>
             <br></br>
             <br></br>
 
