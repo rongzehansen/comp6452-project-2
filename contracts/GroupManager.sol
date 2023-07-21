@@ -207,7 +207,7 @@ contract GroupManager is IGroupManager {
         uint numYes = 0;
         if (hasEveryoneVoted(group)) {
             for (uint i = 1; i <= groups[group].maxUserIndex; i++) {
-                if (groups[group].users[i].vote) {
+                if (groups[group].users[i].vote && groups[group].users[i].userAddress != address(0)) {
                     numYes++;
                 }
                 groups[group].users[i].vote = false;
@@ -402,7 +402,7 @@ contract GroupManager is IGroupManager {
             require(accountManagerContract.getBalance(u.userAddress) >= amount * (groups[group].numUsers - 1), "You do not have sufficient amount of money to release");
             for (uint i = 1; i <= groups[group].maxUserIndex; i++) {
                 address recipient = groups[group].users[i].userAddress;
-                if (recipient != u.userAddress) {
+                if (recipient != u.userAddress && recipient != address(0)) {
                     // external call
                     accountManagerContract.releaseFunds(u.userAddress, recipient, amount);
                 }
@@ -430,8 +430,10 @@ contract GroupManager is IGroupManager {
     ) private view returns(bool) {
         require(0 < group && group <= numGroups, "Invalid group index");
         for (uint i = 1; i <= groups[group].maxUserIndex; i++) {
-            if (!groups[group].users[i].hasVoted && groups[group].users[i].userAddress != groups[group].target.userAddress) {
-                return false;
+            if (groups[group].users[i].userAddress != address(0)) {
+                if (!groups[group].users[i].hasVoted && groups[group].users[i].userAddress != groups[group].target.userAddress) {
+                    return false;
+                }
             }
         }
         return true;
@@ -442,8 +444,10 @@ contract GroupManager is IGroupManager {
     ) private view returns(bool) {
         require(0 < group && group <= numGroups, "Invalid group index");
         for (uint i = 1; i <= groups[group].maxUserIndex; i++) {
-            if (!groups[group].users[i].hasDeposited) {
-                return false;
+            if (groups[group].users[i].userAddress != address(0)) {
+                if (!groups[group].users[i].hasDeposited) {
+                    return false;
+                }
             }
         }
         return true;
