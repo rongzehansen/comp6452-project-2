@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import contract from '../contracts/contract.json'
 import {contractAddress} from '../App'
+import logo from '../static/arrow-back-3783.png';
 const abi = contract;
 
 
@@ -51,11 +52,6 @@ export function GroupDetail(){
 
     // display who is the borrower
     const [borrower, setBorrower] = useState('');
-
-    //withdraw, get wei back to metamask
-    const [isWithdrawing, setIsWithdrawing] = useState(false);
-    const [withdrawAmount, setWithdrawAmount] = useState(0);
-
 
 
     const handleAccountsChanged = (accounts) => {
@@ -348,19 +344,6 @@ export function GroupDetail(){
             console.log("Ethereum object does not exist");
         }
     };
-    
-    const withdraw = async () => {
-        const { ethereum } = window;
-        if(ethereum) {
-            const provider = new ethers.BrowserProvider(ethereum);
-            const signer = await provider.getSigner();
-            if(currentAccount == null) return;
-            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
-            await tradeContract.withdraw(withdrawAmount);
-        } else {
-            console.log("Ethereum object does not exist");
-        }
-    };
 
     useEffect(() => {
         const { ethereum } = window;
@@ -404,7 +387,7 @@ export function GroupDetail(){
                     </ul>
                 </div>
                 <InputComponent/>
-                <div> Everyone needs to pay is: {monthlyMoney.toString()}</div>
+                <div> Everyone needs to deposit: {monthlyMoney.toString()}</div>
                 <div>Borrower: {borrower.toString()}</div>
             </div>
 
@@ -442,7 +425,7 @@ export function GroupDetail(){
             <br></br>
             <br></br>         
             <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                <button onClick={makePayment} className='cta-button mint-nft-button' style={{ marginRight: '20px' }}>Pay the money</button>
+                <button onClick={makePayment} className='cta-button mint-nft-button' style={{ marginRight: '20px' }}>Make Term (Monthly) Deposit</button>
                 <button onClick={applyBorrow} className='cta-button mint-nft-button' style={{ marginRight: '20px' }}>Apply waitlist</button>
                 <div style={{ display: 'inline-block', marginRight: '20px' }}>
                     <button className='cta-button mint-nft-button' onClick={() => setIsRepaying(true)}>Repay Loan</button>
@@ -454,21 +437,12 @@ export function GroupDetail(){
                     )}
                 </div>
 
-                <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                <button className='cta-button mint-nft-button' onClick={() => setIsWithdrawing(true)}>Withdraw</button>
-                {isWithdrawing && (
-                    <div>
-                        <input type="number" placeholder="Withdraw Amount" value={withdrawAmount} onChange={e => setWithdrawAmount(e.target.value)}/>
-                        <button onClick={withdraw}>Confirm</button>
-                    </div>
-                )}
-                </div>
             </div>
             <br></br>
             <br></br>
 
             <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                <button className='cta-button mint-nft-button' onClick={() => setIsStartingExpel(true) } disabled={isVotingExpel}>Start Expel</button>
+                <button className='cta-button mint-nft-button' onClick={() => setIsStartingExpel(true) } disabled={isVotingExpel}>Initiate Member Dismissal</button>
                 {isStartingExpel && (
                 <div>
                     <input type="text" placeholder="User Address" value={userAddress} onChange={e => setUserAddress(e.target.value)}/>
@@ -478,7 +452,7 @@ export function GroupDetail(){
         </div>
 
             <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                <button className='cta-button mint-nft-button' onClick={() => setIsVotingExpel(true) } disabled={!isStartingExpel}>Vote Expel</button>
+                <button className='cta-button mint-nft-button' onClick={() => setIsVotingExpel(true) } disabled={!isStartingExpel}>Vote</button>
                 {isVotingExpel && (
                 <div>
                     <label>
@@ -499,7 +473,7 @@ export function GroupDetail(){
 
 
             <div>
-            <button onClick={handleGoPrevious} className='cta-button mint-nft-button'>Back to UserInfo</button>
+                <img src={logo} onClick={handleGoPrevious} style={{cursor: "pointer"}}  width="50" height="50"/>
             </div>
 
         </div>

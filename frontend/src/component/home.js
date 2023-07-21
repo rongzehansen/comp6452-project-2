@@ -181,6 +181,10 @@ export function Home() {
 
   }
 
+  //withdraw, get wei back to metamask
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
+  const [withdrawAmount, setWithdrawAmount] = useState(0);
+
   function createSection() {
     const handleInputChange = (event) => {
       setInput(event.target.value);
@@ -220,6 +224,19 @@ export function Home() {
       }
     }
 
+    const withdraw = async () => {
+      const { ethereum } = window;
+      if(ethereum) {
+          const provider = new ethers.BrowserProvider(ethereum);
+          const signer = await provider.getSigner();
+          if(currentAccount == null) return;
+          const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+          await tradeContract.withdraw(withdrawAmount);
+      } else {
+          console.log("Ethereum object does not exist");
+      }
+    };
+
     if (!name)
       return (
         <div>
@@ -234,11 +251,13 @@ export function Home() {
         <div>
           <div>Welcome {name}</div>
           <input placeholder="Payment Amount" onChange={handlePaymentChange} />
-          <button onClick={paymentHandler} className='cta-button mint-nft-button'>
-            Pay
-          </button>
-          <br></br>
-          <br></br>
+          <button onClick={paymentHandler} className='cta-button mint-nft-button'>Pay</button>
+          <br></br> 
+          <br></br>                    
+          <input placeholder="Withdraw Amount" onChange={e => setWithdrawAmount(e.target.value)}/>
+          <button onClick={withdraw} className='cta-button mint-nft-button'>Withdraw</button>
+          <br></br> 
+          <br></br> 
           <button onClick={navigateUser} className='cta-button mint-nft-button' style={{ marginBottom: "10px" }}>
             User info
           </button>
