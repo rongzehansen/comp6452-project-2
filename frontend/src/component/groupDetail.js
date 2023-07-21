@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect,useRef  } from 'react';
 import { useState } from 'react';
 import { ethers } from 'ethers';
 import { useNavigate } from 'react-router-dom';
@@ -194,6 +194,39 @@ export function GroupDetail(){
             console.log("Ethereum object does not exist");
         }
     };
+    const InputComponent=()=>{
+        const handleBlur = () => {
+            // Wait for 200ms before handling the blur event
+            setTimeout(() => {
+                setIsSettingInterest(false);
+            }, 200);
+        }
+        const changeStatus=async ()=>{
+            const { ethereum } = window;
+            if(ethereum) {
+                const provider = new ethers.BrowserProvider(ethereum);
+                const signer = await provider.getSigner();
+                if(currentAccount == null) return;
+                const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+                await tradeContract.setInterestRate(inputRate, groupId);
+                let cur_rate = await tradeContract.getInterestRate(groupId);
+                setInterestRate(cur_rate);
+                
+            } else {
+                console.log("Ethereum object does not exist");
+            }
+            setIsSettingInterest(false);
+        }
+        if(isSettingInterest==false && identity!==0) return(<div onClick={()=>setIsSettingInterest(true)}>
+            Current Interest Rate is: {inputRate}
+        </div>);
+        return (<div onBlur={()=>handleBlur()}>
+            <div> Current Interest Rate is:</div>
+            <input autoFocus  type="number" placeholder="Interest Rate" value={inputRate} onChange={e => setInputRate(e.target.value)} />
+            <button onClick={changeStatus}>Confirm</button>
+        </div>);
+
+    }
     
     
 
@@ -239,23 +272,11 @@ export function GroupDetail(){
                         <div> Member 2</div>
                     </ul>
                 </div>
-                <div> Current Interest Rate is: {interestRate.toString()}%</div>
+                <InputComponent/>
                 <div> Everyone needs to pay is: {monthlyMoney.toString()}</div>
             </div>
             
-            {identity === "1" && (
-                <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                    <button className='cta-button mint-nft-button' onClick={() => setIsSettingInterest(true) }>Set Interest Rate</button>
-                    {isSettingInterest && (
-                    <div>
-                        <input type="number" placeholder="Interest Rate" value={inputRate} onChange={e => setInputRate(e.target.value)}/>
-                        <button onClick={setInterest}>Confirm</button>
-                    </div>
-                    )}
-                </div>
-
-
-            )}
+            
 
             {identity === "1" && (
                 <div style={{ display: 'inline-block', marginRight: '20px' }}>
