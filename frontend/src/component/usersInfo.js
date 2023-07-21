@@ -19,7 +19,9 @@ function GroupCard(props){
     return (
         
         <div style={{height: "300px", width: "80%", background: "gray", color: "white", fontSize: "20px", padding: "10px",cursor: "pointer"}} key={props.index} onClick={handleGroupDetailClick}>
-
+        <div style={{marginBottom: "10px"}}>
+            {`Group Name: ${props.groupInput}`}
+        </div>
         <div style={{marginBottom: "10px"}}>
             {`Group ID: ${props.group.id}`}
         </div>
