@@ -1,0 +1,788 @@
+[
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"components": [
+					{
+						"internalType": "bool",
+						"name": "voteOpen",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "depositOpen",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "applicationOpen",
+						"type": "bool"
+					}
+				],
+				"indexed": false,
+				"internalType": "struct GroupManager.Status",
+				"name": "status",
+				"type": "tuple"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "interestRate",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "monthlyPayment",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "period",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "timeCreated",
+				"type": "uint256"
+			}
+		],
+		"name": "db_createGroup",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "interestRate",
+				"type": "uint256"
+			}
+		],
+		"name": "db_updateInterestRate",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "monthlyPayment",
+				"type": "uint256"
+			}
+		],
+		"name": "db_updateMonthlyPayment",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "period",
+				"type": "uint256"
+			}
+		],
+		"name": "db_updatePeriod",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "bool",
+				"name": "voteOpen",
+				"type": "bool"
+			},
+			{
+				"indexed": false,
+				"internalType": "bool",
+				"name": "depositOpen",
+				"type": "bool"
+			},
+			{
+				"indexed": false,
+				"internalType": "bool",
+				"name": "applicationOpen",
+				"type": "bool"
+			}
+		],
+		"name": "db_updateStatus",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			}
+		],
+		"name": "addUser",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "balance",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			}
+		],
+		"name": "closeApplication",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			}
+		],
+		"name": "createGroup",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "debug_getUser",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "userAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "savings",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "hasDeposited",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "hasBorrowed",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "hasVoted",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "vote",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "loan",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct GroupManager.User",
+				"name": "user",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			}
+		],
+		"name": "getBorrorwers",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "",
+				"type": "address[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			}
+		],
+		"name": "getInterestRate",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			}
+		],
+		"name": "getMonthlyPayment",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			}
+		],
+		"name": "getPeriod",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "groups",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "userAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "savings",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "hasDeposited",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "hasBorrowed",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "hasVoted",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "vote",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "loan",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct GroupManager.User",
+				"name": "owner",
+				"type": "tuple"
+			},
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "userAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "savings",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "hasDeposited",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "hasBorrowed",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "hasVoted",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "vote",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "loan",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct GroupManager.User",
+				"name": "target",
+				"type": "tuple"
+			},
+			{
+				"components": [
+					{
+						"internalType": "bool",
+						"name": "voteOpen",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "depositOpen",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "applicationOpen",
+						"type": "bool"
+					}
+				],
+				"internalType": "struct GroupManager.Status",
+				"name": "status",
+				"type": "tuple"
+			},
+			{
+				"internalType": "uint256",
+				"name": "interestRate",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "monthlyPayment",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "period",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "balance",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "maxUserIndex",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "numUsers",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			}
+		],
+		"name": "joinWaitingList",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			}
+		],
+		"name": "makeTermDeposit",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "manager",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "numGroups",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			}
+		],
+		"name": "openApplication",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address payable",
+				"name": "_contract",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "pay",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			}
+		],
+		"name": "repayLoan",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			}
+		],
+		"name": "reset",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			}
+		],
+		"name": "returnSavings",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "",
+				"type": "address[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address payable",
+				"name": "otherContractAddress",
+				"type": "address"
+			}
+		],
+		"name": "setAccountManager",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "interestRate",
+				"type": "uint256"
+			}
+		],
+		"name": "setInterestRate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "monthlyPayment",
+				"type": "uint256"
+			}
+		],
+		"name": "setMonthlyPayment",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "period",
+				"type": "uint256"
+			}
+		],
+		"name": "setPeriod",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "result",
+				"type": "bool"
+			}
+		],
+		"name": "vote",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "initiator",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "target",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "group",
+				"type": "uint256"
+			}
+		],
+		"name": "voteDismiss",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]
