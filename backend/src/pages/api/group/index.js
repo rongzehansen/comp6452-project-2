@@ -3,11 +3,9 @@ import Cors from 'cors';
 
 const prisma = new PrismaClient();
 const cors = Cors({
-  methods: ['GET', 'HEAD', 'POST'],
+  methods: ['GET', 'HEAD', 'PUT', 'DELETE'],
 });
 
-// Utility to run middleware manually in Next.js
-// This can be moved to a separate file
 export async function runMiddleware(req, res, fn) {
   return new Promise((resolve, reject) => {
     fn(req, res, (result) => {
@@ -19,32 +17,42 @@ export async function runMiddleware(req, res, fn) {
   });
 }
 
-// // GET /api/group
-// export async function get(req, res) {
-//   const users = await prisma.group.findMany();
-//   res.json(users);
-// }
-// GET /api/group
 export async function get(req, res) {
-  const users = await prisma.group.findMany();
-  // res.json(users);
-  res.json([
-    {id:1, name:'group1', address:'address1', owner:'owner1', createdAt: '2023-07-01', updatedAt:'2023-07-01', active: true}
-  ]);
+  const { id } = req.query;
+  
+  if (id) {
+    const group = await prisma.group.findUnique({
+      where: { id: Number(id) },
+    });
+    res.json(group);
+  } else {
+    const groups = await prisma.group.findMany();
+    // res.json(groups);
+    // Mock data
+    res.json([
+      {id:1, name:'group1', address:'address1', owner:'owner1', createdAt: '2023-07-01', updatedAt:'2023-07-01', active: true}
+    ]);
+  }
 }
 
-// POST /api/group
-export async function post(req, res) {
-  const result = await prisma.group.create({
-    data: {
-      ...req.body
-    },
+export async function put(req, res) {
+  const { id } = req.query;
+  const updatedGroup = await prisma.group.update({
+    where: { id: Number(id) },
+    data: req.body,
   });
-  res.json(result);
+  res.json(updatedGroup);
+}
+
+export async function del(req, res) {
+  const { id } = req.query;
+  const deletedGroup = await prisma.group.delete({
+    where: { id: Number(id) },
+  });
+  res.json(deletedGroup);
 }
 
 export default async function handler(req, res) {
-  // Run the middleware
   await runMiddleware(req, res, cors);
 
   const { method } = req;
@@ -52,10 +60,76 @@ export default async function handler(req, res) {
   switch (method) {
     case 'GET':
       return get(req, res);
-    case 'POST':
-      return post(req, res);
+    case 'PUT':
+      return put(req, res);
+    case 'DELETE':
+      return del(req, res);
     default:
-      res.setHeader('Allow', ['GET', 'POST']);
+      res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }
+
+
+
+// import { PrismaClient } from "@prisma/client";
+// import Cors from 'cors';
+
+// const prisma = new PrismaClient();
+// const cors = Cors({
+//   methods: ['GET', 'HEAD', 'POST'],
+// });
+
+// // Utility to run middleware manually in Next.js
+// // This can be moved to a separate file
+// export async function runMiddleware(req, res, fn) {
+//   return new Promise((resolve, reject) => {
+//     fn(req, res, (result) => {
+//       if (result instanceof Error) {
+//         return reject(result);
+//       }
+//       return resolve(result);
+//     });
+//   });
+// }
+
+// // // GET /api/group
+// // export async function get(req, res) {
+// //   const users = await prisma.group.findMany();
+// //   res.json(users);
+// // }
+// // GET /api/group
+// export async function get(req, res) {
+//   const users = await prisma.group.findMany();
+//   // res.json(users);
+//   res.json([
+//     {id:1, name:'group1', address:'address1', owner:'owner1', createdAt: '2023-07-01', updatedAt:'2023-07-01', active: true}
+//   ]);
+// }
+
+// // POST /api/group
+// export async function post(req, res) {
+//   const result = await prisma.group.create({
+//     data: {
+//       ...req.body
+//     },
+//   });
+//   res.json(result);
+// }
+
+// export default async function handler(req, res) {
+//   // Run the middleware
+//   await runMiddleware(req, res, cors);
+
+//   const { method } = req;
+  
+//   switch (method) {
+//     case 'GET':
+//       return get(req, res);
+//     case 'POST':
+//       return post(req, res);
+//     default:
+//       res.setHeader('Allow', ['GET', 'POST']);
+//       res.status(405).end(`Method ${method} Not Allowed`);
+//   }
+// }
