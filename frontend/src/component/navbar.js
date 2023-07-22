@@ -8,6 +8,18 @@ export function Navbar() {
         <li style={{ listStyle: 'none', margin: '0 10px' }}>
           <Link to="/">Home</Link>
         </li>
+        <li style={{ listStyle: 'none', margin: '0 10px' }}>
+          <Link to="/userinfo">UserInfo</Link>
+        </li>
+        <li style={{ listStyle: 'none', margin: '0 10px' }}>
+          <Link to="/groupdetail">GroupDetail</Link>
+        </li>
+        <li style={{ listStyle: 'none', margin: '0 10px' }}>
+          <Link to="/group">Group</Link>
+        </li>
+        <li style={{ listStyle: 'none', margin: '0 10px' }}>
+          <Link to="/groupform">GroupForm</Link>
+        </li>
       </ul>
     </nav>
   );
