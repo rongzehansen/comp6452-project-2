@@ -19,10 +19,18 @@ export async function runMiddleware(req, res, fn) {
   });
 }
 
+// // GET /api/group
+// export async function get(req, res) {
+//   const users = await prisma.group.findMany();
+//   res.json(users);
+// }
 // GET /api/group
 export async function get(req, res) {
   const users = await prisma.group.findMany();
-  res.json(users);
+  // res.json(users);
+  res.json([
+    {id:1, name:'group1', address:'address1', owner:'owner1', createdAt: '2023-07-01', updatedAt:'2023-07-01', active: true}
+  ]);
 }
 
 // POST /api/group
