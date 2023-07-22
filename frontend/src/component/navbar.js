@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function Navbar() {
+export function Navbar() {
   return (
     <nav style={{ backgroundColor: '#f2f2f2' }}>
       <ul style={{ display: 'flex', justifyContent: 'center', padding: '0', margin: '0' }}>
@@ -12,5 +12,3 @@ function Navbar() {
     </nav>
   );
 }
-
-export default Navbar;
