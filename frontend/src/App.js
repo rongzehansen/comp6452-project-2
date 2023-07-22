@@ -1,6 +1,7 @@
 import './App.css';
 import React, { useEffect,useState } from 'react';
 import { ethers } from 'ethers';
+import { Navbar } from './component/navbar';
 import { Home } from './component/home';
 import { UserInfo } from './component/usersInfo';
 import { GroupDetail } from './component/groupDetail';
@@ -17,13 +18,14 @@ function App() {
   return (
     <Router>
       <div>
-        <nav>
+        {/* <nav>
           <ul>
             <li>
               <Link to="/">Home</Link>
             </li>
           </ul>
-        </nav>
+        </nav> */}
+        <Navbar/>
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/userInfo' element={<UserInfo />} />
