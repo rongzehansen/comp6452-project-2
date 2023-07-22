@@ -1,0 +1,10 @@
+-- CreateTable
+CREATE TABLE "Groups" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "address" TEXT NOT NULL,
+    "owner" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    "active" BOOLEAN NOT NULL DEFAULT true
+);
