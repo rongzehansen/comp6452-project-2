@@ -396,7 +396,7 @@ export function GroupDetail(){
                     <div>Borrower: {borrower.toString()}</div>
             </div>
             <div className="ownerFunctions">
-                <h2>Owner Functions</h2>
+                <h2>Group Owner Functions</h2>
                 
                 {true && (
                 <div style={{ display: 'inline-block', marginRight: '20px' }}>
@@ -428,12 +428,8 @@ export function GroupDetail(){
                     </div>
                 )} 
             </div>
-
-   
-
-            <br></br>
-            <br></br>
-            <br></br>         
+        <div className="ownerFunctions">
+            <h2>Group Member Functions</h2>         
             <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                 <button onClick={makePayment} className='cta-button mint-nft-button' style={{ marginRight: '20px' }}>Make Term (Monthly) Deposit</button>
                 <button onClick={applyBorrow} className='cta-button mint-nft-button' style={{ marginRight: '20px' }}>Apply waitlist</button>
@@ -452,14 +448,14 @@ export function GroupDetail(){
             <br></br>
 
             <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                <button className='cta-button mint-nft-button' onClick={() => setIsStartingExpel(true) } disabled={isVotingExpel}>Initiate Member Dismissal</button>
-                {true && (
-                <div>
-                    <input type="text" placeholder="User Address" value={userAddress} onChange={e => setUserAddress(e.target.value)}/>
-                    <button onClick={startExpel}>Confirm</button>
-                </div>
-                )}
-        </div>
+                    <button className='cta-button mint-nft-button' onClick={() => setIsStartingExpel(true) } disabled={isVotingExpel}>Initiate Member Dismissal</button>
+                    {true && (
+                    <div>
+                        <input type="text" placeholder="User Address" value={userAddress} onChange={e => setUserAddress(e.target.value)}/>
+                        <button onClick={startExpel}>Confirm</button>
+                    </div>
+                    )}
+            </div>
 
             <div style={{ display: 'inline-block', marginRight: '20px' }}>
                 <button className='cta-button mint-nft-button' onClick={() => setIsVotingExpel(true) } disabled={!isStartingExpel}>Vote</button>
@@ -475,7 +471,7 @@ export function GroupDetail(){
                 </div>
                 )}
             </div>
-
+        </div>
             <br></br>
             <br></br>
             <br></br>
