@@ -17,23 +17,41 @@ export async function runMiddleware(req, res, fn) {
   });
 }
 
-export async function get(req, res) {
-  const { id } = req.query;
+// export async function get(req, res) {
+//   const { id } = req.query;
   
-  if (id) {
+//   if (id) {
+//     const group = await prisma.group.findUnique({
+//       where: { id: Number(id) },
+//     });
+//     res.json(group);
+//   } else {
+//     const groups = await prisma.group.findMany();
+//     // res.json(groups);
+//     // Mock data
+//     res.json([
+//       {id:1, name:'group1', address:'address1', owner:'owner1', createdAt: '2023-07-01', updatedAt:'2023-07-01', active: true}
+//     ]);
+//   }
+// }
+export async function get(req, res) {
+  const { id2 } = req.body;
+  
+  if (id2) {
     const group = await prisma.group.findUnique({
-      where: { id: Number(id) },
+      where: { id2: Number(id2) },
     });
     res.json(group);
   } else {
-    const groups = await prisma.group.findMany();
-    // res.json(groups);
+    // const groups = await prisma.group.findMany();
     // Mock data
-    res.json([
-      {id:1, name:'group1', address:'address1', owner:'owner1', createdAt: '2023-07-01', updatedAt:'2023-07-01', active: true}
-    ]);
+    const groups = [
+      {id: 1, id2: 1, name:'group1', groupAddress:'address1', ownerAddress:'owner1', timeCreated: '2023-07-01', timeUpdated:'2023-07-01', active: true}
+    ]
+    res.json(groups);
   }
 }
+
 
 // export async function put(req, res) {
 //   const { id } = req.query;
