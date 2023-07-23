@@ -111,6 +111,40 @@ export function Home() {
       </button>
     )
   }
+  const handleCreateGroup = async (payload, args) => {
+    try {
+      const response = await fetch('http://localhost:5000/api/group', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      console.log(data);
+      setParams(args);
+    } catch (error) {
+      console.error('Error in creating group:', error);
+    }
+  };
+  
+  const handleUpdateGroup = async (id, payload, args) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/group/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      console.log(data);
+      setParams(args);
+    } catch (error) {
+      console.error(`Error in updating group ${id}:`, error);
+    }
+  };
+  
   const init = async () => {
     function checkParam(list1, list2) {
       if (list1.length !== list2.length) return false;
@@ -136,42 +170,115 @@ export function Home() {
     const groupManagerContract = new ethers.Contract(groupManagerContractAddress, groupManagerContractABI, signer);
     //setGroupManagerContract(groupManagerContract);
 
-    groupManagerContract.on("db_createGroup", (...args) => {
-      if (!checkParam(args, params)) {
-        alert(args);
-        setParams(args);
-        console.log(args);
-      }
+  //   groupManagerContract.on("db_createGroup", (...args) => {
+  //     if (!checkParam(args, params)) {
+  //       alert(args);
+  //       setParams(args);
+  //       console.log(args);
+  //     }
 
-    });
-    groupManagerContract.on("db_updateStatus", (...args) => {
-      if (!checkParam(args, params)) {
-        alert(args);
-        setParams(args);
-        console.log(args);
+  //   });
+  //   groupManagerContract.on("db_updateStatus", (...args) => {
+  //     if (!checkParam(args, params)) {
+  //       alert(args);
+  //       setParams(args);
+  //       console.log(args);
+  //     }
+  //   });
+  //   groupManagerContract.on("db_updateInterestRate", (...args) => {
+  //     if (!checkParam(args, params)) {
+  //       alert(args);
+  //       setParams(args);
+  //       console.log(args);
+  //     }
+  //   });
+  //   groupManagerContract.on("db_updateMonthlyPayment", (...args) => {
+  //     if (!checkParam(args, params)) {
+  //       alert(args);
+  //       setParams(args);
+  //       console.log(args);
+  //     }
+  //   });
+  //   groupManagerContract.on("db_updatePeriod", (...args) => {
+  //     if (!checkParam(args, params)) {
+  //       alert(args);
+  //       setParams(args);
+  //       console.log(args);
+  //     }
+  //   });
+  groupManagerContract.on("db_createGroup", (...args) => {
+    if (!checkParam(args, params)) {
+      alert(args);
+      console.log(args);
+      const payload = {
+          index: args.index,
+          name: args.name,
+          owner: args.owner,
+          voteOpen: args.status.voteOpen,
+          depositOpen: args.status.depositOpen,
+          applicationOpen: args.status.applicationOpen,
+          interestRate: args.interestRate,
+          monthlyPayment: args.monthlyPayment,
+          period: args.period,
+          timeCreated: args.timeCreated,
+          timeUpdated: args.timeUpdated,
+          active: true,
       }
-    });
-    groupManagerContract.on("db_updateInterestRate", (...args) => {
-      if (!checkParam(args, params)) {
-        alert(args);
-        setParams(args);
-        console.log(args);
-      }
-    });
-    groupManagerContract.on("db_updateMonthlyPayment", (...args) => {
-      if (!checkParam(args, params)) {
-        alert(args);
-        setParams(args);
-        console.log(args);
-      }
-    });
-    groupManagerContract.on("db_updatePeriod", (...args) => {
-      if (!checkParam(args, params)) {
-        alert(args);
-        setParams(args);
-        console.log(args);
-      }
-    });
+      handleCreateGroup(payload, args);
+    }
+
+  });
+  groupManagerContract.on("db_updateStatus", (...args) => {
+    if (!checkParam(args, params)) {
+      alert(args);
+      console.log(args);
+      const payload = {
+          id: 0,
+          index: args.index,
+          voteOpen: args.status.voteOpen,
+          depositOpen: args.status.depositOpen,
+          applicationOpen: args.status.applicationOpen,
+      }        
+      handleUpdateGroup(0, payload, args);
+    }
+  });
+  groupManagerContract.on("db_updateInterestRate", (...args) => {
+    if (!checkParam(args, params)) {
+      alert(args);
+      console.log(args);
+      const payload = {
+          id: 0,
+          index: args.index,
+          interestRate: args.interestRate,
+      }        
+      handleUpdateGroup(0, payload, args);
+    }
+  });
+  groupManagerContract.on("db_updateMonthlyPayment", (...args) => {
+    if (!checkParam(args, params)) {
+      alert(args);
+      console.log(args);
+      const payload = {
+          id: 0,
+          index: args.index,
+          name: args.name,
+          monthlyPayment: args.monthlyPayment,
+      }        
+      handleUpdateGroup(0, payload, args);
+    }
+  });
+  groupManagerContract.on("db_updatePeriod", (...args) => {
+    if (!checkParam(args, params)) {
+      alert(args);
+      console.log(args);
+      const payload = {
+          id: 0,
+          index: args.index,
+          period: args.period,
+      }        
+      handleUpdateGroup(0, payload, args);
+    }
+  });
     return () => {
       groupManagerContract.removeAllListeners("db_createGroup");
       groupManagerContract.removeAllListeners("db_updateStatus");
