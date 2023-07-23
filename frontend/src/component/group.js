@@ -129,7 +129,7 @@ export function Group() {
     }
   };
   
-  const handleUpdateGroup = async (id, payload) => {
+  const handleUpdateGroup = async (id, payload, args) => {
     try {
       const response = await fetch(`http://localhost:5000/api/group/${id}`, {
         method: 'PUT',
@@ -140,6 +140,7 @@ export function Group() {
       });
       const data = await response.json();
       console.log(data);
+      setParams(args);
     } catch (error) {
       console.error(`Error in updating group ${id}:`, error);
     }
@@ -177,6 +178,7 @@ export function Group() {
         console.log(args);
         // missing attributes: args.group,args.active
         const payload = {
+            id2: args.id,
             name: args.name,
             groupAddress: "",
             ownerAddress: args.owner,
@@ -197,29 +199,52 @@ export function Group() {
     groupManagerContract.on("db_updateStatus", (...args) => {
       if (!checkParam(args, params)) {
         alert(args);
-        setParams(args);
         console.log(args);
+        const payload = {
+            id: 0,
+            id2: args.id,
+            voteOpen: args.Status.voteOpen,
+            depositOpen: args.Status.depositOpen,
+            applicationOpen: args.Status.applicationOpen,
+        }        
+        handleUpdateGroup(0, payload, args);
       }
     });
     groupManagerContract.on("db_updateInterestRate", (...args) => {
       if (!checkParam(args, params)) {
         alert(args);
-        setParams(args);
         console.log(args);
+        const payload = {
+            id: 0,
+            id2: args.id,
+            interestRate: args.interestRate,
+        }        
+        handleUpdateGroup(0, payload, args);
       }
     });
     groupManagerContract.on("db_updateMonthlyPayment", (...args) => {
       if (!checkParam(args, params)) {
         alert(args);
-        setParams(args);
         console.log(args);
+        const payload = {
+            id: 0,
+            id2: args.id,
+            name: args.name,
+            monthlyPayment: args.monthlyPayment,
+        }        
+        handleUpdateGroup(0, payload, args);
       }
     });
     groupManagerContract.on("db_updatePeriod", (...args) => {
       if (!checkParam(args, params)) {
         alert(args);
-        setParams(args);
         console.log(args);
+        const payload = {
+            id: 0,
+            id2: args.id,
+            period: args.period,
+        }        
+        handleUpdateGroup(0, payload, args);
       }
     });
     return () => {
