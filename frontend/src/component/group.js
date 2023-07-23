@@ -160,7 +160,7 @@ export function Group() {
       return true;
     }
     const { ethereum } = window;
-    if (!ethereum) {
+    if (!ethereum) {args.index
       console.log("Please install the Metamask Wallet!");
       return;
     }
@@ -176,15 +176,13 @@ export function Group() {
       if (!checkParam(args, params)) {
         alert(args);
         console.log(args);
-        // missing attributes: args.group,args.active
         const payload = {
-            id2: args.id,
+            index: args.index,
             name: args.name,
-            groupAddress: "",
-            ownerAddress: args.owner,
-            voteOpen: args.Status.voteOpen,
-            depositOpen: args.Status.depositOpen,
-            applicationOpen: args.Status.applicationOpen,
+            owner: args.owner,
+            voteOpen: args.status.voteOpen,
+            depositOpen: args.status.depositOpen,
+            applicationOpen: args.status.applicationOpen,
             interestRate: args.interestRate,
             monthlyPayment: args.monthlyPayment,
             period: args.period,
@@ -202,10 +200,10 @@ export function Group() {
         console.log(args);
         const payload = {
             id: 0,
-            id2: args.id,
-            voteOpen: args.Status.voteOpen,
-            depositOpen: args.Status.depositOpen,
-            applicationOpen: args.Status.applicationOpen,
+            index: args.index,
+            voteOpen: args.status.voteOpen,
+            depositOpen: args.status.depositOpen,
+            applicationOpen: args.status.applicationOpen,
         }        
         handleUpdateGroup(0, payload, args);
       }
@@ -216,7 +214,7 @@ export function Group() {
         console.log(args);
         const payload = {
             id: 0,
-            id2: args.id,
+            index: args.index,
             interestRate: args.interestRate,
         }        
         handleUpdateGroup(0, payload, args);
@@ -228,7 +226,7 @@ export function Group() {
         console.log(args);
         const payload = {
             id: 0,
-            id2: args.id,
+            index: args.index,
             name: args.name,
             monthlyPayment: args.monthlyPayment,
         }        
@@ -241,7 +239,7 @@ export function Group() {
         console.log(args);
         const payload = {
             id: 0,
-            id2: args.id,
+            index: args.index,
             period: args.period,
         }        
         handleUpdateGroup(0, payload, args);
