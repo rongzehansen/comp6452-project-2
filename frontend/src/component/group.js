@@ -160,7 +160,7 @@ export function Group() {
       return true;
     }
     const { ethereum } = window;
-    if (!ethereum) {args.index
+    if (!ethereum) {
       console.log("Please install the Metamask Wallet!");
       return;
     }
