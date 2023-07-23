@@ -377,7 +377,6 @@ export function GroupDetail(){
     return (
         <div className="outerDiv">
            <h1>Group Detail Page</h1>
-           
             <div className="groupinfo">
                 <div>
                     <div>Group ID: {groupId}</div>
@@ -400,39 +399,28 @@ export function GroupDetail(){
                     <h2>Group Owner Functions</h2>
 
                     <div className="firstThreeButtons">
-                        {identity === "1"  && (
-                            <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                                <button className='cta-button mint-nft-button' onClick={resetMonthlyEvent}>Reset Monthly Event</button>
-                            </div>
-                        )}
-
-                        {identity === "1" && (
-                            <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                                <button className='cta-button mint-nft-button' onClick={closeApplication}>Close Borrow Application</button>
-                            </div>
-                        )}
-
-                        {identity === "1"  && (
-                            <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                                <button className='cta-button mint-nft-button' onClick={returnSaving}>Return Saving</button>
+                        <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                            <button className='cta-button mint-nft-button' onClick={resetMonthlyEvent}>Reset Monthly Event</button>
+                        </div>
+                        <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                            <button className='cta-button mint-nft-button' onClick={closeApplication}>Close Borrow Application</button>
+                        </div>
+                        <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                            <button className='cta-button mint-nft-button' onClick={returnSaving}>Return Saving</button>
+                        </div>
+                    </div>
+                    <hr className="grey-line" />
+                    <div className="setMonthlyMoney">
+                        <button className='cta-button mint-nft-button' onClick={() => setIsSettingPayment(true)}>Set Monthly Money Amount</button>
+                        {isSettingPayment && (
+                            <div>
+                                <div>
+                                    <input type="number" placeholder="Monthly Money" value={inputMoney} onChange={e => setInputMoney(e.target.value)} />
+                                    <button onClick={setMonthlyPayment}>Confirm</button>
+                                </div>
                             </div>
                         )}
                     </div>
-                    <hr className="grey-line" />
-                    {identity === "1"  && (
-                        <div className="setMonthlyMoney">
-                            <button className='cta-button mint-nft-button' onClick={() => setIsSettingPayment(true)}>Set Monthly Money Amount</button>
-                            {isSettingPayment && (
-                                <div>
-                                    <div>
-                                        <input type="number" placeholder="Monthly Money" value={inputMoney} onChange={e => setInputMoney(e.target.value)} />
-                                        <button onClick={setMonthlyPayment}>Confirm</button>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                    )}
                 </div>
             }
 
