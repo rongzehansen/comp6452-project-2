@@ -350,6 +350,9 @@ export function GroupDetail(){
     useEffect(() => {
         const { ethereum } = window;
         checkWalletIsConnected();
+        if (groupId === null || identity === null) {
+            navigate('/');
+        }
         if(currentAccount)
         checkUserAccount();
         getBalance();
