@@ -24,6 +24,7 @@ datasource db {
 // > npx prisma migrate dev --name init 
 model Group {
   id             Int      @id @default(autoincrement())
+  id2            Int @unique
   name           String
   groupAddress   String
   ownerAddress   String
