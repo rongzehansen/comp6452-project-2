@@ -29,7 +29,7 @@ export async function get(req, res) {
     // const groups = await prisma.group.findMany();
     // Mock data
     const groups = [
-      {id: 1, index: 1, name:'group1', groupAddress:'address1', ownerAddress:'owner1', timeCreated: '2023-07-01', timeUpdated:'2023-07-01', active: true}
+      {id: 1, index: 1, name:'group1', owner:'owner1', timeCreated: '2023-07-01', timeUpdated:'2023-07-01'}
     ]
     res.json(groups);
   }
