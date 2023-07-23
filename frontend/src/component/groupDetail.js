@@ -350,9 +350,9 @@ export function GroupDetail(){
     useEffect(() => {
         const { ethereum } = window;
         checkWalletIsConnected();
-        if (groupId === null || identity === null) {
-            navigate('/');
-        }
+        // if (groupId === null || identity === null) {
+        //     navigate('/');
+        // }
         if(currentAccount)
         checkUserAccount();
         getBalance();
@@ -378,25 +378,27 @@ export function GroupDetail(){
         <div className="outerDiv">
            <h1>Group Detail Page</h1>
            
-            <div style={{height: "300px", width: "80%", background: "gray", color: "white", fontSize: "20px", padding: "10px"}}>
-            <div>
-                <div>Group ID: {groupId}</div>
-                <div>Identity: {identity ==0 ? "Member" : "Owner"}</div>
-            </div>
-            <div>Your current balance is : {balance.toString()}</div>
+            <div className="groupinfo">
                 <div>
-                    {`Members: `}
-                    <ul>
-                        <div> some functions to list memebers details</div>
-                        <div> Member 1</div>
-                    </ul>
+                    <div>Group ID: {groupId}</div>
+                    <div>Identity: {identity ==0 ? "Member" : "Owner"}</div>
                 </div>
-                <InputComponent/>
-                <div> Everyone needs to deposit: {monthlyMoney.toString()}</div>
-                <div>Borrower: {borrower.toString()}</div>
+                <div>Your current balance is : {balance.toString()}</div>
+                    <div>
+                        {`Members: `}
+                        <ul>
+                            <div> some functions to list memebers details</div>
+                            <div> Member 1</div>
+                        </ul>
+                    </div>
+                    <InputComponent/>
+                    <div> Everyone needs to deposit: {monthlyMoney.toString()}</div>
+                    <div>Borrower: {borrower.toString()}</div>
             </div>
-
-            {identity === "1" && (
+            <div className="ownerFunctions">
+                <h2>Owner Functions</h2>
+                
+                {true && (
                 <div style={{ display: 'inline-block', marginRight: '20px' }}>
                     <button className='cta-button mint-nft-button' onClick={() => setIsSettingPayment(true) }>Set Monthly Money Amount</button>
                         {isSettingPayment && (
@@ -406,25 +408,28 @@ export function GroupDetail(){
                         </div>
                         )}
                 </div>
-            )}
+                )}
 
-            {identity === "1" && (
-                <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                    <button className='cta-button mint-nft-button' onClick={resetMonthlyEvent}>Reset Monthly Event</button>
-                </div>
-            )}     
+                {true && (
+                    <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                        <button className='cta-button mint-nft-button' onClick={resetMonthlyEvent}>Reset Monthly Event</button>
+                    </div>
+                )}     
 
-            {identity === "1" && (
-                <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                    <button className='cta-button mint-nft-button' onClick={closeApplication}>Close Borrow Application</button>
-                </div>
-            )}   
+                {true && (
+                    <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                        <button className='cta-button mint-nft-button' onClick={closeApplication}>Close Borrow Application</button>
+                    </div>
+                )}   
 
-            {identity === "1" && (
-                <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                    <button className='cta-button mint-nft-button' onClick={returnSaving}>Return Saving</button>
-                </div>
-            )}    
+                {true && (
+                    <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                        <button className='cta-button mint-nft-button' onClick={returnSaving}>Return Saving</button>
+                    </div>
+                )} 
+            </div>
+
+   
 
             <br></br>
             <br></br>
@@ -434,7 +439,7 @@ export function GroupDetail(){
                 <button onClick={applyBorrow} className='cta-button mint-nft-button' style={{ marginRight: '20px' }}>Apply waitlist</button>
                 <div style={{ display: 'inline-block', marginRight: '20px' }}>
                     <button className='cta-button mint-nft-button' onClick={() => setIsRepaying(true)}>Repay Loan</button>
-                    {isRepaying && (
+                    {true && (
                         <div>
                             <input type="number" placeholder="Repay Amount" value={repayAmount} onChange={e => setRepayAmount(e.target.value)}/>
                             <button onClick={returnMoney}>Confirm</button>
@@ -448,7 +453,7 @@ export function GroupDetail(){
 
             <div style={{ display: 'inline-block', marginRight: '20px' }}>
                 <button className='cta-button mint-nft-button' onClick={() => setIsStartingExpel(true) } disabled={isVotingExpel}>Initiate Member Dismissal</button>
-                {isStartingExpel && (
+                {true && (
                 <div>
                     <input type="text" placeholder="User Address" value={userAddress} onChange={e => setUserAddress(e.target.value)}/>
                     <button onClick={startExpel}>Confirm</button>
@@ -458,7 +463,7 @@ export function GroupDetail(){
 
             <div style={{ display: 'inline-block', marginRight: '20px' }}>
                 <button className='cta-button mint-nft-button' onClick={() => setIsVotingExpel(true) } disabled={!isStartingExpel}>Vote</button>
-                {isVotingExpel && (
+                {true && (
                 <div>
                     <label>
                         <input type="radio" value={true} checked={voteResult === true} onChange={e => setVoteResult(true)}/> Yes

@@ -7,3 +7,38 @@
     padding: 20px;
     box-sizing: border-box;
 }
+
+.ownerFunctions {
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 20px;
+    box-sizing: border-box;
+    width: 100%;
+    /* max-width: 600px;  */
+}
+.ownerFunctions button {
+    margin: 10px;
+}
+.groupinfo {
+    height: 300px;
+    width: 100%;
+    background: gray;
+    color: white;
+    font-size: 20px;
+    padding: 10px;   
+}
+
+/* Updated style for the buttons section */
+.buttonContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.buttonContainer button {
+    margin: 10px;
+}
+
