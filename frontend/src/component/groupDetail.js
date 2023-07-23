@@ -436,44 +436,49 @@ export function GroupDetail(){
 
             <div className="memberFunctions">
                 <h2>Group Member Functions</h2>         
-                <div className="firstThreeButtons">
+                <div className="buttonContainer">
                     <button onClick={makePayment} className='cta-button mint-nft-button'>Make Term (Monthly) Deposit</button>
                     <button onClick={applyBorrow} className='cta-button mint-nft-button'>Apply waitlist</button>
 
                 </div>
                 <hr className="grey-line" />
-                <div>
+                <div className="setMonthlyMoneyGroup">
+                    <div className="setMonthlyMoney">
                         <button className='cta-button mint-nft-button' onClick={() => setIsRepaying(true)}>Repay Loan</button>
                         {true && (
-                            <div className="setMonthlyMoney">
+                            <div>
                                 <input type="number" placeholder="Repay Amount" value={repayAmount} onChange={e => setRepayAmount(e.target.value)}/>
                                 <button onClick={returnMoney}>Confirm</button>
                             </div>
                         )}
-                </div>
-                <div>
-                    <button className='cta-button mint-nft-button' onClick={() => setIsStartingExpel(true) } disabled={isVotingExpel}>Initiate Member Dismissal</button>
-                    {true && (
-                        <div className="setMonthlyMoney">
-                            <input type="text" placeholder="User Address" value={userAddress} onChange={e => setUserAddress(e.target.value)}/>
-                            <button onClick={startExpel}>Confirm</button>
-                        </div>
-                    )}
-                </div>
+                    </div>
 
-                <div>
-                    <button className='cta-button mint-nft-button' onClick={() => setIsVotingExpel(true) } disabled={!isStartingExpel}>Vote</button>
-                    {true && (
-                        <div className="setMonthlyMoney">
-                            <label>
-                                <input type="radio" value={true} checked={voteResult === true} onChange={e => setVoteResult(true)}/> Yes
-                            </label>
-                            <label>
-                                <input type="radio" value={false} checked={voteResult === false} onChange={e => setVoteResult(false)}/> No
-                            </label>
-                            <button onClick={voteExpel}>Confirm</button>
-                        </div>
-                    )}
+                    <div className="setMonthlyMoney">
+                        <button className='cta-button mint-nft-button' onClick={() => setIsStartingExpel(true) } disabled={isVotingExpel}>Initiate Member Dismissal</button>
+                        {true && (
+                            <div className="setMonthlyMoney">
+                                <input type="text" placeholder="User Address" value={userAddress} onChange={e => setUserAddress(e.target.value)}/>
+                                <button onClick={startExpel}>Confirm</button>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="setMonthlyMoney">
+                        <button className='cta-button mint-nft-button' onClick={() => setIsVotingExpel(true) } disabled={!isStartingExpel}>Vote</button>
+                        {true && (
+                            <div className="setMonthlyMoney">
+                                <div className="radioButtons">
+                                    <label>
+                                        <input type="radio" value={true} checked={voteResult === true} onChange={e => setVoteResult(true)}/> Yes
+                                    </label>
+                                    <label>
+                                        <input type="radio" value={false} checked={voteResult === false} onChange={e => setVoteResult(false)}/> No
+                                    </label>
+                                </div>
+                                <button onClick={voteExpel}>Confirm</button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 

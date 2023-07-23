@@ -60,7 +60,7 @@
 /* Styles for the "Set Monthly Money Amount" section */
 .setMonthlyMoney {
     display: flex;
-    align-items: left;
+    align-items: center;
 }
 
 .setMonthlyMoney button.cta-button {
@@ -114,7 +114,7 @@
 
 .memberFunctions .setMonthlyMoney {
     display: flex;
-    align-items: left;
+    align-items: center;
 }
 
 .memberFunctions .setMonthlyMoney button.cta-button {
@@ -126,13 +126,44 @@
     align-items: center;
 }
 
-.memberFunctions .setMonthlyMoney input[type="number"] {
-    margin-right: 10px;
-}
-
 .memberFunctions .grey-line {
     border: none;
     border-top: 1px solid gray;
     width: 100%;
     margin: 10px 0;
 }
+
+.memberFunctions .setMonthlyMoneyGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.memberFunctions .setMonthlyMoney {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+.memberFunctions .buttonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* This will align the items to the start of the container */
+}
+
+.memberFunctions .buttonContainer button {
+    margin-right: 20px; /* Same as the ownerFunctions buttons */
+}
+
+
+.memberFunctions .setMonthlyMoney input[type="number"],
+.memberFunctions .setMonthlyMoney input[type="text"] {
+    flex: 1;
+    margin: 0 10px;
+}
+.memberFunctions .setMonthlyMoney .radioButtons {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex: 1;
+}
+
+
