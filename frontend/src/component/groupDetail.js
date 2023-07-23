@@ -6,6 +6,8 @@ import { useLocation } from 'react-router-dom';
 import contract from '../contracts/contract.json'
 import {contractAddress} from '../App'
 import logo from '../static/arrow-back-3783.png';
+import './groupDetail.css';
+
 const abi = contract;
 
 
@@ -370,7 +372,7 @@ export function GroupDetail(){
     }, [currentAccount,name,interestRate,monthlyMoney,balance,location.search])
 
     return (
-        <div>
+        <div className="outerDiv">
            <h1>Group Detail Page</h1>
            
             <div style={{height: "300px", width: "80%", background: "gray", color: "white", fontSize: "20px", padding: "10px"}}>
