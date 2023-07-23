@@ -17,37 +17,70 @@ export async function runMiddleware(req, res, fn) {
   });
 }
 
-export async function get(req, res) {
-  const { id } = req.query;
+// export async function get(req, res) {
+//   const { id } = req.query;
   
-  if (id) {
+//   if (id) {
+//     const group = await prisma.group.findUnique({
+//       where: { id: Number(id) },
+//     });
+//     res.json(group);
+//   } else {
+//     const groups = await prisma.group.findMany();
+//     // res.json(groups);
+//     // Mock data
+//     res.json([
+//       {id:1, name:'group1', address:'address1', owner:'owner1', createdAt: '2023-07-01', updatedAt:'2023-07-01', active: true}
+//     ]);
+//   }
+// }
+export async function get(req, res) {
+  const { id2 } = req.body;
+  
+  if (id2) {
     const group = await prisma.group.findUnique({
-      where: { id: Number(id) },
+      where: { id2: Number(id2) },
     });
     res.json(group);
   } else {
-    const groups = await prisma.group.findMany();
-    // res.json(groups);
+    // const groups = await prisma.group.findMany();
     // Mock data
-    res.json([
-      {id:1, name:'group1', address:'address1', owner:'owner1', createdAt: '2023-07-01', updatedAt:'2023-07-01', active: true}
-    ]);
+    const groups = [
+      {id: 1, id2: 1, name:'group1', groupAddress:'address1', ownerAddress:'owner1', timeCreated: '2023-07-01', timeUpdated:'2023-07-01', active: true}
+    ]
+    res.json(groups);
   }
 }
 
+
+// export async function put(req, res) {
+//   const { id } = req.query;
+//   const updatedGroup = await prisma.group.update({
+//     where: { id: Number(id) },
+//     data: req.body,
+//   });
+//   res.json(updatedGroup);
+// }
 export async function put(req, res) {
-  const { id } = req.query;
+  const { id2, ...updateData } = req.body; // Extract id2 from the request body
   const updatedGroup = await prisma.group.update({
-    where: { id: Number(id) },
-    data: req.body,
+    where: { id2: Number(id2) }, // Use id2 as the where clause
+    data: updateData, // Exclude id2 from the update data
   });
   res.json(updatedGroup);
 }
 
+// export async function del(req, res) {
+//   const { id } = req.query;
+//   const deletedGroup = await prisma.group.delete({
+//     where: { id: Number(id) },
+//   });
+//   res.json(deletedGroup);
+// }
 export async function del(req, res) {
-  const { id } = req.query;
+  const { id2 } = req.body;
   const deletedGroup = await prisma.group.delete({
-    where: { id: Number(id) },
+    where: { id2: Number(id2) },
   });
   res.json(deletedGroup);
 }
