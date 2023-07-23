@@ -377,58 +377,43 @@ export function GroupDetail(){
     return (
         <div className="outerDiv">
            <h1>Group Detail Page</h1>
-            {/* <div className="groupinfo">
-                <div>
-                    <div>Group ID: {groupId}</div>
-                    <div>Identity: {identity ==0 ? "Member" : "Owner"}</div>
-                </div>
-                <div>Your current balance is : {balance.toString()}</div>
-                    <div>
-                        {`Members: `}
-                        <ul>
-                            <div> some functions to list memebers details</div>
-                            <div> Member 1</div>
-                        </ul>
+            <div className="groupinfo">
+                <div className="inner-container">
+                    <div className="info-row">
+                        <div className="info-label">Group ID: </div>
+                        <div className="info-value">{groupId}</div>
                     </div>
-                    <InputComponent/>
-                    <div> Everyone needs to deposit: {monthlyMoney.toString()}</div>
-                    <div>Borrower: {borrower.toString()}</div>
-            </div> */}
-<div className="groupinfo">
-    <div className="info-row">
-        <div className="info-label">Group ID: </div>
-        <div className="info-value">{groupId}</div>
-    </div>
-    <div className="info-row">
-        <div className="info-label">Identity: </div>
-        <div className="info-value">{identity ==0 ? "Member" : "Owner"}</div>
-    </div>
-    <div className="info-row">
-        <div className="info-label">Your current balance is :</div>
-        <div className="info-value">{balance.toString()}</div>
-    </div>
-    <div className="info-row">
-        <div className="info-label">Members: </div>
-        <div className="info-value">
-            <ul>
-                <li> some functions to list memebers details</li>
-                <li> Member 1</li>
-            </ul>
-        </div>
-    </div>
-    <div className="info-row">
-        <div className="info-label">Current Interest Rate is</div>
-        <div className="info-value"><InputComponent/></div>
-    </div>
-    <div className="info-row">
-        <div className="info-label">Everyone needs to deposit: </div>
-        <div className="info-value">{monthlyMoney.toString()}</div>
-    </div>
-    <div className="info-row">
-        <div className="info-label">Borrower: </div>
-        <div className="info-value">{borrower.toString()}</div>
-    </div>
-</div>
+                    <div className="info-row">
+                        <div className="info-label">Identity: </div>
+                        <div className="info-value">{identity ==0 ? "Member" : "Owner"}</div>
+                    </div>
+                    <div className="info-row">
+                        <div className="info-label">Your current balance is :</div>
+                        <div className="info-value">{balance.toString()}</div>
+                    </div>
+                    <div className="info-row">
+                        <div className="info-label">Members: </div>
+                        <div className="info-value">
+                            <ul>
+                                <li> some functions to list memebers details</li>
+                                <li> Member 1</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="info-row">
+                        <div className="info-label">Current Interest Rate is</div>
+                        <div className="info-value"><InputComponent/></div>
+                    </div>
+                    <div className="info-row">
+                        <div className="info-label">Everyone needs to deposit: </div>
+                        <div className="info-value">{monthlyMoney.toString()}</div>
+                    </div>
+                    <div className="info-row">
+                        <div className="info-label">Borrower: </div>
+                        <div className="info-value">{borrower.toString()}</div>
+                    </div>
+                </div>
+            </div>
 
             {identity === "1" && 
                 <div className="ownerFunctions">
