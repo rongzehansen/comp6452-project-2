@@ -15,10 +15,24 @@
     box-sizing: border-box;
     width: 100%;
     margin-bottom: 10px;
-}
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 .ownerFunctions button {
     margin: 10px;
-}
+}  
+  .ownerFunctions h2 {
+    margin-bottom: 10px;
+  }
+  
+  /* Styles for the "Set Monthly Money Amount" section */
+  .setMonthlyMoney {
+    display: flex;
+    /* flex-direction: column; */
+    align-items: center;
+  }
+  
 .groupinfo {
     height: 300px;
     width: 100%;
@@ -43,3 +57,29 @@
     margin: 10px;
 }
 
+/* Styles for the "Set Monthly Money Amount" section */
+.setMonthlyMoney {
+    display: flex;
+    align-items: left;
+}
+
+.setMonthlyMoney button.cta-button {
+    margin-right: 10px; /* Add some spacing between the button and the input */
+}
+
+.setMonthlyMoney div {
+    display: flex;
+    align-items: center;
+}
+
+.setMonthlyMoney input[type="number"] {
+    margin-right: 10px; /* Add some spacing between the input and the button */
+}
+
+/* Style for the grey line */
+.grey-line {
+    border: none;
+    border-top: 1px solid gray; /* Set the color and style of the line */
+    width: 100%;
+    margin: 10px 0; /* Add some margin above and below the line */
+}
