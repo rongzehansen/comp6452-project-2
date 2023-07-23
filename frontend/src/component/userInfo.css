@@ -1,0 +1,49 @@
+.outerDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.inputButtonGroup {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.inputButtonGroup input {
+    flex: 1 1 0;
+    margin: 0 10px;
+}
+
+
+.GroupCard {
+    margin-bottom: 20px;
+}
+
+input {
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.welcomeMessage {
+    font-size: 24px;
+    margin-bottom: 20px;
+}

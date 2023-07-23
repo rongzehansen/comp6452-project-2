@@ -4,6 +4,8 @@ import { ethers } from 'ethers';
 import { useNavigate } from 'react-router-dom';
 import contract from '../contracts/contract.json'
 import {contractAddress} from '../App'
+import './userInfo.css'
+
 const abi = contract;
 
 function GroupCard(props){
@@ -251,23 +253,27 @@ export function UserInfo(){
     }, [currentAccount,name,balance])
 
     return (
-        <div>
-            User info page
-            {groupInfo.map((group, index) => (<GroupCard group={group} groupInput={groupInput} key={index} index={index}></GroupCard>))}
+        <div className="outerDiv">
+            <h2>User info page</h2>
+            {groupInfo.map((group, index) => (<GroupCard className="GroupCard" group={group} groupInput={groupInput} key={index} index={index}></GroupCard>))}
             <div>
-                <div>Welcome {name}</div>
-                <div>Your current balance is : {balance.toString()}</div>
-                <input onChange={handleGroupInputChange} placeholder="Enter group name"/>
-                <button onClick={createGroup} className='cta-button mint-nft-button'>
-                Create group
-                </button>
+                <div className="welcomeMessage">Welcome {name}</div>
+                <div><h5>Your current balance is : {balance.toString()}</h5></div>
+                <div className="inputButtonGroup">
+                    <input onChange={handleGroupInputChange} placeholder="Enter group name"/>
+                    <button onClick={createGroup} className='cta-button mint-nft-button'>
+                    Create group
+                    </button>
+                </div>
                 <br></br>
                 <br></br>
-                <input onChange={allocateGroupID} placeholder="Allocate member to Group"/>
-                <input onChange={handleMemberAddress} placeholder="Enter member address"/>
-                <button onClick={addMember} className='cta-button mint-nft-button'>
-                    Add member
-                </button>
+                <div className="inputButtonGroup">
+                    <input onChange={allocateGroupID} placeholder="Allocate member to Group"/>
+                    <input onChange={handleMemberAddress} placeholder="Enter member address"/>
+                    <button onClick={addMember} className='cta-button mint-nft-button'>
+                        Add member
+                    </button>
+                </div>
             </div>
         </div>
 
