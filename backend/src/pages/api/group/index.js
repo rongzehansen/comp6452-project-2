@@ -35,18 +35,18 @@ export async function runMiddleware(req, res, fn) {
 //   }
 // }
 export async function get(req, res) {
-  const { id2 } = req.body;
+  const { index } = req.body;
   
-  if (id2) {
+  if (index) {
     const group = await prisma.group.findUnique({
-      where: { id2: Number(id2) },
+      where: { index: Number(index) },
     });
     res.json(group);
   } else {
     // const groups = await prisma.group.findMany();
     // Mock data
     const groups = [
-      {id: 1, id2: 1, name:'group1', groupAddress:'address1', ownerAddress:'owner1', timeCreated: '2023-07-01', timeUpdated:'2023-07-01', active: true}
+      {id: 1, index: 1, name:'group1', groupAddress:'address1', ownerAddress:'owner1', timeCreated: '2023-07-01', timeUpdated:'2023-07-01', active: true}
     ]
     res.json(groups);
   }
@@ -62,10 +62,10 @@ export async function get(req, res) {
 //   res.json(updatedGroup);
 // }
 export async function put(req, res) {
-  const { id2, ...updateData } = req.body; // Extract id2 from the request body
+  const { index, ...updateData } = req.body; // Extract index from the request body
   const updatedGroup = await prisma.group.update({
-    where: { id2: Number(id2) }, // Use id2 as the where clause
-    data: updateData, // Exclude id2 from the update data
+    where: { index: Number(index) }, // Use index as the where clause
+    data: updateData, // Exclude index from the update data
   });
   res.json(updatedGroup);
 }
@@ -78,9 +78,9 @@ export async function put(req, res) {
 //   res.json(deletedGroup);
 // }
 export async function del(req, res) {
-  const { id2 } = req.body;
+  const { index } = req.body;
   const deletedGroup = await prisma.group.delete({
-    where: { id2: Number(id2) },
+    where: { index: Number(index) },
   });
   res.json(deletedGroup);
 }
