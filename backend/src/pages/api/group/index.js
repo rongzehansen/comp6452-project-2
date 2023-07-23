@@ -70,10 +70,17 @@ export async function put(req, res) {
   res.json(updatedGroup);
 }
 
+// export async function del(req, res) {
+//   const { id } = req.query;
+//   const deletedGroup = await prisma.group.delete({
+//     where: { id: Number(id) },
+//   });
+//   res.json(deletedGroup);
+// }
 export async function del(req, res) {
-  const { id } = req.query;
+  const { id2 } = req.body;
   const deletedGroup = await prisma.group.delete({
-    where: { id: Number(id) },
+    where: { id2: Number(id2) },
   });
   res.json(deletedGroup);
 }
