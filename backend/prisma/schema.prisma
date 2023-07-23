@@ -10,12 +10,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// model Group {
+//   id    Int      @id @default(autoincrement())
+//   name  String
+//   address  String
+//   owner  String
+//   createdAt  DateTime  @default(now())
+//   updatedAt  DateTime  @updatedAt
+//   active Boolean @default(true)
+// }
+
+// Run the following command in backend ternimal when the model has changed.
+// > npx prisma migrate dev --name init 
 model Group {
-  id    Int      @id @default(autoincrement())
-  name  String
-  address  String
-  owner  String
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id             Int      @id @default(autoincrement())
+  name           String
+  groupAddress   String
+  ownerAddress   String
+  voteOpen       Boolean @default(false)
+  depositOpen    Boolean @default(true)
+  applicationOpen Boolean @default(true)
+  interestRate   Int @default(0)
+  monthlyPayment Int @default(0)
+  period         Int @default(1)
+  timeCreated    DateTime @default(now())
+  timeUpdated    DateTime @updatedAt
   active Boolean @default(true)
 }
