@@ -6,6 +6,8 @@ import { useLocation } from 'react-router-dom';
 import contract from '../contracts/contract.json'
 import {contractAddress} from '../App'
 import logo from '../static/arrow-back-3783.png';
+import './groupDetail.css';
+
 const abi = contract;
 
 
@@ -348,9 +350,9 @@ export function GroupDetail(){
     useEffect(() => {
         const { ethereum } = window;
         checkWalletIsConnected();
-        if (groupId === null || identity === null) {
-            navigate('/');
-        }
+        // if (groupId === null || identity === null) {
+        //     navigate('/');
+        // }
         if(currentAccount)
         checkUserAccount();
         getBalance();
@@ -373,100 +375,101 @@ export function GroupDetail(){
     }, [currentAccount,name,interestRate,monthlyMoney,balance,location.search])
 
     return (
-        <div>
+        <div className="outerDiv">
            <h1>Group Detail Page</h1>
-           
-            <div style={{height: "300px", width: "80%", background: "gray", color: "white", fontSize: "20px", padding: "10px"}}>
-            <div>
-                <div>Group ID: {groupId}</div>
-                <div>Identity: {identity ==0 ? "Member" : "Owner"}</div>
-            </div>
-            <div>Your current balance is : {balance.toString()}</div>
+            <div className="groupinfo">
                 <div>
-                    {`Members: `}
-                    <ul>
-                        <div> some functions to list memebers details</div>
-                        <div> Member 1</div>
-                    </ul>
+                    <div>Group ID: {groupId}</div>
+                    <div>Identity: {identity ==0 ? "Member" : "Owner"}</div>
                 </div>
-                <InputComponent/>
-                <div> Everyone needs to deposit: {monthlyMoney.toString()}</div>
-                <div>Borrower: {borrower.toString()}</div>
+                <div>Your current balance is : {balance.toString()}</div>
+                    <div>
+                        {`Members: `}
+                        <ul>
+                            <div> some functions to list memebers details</div>
+                            <div> Member 1</div>
+                        </ul>
+                    </div>
+                    <InputComponent/>
+                    <div> Everyone needs to deposit: {monthlyMoney.toString()}</div>
+                    <div>Borrower: {borrower.toString()}</div>
             </div>
+            {identity === "1" && 
+                <div className="ownerFunctions">
+                    <h2>Group Owner Functions</h2>
 
-            {identity === "1" && (
-                <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                    <button className='cta-button mint-nft-button' onClick={() => setIsSettingPayment(true) }>Set Monthly Money Amount</button>
+                    <div className="firstThreeButtons">
+                        <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                            <button className='cta-button mint-nft-button' onClick={resetMonthlyEvent}>Reset Monthly Event</button>
+                        </div>
+                        <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                            <button className='cta-button mint-nft-button' onClick={closeApplication}>Close Borrow Application</button>
+                        </div>
+                        <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                            <button className='cta-button mint-nft-button' onClick={returnSaving}>Return Saving</button>
+                        </div>
+                    </div>
+                    <hr className="grey-line" />
+                    <div className="setMonthlyMoney">
+                        <button className='cta-button mint-nft-button' onClick={() => setIsSettingPayment(true)}>Set Monthly Money Amount</button>
                         {isSettingPayment && (
-                        <div>
-                            <input type="number" placeholder="Monthly Money" value={inputMoney} onChange={e => setInputMoney(e.target.value)}/>
-                            <button onClick={setMonthlyPayment}>Confirm</button>
-                        </div>
+                            <div>
+                                <div>
+                                    <input type="number" placeholder="Monthly Money" value={inputMoney} onChange={e => setInputMoney(e.target.value)} />
+                                    <button onClick={setMonthlyPayment}>Confirm</button>
+                                </div>
+                            </div>
                         )}
+                    </div>
                 </div>
-            )}
+            }
 
-            {identity === "1" && (
-                <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                    <button className='cta-button mint-nft-button' onClick={resetMonthlyEvent}>Reset Monthly Event</button>
+            <div className="memberFunctions">
+                <h2>Group Member Functions</h2>         
+                <div className="buttonContainer">
+                    <button onClick={makePayment} className='cta-button mint-nft-button'>Make Term (Monthly) Deposit</button>
+                    <button onClick={applyBorrow} className='cta-button mint-nft-button'>Apply waitlist</button>
+
                 </div>
-            )}     
+                <hr className="grey-line" />
+                <div className="setMonthlyMoneyGroup">
+                    <div className="setMonthlyMoney">
+                        <button className='cta-button mint-nft-button' onClick={() => setIsRepaying(true)}>Repay Loan</button>
+                        {isRepaying && (
+                            <div>
+                                <input type="number" placeholder="Repay Amount" value={repayAmount} onChange={e => setRepayAmount(e.target.value)}/>
+                                <button onClick={returnMoney}>Confirm</button>
+                            </div>
+                        )}
+                    </div>
 
-            {identity === "1" && (
-                <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                    <button className='cta-button mint-nft-button' onClick={closeApplication}>Close Borrow Application</button>
+                    <div className="setMonthlyMoney">
+                        <button className='cta-button mint-nft-button' onClick={() => setIsStartingExpel(true) } disabled={isVotingExpel}>Initiate Member Dismissal</button>
+                        {isStartingExpel && (
+                            <div className="setMonthlyMoney">
+                                <input type="text" placeholder="User Address" value={userAddress} onChange={e => setUserAddress(e.target.value)}/>
+                                <button onClick={startExpel}>Confirm</button>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="setMonthlyMoney">
+                        <button className='cta-button mint-nft-button' onClick={() => setIsVotingExpel(true) } disabled={!isStartingExpel}>Vote</button>
+                        {isVotingExpel && (
+                            <div className="setMonthlyMoney">
+                                <div className="radioButtons">
+                                    <label>
+                                        <input type="radio" value={true} checked={voteResult === true} onChange={e => setVoteResult(true)}/> Yes
+                                    </label>
+                                    <label>
+                                        <input type="radio" value={false} checked={voteResult === false} onChange={e => setVoteResult(false)}/> No
+                                    </label>
+                                </div>
+                                <button onClick={voteExpel}>Confirm</button>
+                            </div>
+                        )}
+                    </div>
                 </div>
-            )}   
-
-            {identity === "1" && (
-                <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                    <button className='cta-button mint-nft-button' onClick={returnSaving}>Return Saving</button>
-                </div>
-            )}    
-
-            <br></br>
-            <br></br>
-            <br></br>         
-            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                <button onClick={makePayment} className='cta-button mint-nft-button' style={{ marginRight: '20px' }}>Make Term (Monthly) Deposit</button>
-                <button onClick={applyBorrow} className='cta-button mint-nft-button' style={{ marginRight: '20px' }}>Apply waitlist</button>
-                <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                    <button className='cta-button mint-nft-button' onClick={() => setIsRepaying(true)}>Repay Loan</button>
-                    {isRepaying && (
-                        <div>
-                            <input type="number" placeholder="Repay Amount" value={repayAmount} onChange={e => setRepayAmount(e.target.value)}/>
-                            <button onClick={returnMoney}>Confirm</button>
-                        </div>
-                    )}
-                </div>
-
-            </div>
-            <br></br>
-            <br></br>
-
-            <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                <button className='cta-button mint-nft-button' onClick={() => setIsStartingExpel(true) } disabled={isVotingExpel}>Initiate Member Dismissal</button>
-                {isStartingExpel && (
-                <div>
-                    <input type="text" placeholder="User Address" value={userAddress} onChange={e => setUserAddress(e.target.value)}/>
-                    <button onClick={startExpel}>Confirm</button>
-                </div>
-                )}
-        </div>
-
-            <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                <button className='cta-button mint-nft-button' onClick={() => setIsVotingExpel(true) } disabled={!isStartingExpel}>Vote</button>
-                {isVotingExpel && (
-                <div>
-                    <label>
-                        <input type="radio" value={true} checked={voteResult === true} onChange={e => setVoteResult(true)}/> Yes
-                    </label>
-                    <label>
-                        <input type="radio" value={false} checked={voteResult === false} onChange={e => setVoteResult(false)}/> No
-                    </label>
-                    <button onClick={voteExpel}>Confirm</button>
-                </div>
-                )}
             </div>
 
             <br></br>
