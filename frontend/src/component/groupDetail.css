@@ -83,3 +83,56 @@
     width: 100%;
     margin: 10px 0; /* Add some margin above and below the line */
 }
+
+.memberFunctions {
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 20px;
+    box-sizing: border-box;
+    width: 100%;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.memberFunctions button {
+    margin: 10px;
+}
+
+.memberFunctions h2 {
+    margin-bottom: 10px;
+}
+
+.memberFunctions .firstThreeButtons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.memberFunctions .setMonthlyMoney {
+    display: flex;
+    align-items: left;
+}
+
+.memberFunctions .setMonthlyMoney button.cta-button {
+    margin-right: 10px;
+}
+
+.memberFunctions .setMonthlyMoney div {
+    display: flex;
+    align-items: center;
+}
+
+.memberFunctions .setMonthlyMoney input[type="number"] {
+    margin-right: 10px;
+}
+
+.memberFunctions .grey-line {
+    border: none;
+    border-top: 1px solid gray;
+    width: 100%;
+    margin: 10px 0;
+}
