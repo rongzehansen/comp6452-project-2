@@ -349,10 +349,10 @@ export function Home() {
     if (!name)
       return (
         
-          <div  class="input-group mb-3" >
+          <div  className="input-group mb-3" >
             
-            <input  onChange={handleInputChange} type="text" class="form-control" placeholder="Create Account" aria-label="Recipient's username" aria-describedby="button-addon2"/>
-            <button onClick={reportHandler} class="btn btn-outline-secondary" type="button" id="button-addon2">
+            <input  onChange={handleInputChange} type="text" className="form-control" placeholder="Create Account" aria-label="Recipient's username" aria-describedby="button-addon2"/>
+            <button onClick={reportHandler} className="btn btn-outline-secondary" type="button" id="button-addon2">
               Create Account
             </button>
           </div>
@@ -363,16 +363,16 @@ export function Home() {
         <div>
           <div>Welcome {name}</div>
           
-          <div class="input-group mb-3" style={{width:"500px",margin:"auto"}}>
-          <input onChange={handlePaymentChange} type="text" class="form-control" placeholder="Payment amount" aria-label="Recipient's username" aria-describedby="button-addon2"/>
-          <button onClick={paymentHandler} class="btn btn-outline-secondary" type="button" id="button-addon2">Pay</button>
+          <div className="input-group mb-3" style={{width:"500px",margin:"auto"}}>
+          <input onChange={handlePaymentChange} type="text" className="form-control" placeholder="Payment amount" aria-label="Recipient's username" aria-describedby="button-addon2"/>
+          <button onClick={paymentHandler} className="btn btn-outline-secondary" type="button" id="button-addon2">Pay</button>
           
           </div>
           <br></br> 
           <br></br>     
-          <div class="input-group mb-3" style={{width:"500px",margin:"auto"}}>         
-          <input placeholder="Withdraw Amount" onChange={e => setWithdrawAmount(e.target.value)} class="form-control"/>
-          <button onClick={withdraw} class="btn btn-outline-secondary">Withdraw</button>
+          <div className="input-group mb-3" style={{width:"500px",margin:"auto"}}>         
+          <input placeholder="Withdraw Amount" onChange={e => setWithdrawAmount(e.target.value)} className="form-control"/>
+          <button onClick={withdraw} className="btn btn-outline-secondary">Withdraw</button>
           </div>      
           <br></br> 
           <br></br> 
