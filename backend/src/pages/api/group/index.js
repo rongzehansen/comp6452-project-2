@@ -35,11 +35,19 @@ export async function get(req, res) {
   }
 }
 
+// export async function put(req, res) {
+//   const { id } = req.query;
+//   const updatedGroup = await prisma.group.update({
+//     where: { id: Number(id) },
+//     data: req.body,
+//   });
+//   res.json(updatedGroup);
+// }
 export async function put(req, res) {
-  const { id } = req.query;
+  const { id2, ...updateData } = req.body; // Extract id2 from the request body
   const updatedGroup = await prisma.group.update({
-    where: { id: Number(id) },
-    data: req.body,
+    where: { id2: Number(id2) }, // Use id2 as the where clause
+    data: updateData, // Exclude id2 from the update data
   });
   res.json(updatedGroup);
 }
