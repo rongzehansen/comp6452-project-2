@@ -18,8 +18,9 @@ export async function runMiddleware(req, res, fn) {
 }
 
 export async function get(req, res) {
-  const { index } = req.body;
-  
+  // const { index } = req.body;
+  const id = req.params;
+  const index = id;
   if (index) {
     const group = await prisma.group.findUnique({
       where: { index: Number(index) },
