@@ -236,11 +236,15 @@ export function GroupDetail(){
                     {interestRate.toString()}
                 </div>);
         return (
-            <div onBlur={()=>handleBlur()}>
-                <div> Change the Interest Rate</div>
-                <input autoFocus  type="number" placeholder="Interest Rate" value={inputRate} onChange={e => setInputRate(e.target.value)} />
-                <button onClick={changeStatus}>Confirm</button>
-            </div>);
+            <div className="container" onBlur={()=>handleBlur()}>
+                <div>Change the Interest Rate</div>
+                <div className="input-button-group">
+                    <input autoFocus type="number" placeholder="Interest Rate" value={inputRate} onChange={e => setInputRate(e.target.value)} />
+                    <button onClick={changeStatus}>Confirm</button>
+                </div>
+            </div>
+
+        );
 
     }
 
