@@ -9,19 +9,38 @@
 }
 .groupinfo {
     display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.inner-container {
+    display: flex;
     flex-direction: column;
-    align-items: stretch;
+    align-items: center; 
+    width: 70%; 
 }
 
 .info-row {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid rgb(167, 157, 157);
+    padding-bottom: 10px;
+    margin-bottom: 10px;
 }
 
+
 .info-label, .info-value {
-    width: 50%;
     text-align: left;
+}
+
+.info-label {
+    width: 30%; 
+}
+
+.info-value {
+    width: 70%;
 }
 
 .ownerFunctions {
@@ -42,10 +61,8 @@
     margin-bottom: 10px;
   }
   
-  /* Styles for the "Set Monthly Money Amount" section */
   .setMonthlyMoney {
     display: flex;
-    /* flex-direction: column; */
     align-items: center;
   }
   
@@ -59,7 +76,6 @@
     margin-bottom: 10px;   
 }
 
-/* Updated style for the buttons section */
 .buttonContainer {
     display: flex;
     flex-wrap: wrap;
@@ -73,14 +89,13 @@
     margin: 10px;
 }
 
-/* Styles for the "Set Monthly Money Amount" section */
 .setMonthlyMoney {
     display: flex;
     align-items: center;
 }
 
 .setMonthlyMoney button.cta-button {
-    margin-right: 10px; /* Add some spacing between the button and the input */
+    margin-right: 10px; 
 }
 
 .setMonthlyMoney div {
@@ -89,15 +104,14 @@
 }
 
 .setMonthlyMoney input[type="number"] {
-    margin-right: 10px; /* Add some spacing between the input and the button */
+    margin-right: 10px; 
 }
 
-/* Style for the grey line */
 .grey-line {
     border: none;
-    border-top: 1px solid gray; /* Set the color and style of the line */
+    border-top: 1px solid gray; 
     width: 100%;
-    margin: 10px 0; /* Add some margin above and below the line */
+    margin: 10px 0; 
 }
 
 .memberFunctions {
@@ -162,11 +176,11 @@
 .memberFunctions .buttonContainer {
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* This will align the items to the start of the container */
+    justify-content: flex-start; 
 }
 
 .memberFunctions .buttonContainer button {
-    margin-right: 20px; /* Same as the ownerFunctions buttons */
+    margin-right: 20px; 
 }
 
 
