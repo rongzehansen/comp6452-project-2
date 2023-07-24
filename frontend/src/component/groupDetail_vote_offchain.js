@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 const abi = contract;
 
 
-export function groupDetail_vote_offchain(){
+export function GroupDetail_vote_offchain(){
 
     //get props from previous page
     const location = useLocation();
