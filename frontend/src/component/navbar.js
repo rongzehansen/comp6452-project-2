@@ -15,6 +15,9 @@ export function Navbar() {
         <li className="navbar-item">
           <Link to="/groupdetail">GroupDetail</Link>
         </li>
+        <li className="navbar-item">
+          <Link to="/groupDetail_vote_offchain">vote_offchain</Link>
+        </li>
       </ul>
     </nav>
 
