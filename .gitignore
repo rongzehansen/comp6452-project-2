@@ -1,5 +1,5 @@
 backend/node_modules/
-# backend/prisma/dev.db*
+backend/prisma/dev.db*
 
 frontend/node_modules/
 
