@@ -219,4 +219,14 @@
     border-radius: 5px;
     text-align: center;
   }
-  
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    }
+
+    .input-button-group {
+        display: flex;
+        align-items: center;
+    }
+
