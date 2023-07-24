@@ -5,8 +5,6 @@ import { Navbar } from './component/navbar';
 import { Home } from './component/home';
 import { UserInfo } from './component/usersInfo';
 import { GroupDetail } from './component/groupDetail';
-import { Group } from './component/group';
-import { GroupForm } from './component/groupform';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
 
@@ -32,8 +30,6 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/userInfo' element={<UserInfo />} />
           <Route path='/groupDetail' element={<GroupDetail />} />
-          <Route path='/group' element={<Group />} />
-          <Route path='/groupform' element={<GroupForm />} />
         </Routes>
       </div>
     </Router>
