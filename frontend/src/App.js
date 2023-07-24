@@ -5,6 +5,7 @@ import { Navbar } from './component/navbar';
 import { Home } from './component/home';
 import { UserInfo } from './component/usersInfo';
 import { GroupDetail } from './component/groupDetail';
+import { GroupDetail_vote_offchain } from './component/groupDetail_vote_offchain';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
 
@@ -30,6 +31,7 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/userInfo' element={<UserInfo />} />
           <Route path='/groupDetail' element={<GroupDetail />} />
+          <Route path='/groupDetail_vote_offchain' element={<GroupDetail_vote_offchain />} />
         </Routes>
       </div>
     </Router>
