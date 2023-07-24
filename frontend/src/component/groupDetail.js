@@ -248,79 +248,15 @@ export function GroupDetail(){
 
     }
 
-    // const startExpel = async () => {
-    //     const { ethereum } = window;
-    //     if(ethereum) {
-    //         const provider = new ethers.BrowserProvider(ethereum);
-    //         const signer = await provider.getSigner();
-    //         if(currentAccount == null) return;
-    //         const tradeContract = new ethers.Contract(contractAddress, abi, signer);
-    //         await tradeContract.startExpel(groupId, userAddress);
-    //         setIsVotingExpel(true); 
-    //     } else {
-    //         console.log("Ethereum object does not exist");
-    //     }
-    // };
-    
-    // const voteExpel = async () => {
-    //     const { ethereum } = window;
-    //     if(ethereum) {
-    //         const provider = new ethers.BrowserProvider(ethereum);
-    //         const signer = await provider.getSigner();
-    //         if(currentAccount == null) return;
-    //         const tradeContract = new ethers.Contract(contractAddress, abi, signer);
-    //         await tradeContract.voteExpel(groupId, voteResult);
-    //     } else {
-    //         console.log("Ethereum object does not exist");
-    //     }
-    // };
-    const handleCreateVote = async (payload, args) => {
-        try {
-          const response = await fetch('http://localhost:5000/api/vote', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-          });
-          const data = await response.json();
-          console.log(data);
-          setIsVotingExpel(args);
-        } catch (error) {
-          console.error('Error in creating vote:', error);
-        }
-    };
-      
-    const handleUpdateVote = async (groupId, payload, args) => {
-        try {
-            const response = await fetch(`http://localhost:5000/api/vote/${groupId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-            });
-            const data = await response.json();
-            console.log(data);
-            // setParams(args); // not needed
-        } catch (error) {
-            console.error(`Error in updating vote for groupId ${groupId}:`, error);
-        }
-    };
-      
     const startExpel = async () => {
         const { ethereum } = window;
         if(ethereum) {
             const provider = new ethers.BrowserProvider(ethereum);
             const signer = await provider.getSigner();
             if(currentAccount == null) return;
-            // const tradeContract = new ethers.Contract(contractAddress, abi, signer);
-            // await tradeContract.startExpel(groupId, userAddress);
-            // setIsVotingExpel(true);
-            const payload = {groupId}  //empty json object
-            const args = true // to setIsVotingExpel to true when success.
-            handleCreateVote(payload, args)
-
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            await tradeContract.startExpel(groupId, userAddress);
+            setIsVotingExpel(true); 
         } else {
             console.log("Ethereum object does not exist");
         }
@@ -332,15 +268,79 @@ export function GroupDetail(){
             const provider = new ethers.BrowserProvider(ethereum);
             const signer = await provider.getSigner();
             if(currentAccount == null) return;
-            // const tradeContract = new ethers.Contract(contractAddress, abi, signer);
-            // await tradeContract.voteExpel(groupId, voteResult);
-            const payload = {groupId, [signer]:voteResult}  //voteResult is boolean
-            const args = true // not needed
-            handleUpdateVote(groupId, payload, args)
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            await tradeContract.voteExpel(groupId, voteResult);
         } else {
             console.log("Ethereum object does not exist");
         }
     };
+    // const handleCreateVote = async (payload, args) => {
+    //     try {
+    //       const response = await fetch('http://localhost:5000/api/vote', {
+    //         method: 'POST',
+    //         headers: {
+    //           'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify(payload),
+    //       });
+    //       const data = await response.json();
+    //       console.log(data);
+    //       setIsVotingExpel(args);
+    //     } catch (error) {
+    //       console.error('Error in creating vote:', error);
+    //     }
+    // };
+      
+    // const handleUpdateVote = async (groupId, payload, args) => {
+    //     try {
+    //         const response = await fetch(`http://localhost:5000/api/vote/${groupId}`, {
+    //         method: 'PUT',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify(payload),
+    //         });
+    //         const data = await response.json();
+    //         console.log(data);
+    //         // setParams(args); // not needed
+    //     } catch (error) {
+    //         console.error(`Error in updating vote for groupId ${groupId}:`, error);
+    //     }
+    // };
+      
+    // const startExpel = async () => {
+    //     const { ethereum } = window;
+    //     if(ethereum) {
+    //         const provider = new ethers.BrowserProvider(ethereum);
+    //         const signer = await provider.getSigner();
+    //         if(currentAccount == null) return;
+    //         // const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+    //         // await tradeContract.startExpel(groupId, userAddress);
+    //         // setIsVotingExpel(true);
+    //         const payload = {groupId}  //empty json object
+    //         const args = true // to setIsVotingExpel to true when success.
+    //         handleCreateVote(payload, args)
+
+    //     } else {
+    //         console.log("Ethereum object does not exist");
+    //     }
+    // };
+    
+    // const voteExpel = async () => {
+    //     const { ethereum } = window;
+    //     if(ethereum) {
+    //         const provider = new ethers.BrowserProvider(ethereum);
+    //         const signer = await provider.getSigner();
+    //         if(currentAccount == null) return;
+    //         // const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+    //         // await tradeContract.voteExpel(groupId, voteResult);
+    //         const payload = {groupId, [signer]:voteResult}  //voteResult is boolean
+    //         const args = true // not needed
+    //         handleUpdateVote(groupId, payload, args)
+    //     } else {
+    //         console.log("Ethereum object does not exist");
+    //     }
+    // };
    
     const applyBorrow = async () => {
         const { ethereum } = window;
