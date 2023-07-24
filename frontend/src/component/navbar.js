@@ -1,26 +1,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './navbar.css';
 
 export function Navbar() {
   return (
-    <nav style={{ backgroundColor: '#f2f2f2' }}>
-      <ul style={{ display: 'flex', justifyContent: 'center', padding: '0', margin: '0' }}>
-        <li style={{ listStyle: 'none', margin: '0 10px' }}>
+    <nav className="navbar">
+      <ul className="navbar-list">
+        <li className="navbar-item">
           <Link to="/">Home</Link>
         </li>
-        <li style={{ listStyle: 'none', margin: '0 10px' }}>
+        <li className="navbar-item">
           <Link to="/userinfo">UserInfo</Link>
         </li>
-        <li style={{ listStyle: 'none', margin: '0 10px' }}>
+        <li className="navbar-item">
           <Link to="/groupdetail">GroupDetail</Link>
-        </li>
-        <li style={{ listStyle: 'none', margin: '0 10px' }}>
-          <Link to="/group">Group</Link>
-        </li>
-        <li style={{ listStyle: 'none', margin: '0 10px' }}>
-          <Link to="/groupform">GroupForm</Link>
         </li>
       </ul>
     </nav>
+
   );
 }
