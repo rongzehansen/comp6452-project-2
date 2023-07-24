@@ -244,41 +244,15 @@ export function GroupDetail(){
 
     }
 
-    // const startExpel = async () => {
-    //     const { ethereum } = window;
-    //     if(ethereum) {
-    //         const provider = new ethers.BrowserProvider(ethereum);
-    //         const signer = await provider.getSigner();
-    //         if(currentAccount == null) return;
-    //         const tradeContract = new ethers.Contract(contractAddress, abi, signer);
-    //         await tradeContract.startExpel(groupId, userAddress);
-    //         setIsVotingExpel(true); 
-    //     } else {
-    //         console.log("Ethereum object does not exist");
-    //     }
-    // };
-    
-    // const voteExpel = async () => {
-    //     const { ethereum } = window;
-    //     if(ethereum) {
-    //         const provider = new ethers.BrowserProvider(ethereum);
-    //         const signer = await provider.getSigner();
-    //         if(currentAccount == null) return;
-    //         const tradeContract = new ethers.Contract(contractAddress, abi, signer);
-    //         await tradeContract.voteExpel(groupId, voteResult);
-    //     } else {
-    //         console.log("Ethereum object does not exist");
-    //     }
-    // };
     const startExpel = async () => {
         const { ethereum } = window;
         if(ethereum) {
             const provider = new ethers.BrowserProvider(ethereum);
             const signer = await provider.getSigner();
             if(currentAccount == null) return;
-            // const tradeContract = new ethers.Contract(contractAddress, abi, signer);
-            // await tradeContract.startExpel(groupId, userAddress);
-            // setIsVotingExpel(true); 
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            await tradeContract.startExpel(groupId, userAddress);
+            setIsVotingExpel(true); 
         } else {
             console.log("Ethereum object does not exist");
         }
@@ -290,13 +264,13 @@ export function GroupDetail(){
             const provider = new ethers.BrowserProvider(ethereum);
             const signer = await provider.getSigner();
             if(currentAccount == null) return;
-            // const tradeContract = new ethers.Contract(contractAddress, abi, signer);
-            // await tradeContract.voteExpel(groupId, voteResult);
+            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            await tradeContract.voteExpel(groupId, voteResult);
         } else {
             console.log("Ethereum object does not exist");
         }
     };
-    
+   
     const applyBorrow = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -381,9 +355,9 @@ export function GroupDetail(){
         try{
             const { ethereum } = window;
             checkWalletIsConnected();
-            // if (groupId === null || identity === null) {
-            //     navigate('/');
-            // }
+            if (groupId === null || identity === null) {
+                navigate('/');
+            }
             if(currentAccount)
             checkUserAccount();
             getBalance();
@@ -412,8 +386,7 @@ export function GroupDetail(){
     return (
         <div className="outerDiv">
            <h1>Group Detail Page</h1>
-            {/* {!(groupId === null || identity === null) &&  */}
-            {true && 
+            {!(groupId === null || identity === null) && 
             <>
                 <div className="groupinfo">
                     <div className="inner-container">
@@ -533,8 +506,7 @@ export function GroupDetail(){
             <br></br>
             <br></br>
             <br></br>
-            {/* { (groupId === null || identity === null) &&  */}
-            { false && 
+            { (groupId === null || identity === null) && 
                 <div className="overlay">
                     <div className="message">
                         <p>You must have a wallet to access this page</p>
