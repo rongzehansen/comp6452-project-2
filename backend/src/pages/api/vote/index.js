@@ -31,12 +31,12 @@ export async function get(req, res) {
 }
 
 export async function post(req, res) {
-  const { groupId, voteResult } = req.body;
-  if (groupId && voteResult) {
+  const { groupId } = req.body;
+  if (groupId) {
     const newVote = await prisma.vote.create({
       data: {
         groupId: groupId,
-        voteResult: voteResult,
+        voteResult: {}, // empty json is created as a voteResult
       },
     });
     res.json(newVote);
@@ -48,11 +48,23 @@ export async function post(req, res) {
 export async function put(req, res) {
   const { groupId, ...updateData } = req.body; // Extract groupId from the request body
   if (groupId) {
-    const updatedVote = await prisma.vote.update({
-      where: { groupId: groupId }, // Use groupId as the where clause
-      data: updateData, // Exclude groupId from the update data
+    const vote = await prisma.user.findUnique({
+      where: { groupId: groupId },
     });
-    res.json(updatedVote);
+    if (vote){
+      const voteJson = JSON.parse(vote.voreResult)
+      // const dataJson = JSON.parse(updateData) // this may not be needed since updated is already parsed as json.
+      const updatedVote = await prisma.vote.update({
+        where: { groupId: groupId }, // Use groupId as the where clause
+        data: {
+          groupId: groupId,
+          voteResult:{...voteJson, ...updateData}
+        }, // Exclude groupId from the update data
+      });
+      res.json(updatedVote);
+    } else {
+      res.status(400).send('Bad Request: groupId is required');
+    }   
   } else {
     res.status(400).send('Bad Request: groupId is required');
   }
