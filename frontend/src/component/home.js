@@ -222,7 +222,6 @@ export function Home() {
           period: args.period,
           timeCreated: args.timeCreated,
           timeUpdated: args.timeUpdated,
-          active: true,
       }
       handleCreateGroup(payload, args);
     }
