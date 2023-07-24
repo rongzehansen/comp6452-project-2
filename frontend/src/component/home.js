@@ -262,7 +262,7 @@ groupManagerContract.on("db_createGroup", (...args) => {
       alert(args);
       console.log(args);
       const payload = {
-          id: 0,
+          id: args.index,
           index: args.index,
           voteOpen: args.status.voteOpen,
           depositOpen: args.status.depositOpen,
@@ -276,7 +276,7 @@ groupManagerContract.on("db_createGroup", (...args) => {
       alert(args);
       console.log(args);
       const payload = {
-          id: 0,
+          id: args.index,
           index: args.index,
           interestRate: args.interestRate,
       }        
@@ -288,7 +288,7 @@ groupManagerContract.on("db_createGroup", (...args) => {
       alert(args);
       console.log(args);
       const payload = {
-          id: 0,
+          id: args.index,
           index: args.index,
           name: args.name,
           monthlyPayment: args.monthlyPayment,
@@ -301,7 +301,7 @@ groupManagerContract.on("db_createGroup", (...args) => {
       alert(args);
       console.log(args);
       const payload = {
-          id: 0,
+          id: args.index,
           index: args.index,
           period: args.period,
       }        
