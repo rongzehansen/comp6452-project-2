@@ -206,27 +206,57 @@ export function Home() {
   //       console.log(args);
   //     }
   //   });
-  groupManagerContract.on("db_createGroup", (...args) => {
-    if (!checkParam(args, params)) {
-      alert(args);
-      console.log(args);
-      const payload = {
-          index: args.index,
-          name: args.name,
-          owner: args.owner,
-          voteOpen: args.status.voteOpen,
-          depositOpen: args.status.depositOpen,
-          applicationOpen: args.status.applicationOpen,
-          interestRate: args.interestRate,
-          monthlyPayment: args.monthlyPayment,
-          period: args.period,
-          timeCreated: args.timeCreated,
-          timeUpdated: args.timeUpdated,
-      }
-      handleCreateGroup(payload, args);
-    }
+  // groupManagerContract.on("db_createGroup", (...args) => {
+  //   if (!checkParam(args, params)) {
+  //     alert(args);
+  //     console.log(args);
+  //     const payload = {
+  //         index: args.index,
+  //         name: args.name,
+  //         owner: args.owner,
+  //         voteOpen: args.status.voteOpen,
+  //         depositOpen: args.status.depositOpen,
+  //         applicationOpen: args.status.applicationOpen,
+  //         interestRate: args.interestRate,
+  //         monthlyPayment: args.monthlyPayment,
+  //         period: args.period,
+  //         timeCreated: args.timeCreated,
+  //         timeUpdated: args.timeUpdated,
+  //     }
+  //     handleCreateGroup(payload, args);
+  //   }
 
-  });
+  // });
+
+let lastCallTime = 0;
+groupManagerContract.on("db_createGroup", (...args) => {
+  const now = Date.now();
+  if (now - lastCallTime < 10) {
+    // Ignore call if it's within 10ms of the last call
+    return;
+  }
+  lastCallTime = now;
+
+  if (!checkParam(args, params)) {
+    alert(args);
+    console.log(args);
+    const payload = {
+        index: args.index,
+        name: args.name,
+        owner: args.owner,
+        voteOpen: args.status.voteOpen,
+        depositOpen: args.status.depositOpen,
+        applicationOpen: args.status.applicationOpen,
+        interestRate: args.interestRate,
+        monthlyPayment: args.monthlyPayment,
+        period: args.period,
+        timeCreated: args.timeCreated,
+        timeUpdated: args.timeUpdated,
+    }
+    handleCreateGroup(payload, args);
+  }
+});
+
   groupManagerContract.on("db_updateStatus", (...args) => {
     if (!checkParam(args, params)) {
       alert(args);
