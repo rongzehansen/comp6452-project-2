@@ -355,9 +355,9 @@ export function GroupDetail(){
         try{
             const { ethereum } = window;
             checkWalletIsConnected();
-            if (groupId === null || identity === null) {
-                navigate('/');
-            }
+            // if (groupId === null || identity === null) {
+            //     navigate('/');
+            // }
             if(currentAccount)
             checkUserAccount();
             getBalance();
@@ -386,7 +386,8 @@ export function GroupDetail(){
     return (
         <div className="outerDiv">
            <h1>Group Detail Page</h1>
-            {!(groupId === null || identity === null) && 
+            {/* {!(groupId === null || identity === null) &&  */}
+            {true && 
             <>
                 <div className="groupinfo">
                     <div className="inner-container">
@@ -425,7 +426,8 @@ export function GroupDetail(){
                         </div>
                     </div>
                 </div>
-                {identity === "1" && 
+                {/* {identity === "1" &&  */}
+                {true && 
                     <div className="ownerFunctions">
                         <h2>Group Owner Functions</h2>
 
@@ -506,7 +508,8 @@ export function GroupDetail(){
             <br></br>
             <br></br>
             <br></br>
-            { (groupId === null || identity === null) && 
+            {/* { (groupId === null || identity === null) &&  */}
+            { false && 
                 <div className="overlay">
                     <div className="message">
                         <p>You must have a wallet to access this page</p>
