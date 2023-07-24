@@ -26,3 +26,11 @@ model Group {
   timeCreated    DateTime @default(now())
   timeUpdated    DateTime @updatedAt
 }
+
+model Vote {
+  id        Int      @id @default(autoincrement())
+  groupId   String   @unique
+  voteResult String
+  timeCreated    DateTime @default(now())
+  timeUpdated    DateTime @updatedAt
+}
