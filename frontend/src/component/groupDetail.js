@@ -274,7 +274,7 @@ export function GroupDetail(){
             console.log("Ethereum object does not exist");
         }
     };
-    
+   
     const applyBorrow = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -510,8 +510,7 @@ export function GroupDetail(){
             <br></br>
             <br></br>
             <br></br>
-            {/* { (groupId === null || identity === null) &&  */}
-            { false && 
+            { (groupId === null || identity === null) && 
                 <div className="overlay">
                     <div className="message">
                         <p>You must have a wallet to access this page</p>

@@ -3,7 +3,7 @@ import Cors from 'cors';
 
 const prisma = new PrismaClient();
 const cors = Cors({
-  methods: ['GET', 'HEAD', 'PUT', 'DELETE'],
+  methods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE'],
 });
 
 export async function runMiddleware(req, res, fn) {
@@ -18,7 +18,6 @@ export async function runMiddleware(req, res, fn) {
 }
 
 export async function get(req, res) {
-  // const { index } = req.body;
   const id = req.params;
   const index = id;
   if (index) {
@@ -27,30 +26,50 @@ export async function get(req, res) {
     });
     res.json(group);
   } else {
-    // const groups = await prisma.group.findMany();
-    // Mock data
-    const groups = [
-      {id: 1, index: 1, name:'group1', owner:'owner1', timeCreated: '2023-07-01', timeUpdated:'2023-07-01'}
-    ]
+    const groups = await prisma.group.findMany();
     res.json(groups);
+  }
+}
+
+export async function post(req, res) {
+  const { index, name, owner } = req.body;
+  if (index && name && owner) {
+    const newGroup = await prisma.group.create({
+      data: {
+        index: Number(index),
+        name: name,
+        owner: owner,
+      },
+    });
+    res.json(newGroup);
+  } else {
+    res.status(400).send('Bad Request: index, name, and owner are required');
   }
 }
 
 export async function put(req, res) {
   const { index, ...updateData } = req.body; // Extract index from the request body
-  const updatedGroup = await prisma.group.update({
-    where: { index: Number(index) }, // Use index as the where clause
-    data: updateData, // Exclude index from the update data
-  });
-  res.json(updatedGroup);
+  if (index) {
+    const updatedGroup = await prisma.group.update({
+      where: { index: Number(index) }, // Use index as the where clause
+      data: updateData, // Exclude index from the update data
+    });
+    res.json(updatedGroup);
+  } else {
+    res.status(400).send('Bad Request: index is required');
+  }
 }
 
 export async function del(req, res) {
   const { index } = req.body;
-  const deletedGroup = await prisma.group.delete({
-    where: { index: Number(index) },
-  });
-  res.json(deletedGroup);
+  if (index) {
+    const deletedGroup = await prisma.group.delete({
+      where: { index: Number(index) },
+    });
+    res.json(deletedGroup);
+  } else {
+    res.status(400).send('Bad Request: index is required');
+  }
 }
 
 export default async function handler(req, res) {
@@ -61,12 +80,14 @@ export default async function handler(req, res) {
   switch (method) {
     case 'GET':
       return get(req, res);
+    case 'POST':
+      return post(req, res);
     case 'PUT':
       return put(req, res);
     case 'DELETE':
       return del(req, res);
     default:
-      res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
+      res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }
