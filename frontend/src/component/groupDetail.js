@@ -244,15 +244,41 @@ export function GroupDetail(){
 
     }
 
+    // const startExpel = async () => {
+    //     const { ethereum } = window;
+    //     if(ethereum) {
+    //         const provider = new ethers.BrowserProvider(ethereum);
+    //         const signer = await provider.getSigner();
+    //         if(currentAccount == null) return;
+    //         const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+    //         await tradeContract.startExpel(groupId, userAddress);
+    //         setIsVotingExpel(true); 
+    //     } else {
+    //         console.log("Ethereum object does not exist");
+    //     }
+    // };
+    
+    // const voteExpel = async () => {
+    //     const { ethereum } = window;
+    //     if(ethereum) {
+    //         const provider = new ethers.BrowserProvider(ethereum);
+    //         const signer = await provider.getSigner();
+    //         if(currentAccount == null) return;
+    //         const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+    //         await tradeContract.voteExpel(groupId, voteResult);
+    //     } else {
+    //         console.log("Ethereum object does not exist");
+    //     }
+    // };
     const startExpel = async () => {
         const { ethereum } = window;
         if(ethereum) {
             const provider = new ethers.BrowserProvider(ethereum);
             const signer = await provider.getSigner();
             if(currentAccount == null) return;
-            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
-            await tradeContract.startExpel(groupId, userAddress);
-            setIsVotingExpel(true); 
+            // const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            // await tradeContract.startExpel(groupId, userAddress);
+            // setIsVotingExpel(true); 
         } else {
             console.log("Ethereum object does not exist");
         }
@@ -264,8 +290,8 @@ export function GroupDetail(){
             const provider = new ethers.BrowserProvider(ethereum);
             const signer = await provider.getSigner();
             if(currentAccount == null) return;
-            const tradeContract = new ethers.Contract(contractAddress, abi, signer);
-            await tradeContract.voteExpel(groupId, voteResult);
+            // const tradeContract = new ethers.Contract(contractAddress, abi, signer);
+            // await tradeContract.voteExpel(groupId, voteResult);
         } else {
             console.log("Ethereum object does not exist");
         }
