@@ -1,85 +1,91 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from "@prisma/client";
+import Cors from 'cors';
+
 const prisma = new PrismaClient();
+const cors = Cors({
+  methods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE'],
+});
 
-async function createVote(groupId, voteResult) {
-  return prisma.vote.create({
-    data: {
-      groupId,
-      voteResult,
-    },
+export async function runMiddleware(req, res, fn) {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+      return resolve(result);
+    });
   });
 }
 
-async function updateVote(groupId, updatedVoteResult) {
-  return prisma.vote.update({
-    where: {
-      groupId,
-    },
-    data: {
-      voteResult: updatedVoteResult,
-    },
-  });
+export async function get(req, res) {
+  const id = req.params;
+  const groupId = id;
+  if (groupId) {
+    const vote = await prisma.vote.findUnique({
+      where: { groupId: groupId },
+    });
+    res.json(vote);
+  } else {
+    res.status(400).send('Bad Request: groupId is required');
+  }
 }
 
-async function getVote(groupId) {
-  return prisma.vote.findUnique({
-    where: {
-      groupId,
-    },
-  });
+export async function post(req, res) {
+  const { groupId, voteResult } = req.body;
+  if (groupId && voteResult) {
+    const newVote = await prisma.vote.create({
+      data: {
+        groupId: groupId,
+        voteResult: voteResult,
+      },
+    });
+    res.json(newVote);
+  } else {
+    res.status(400).send('Bad Request: groupId and voteResult are required');
+  }
 }
 
-async function deleteVote(groupId) {
-  return prisma.vote.delete({
-    where: {
-      groupId,
-    },
-  });
+export async function put(req, res) {
+  const { groupId, ...updateData } = req.body; // Extract groupId from the request body
+  if (groupId) {
+    const updatedVote = await prisma.vote.update({
+      where: { groupId: groupId }, // Use groupId as the where clause
+      data: updateData, // Exclude groupId from the update data
+    });
+    res.json(updatedVote);
+  } else {
+    res.status(400).send('Bad Request: groupId is required');
+  }
 }
 
-const voteData = {
-  yes: 10,
-  no: 5,
-  maybe: 3,
-};
+export async function del(req, res) {
+  const { groupId } = req.body;
+  if (groupId) {
+    const deletedVote = await prisma.vote.delete({
+      where: { groupId: groupId },
+    });
+    res.json(deletedVote);
+  } else {
+    res.status(400).send('Bad Request: groupId is required');
+  }
+}
 
-// Create a new vote
-createVote('group123', voteData)
-  .then((createdVote) => {
-    console.log('Vote created:', createdVote);
+export default async function handler(req, res) {
+  await runMiddleware(req, res, cors);
 
-    // Update the vote
-    const updatedVoteData = {
-      yes: 15,
-      no: 8,
-      maybe: 4,
-    };
-    updateVote('group123', updatedVoteData)
-      .then((updatedVote) => {
-        console.log('Vote updated:', updatedVote);
-
-        // Get the vote
-        getVote('group123')
-          .then((retrievedVote) => {
-            console.log('Vote retrieved:', retrievedVote);
-
-            // Delete the vote
-            deleteVote('group123')
-              .then((deletedVote) => {
-                console.log('Vote deleted:', deletedVote);
-              })
-              .catch((error) => {
-                console.error('Error deleting vote:', error);
-              });
-          })
-          .catch((error) => {
-            console.error('Error retrieving vote:', error);
-          });
-      })
-      .catch((error) => {
-        console.error('Error updating vote:', error);
-      });
-  })
-  .catch((error) => {
-    console.error('Error creating vote:', error);
-  });
+  const { method } = req;
+  
+  switch (method) {
+    case 'GET':
+      return get(req, res);
+    case 'POST':
+      return post(req, res);
+    case 'PUT':
+      return put(req, res);
+    case 'DELETE':
+      return del(req, res);
+    default:
+      res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
+      res.status(405).end(`Method ${method} Not Allowed`);
+  }
+}
