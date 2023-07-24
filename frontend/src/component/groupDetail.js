@@ -7,6 +7,7 @@ import contract from '../contracts/contract.json'
 import {contractAddress} from '../App'
 import logo from '../static/arrow-back-3783.png';
 import './groupDetail.css';
+import { Link } from 'react-router-dom';
 
 const abi = contract;
 
@@ -351,154 +352,168 @@ export function GroupDetail(){
     };
 
     useEffect(() => {
-        const { ethereum } = window;
-        checkWalletIsConnected();
-        // if (groupId === null || identity === null) {
-        //     navigate('/');
-        // }
-        if(currentAccount)
-        checkUserAccount();
-        getBalance();
-        getInterest();
-        getMonthlyPayment();
-        getBorrower();
-        //console.log(interestRate);
-        //alert(interestRate);
-        if (ethereum) {
-            // Subscribe to accounts change
-            ethereum.on('accountsChanged', handleAccountsChanged);
-    
-            // It's important to properly clean up to avoid memory leaks
-            return () => {
-                ethereum.removeListener('accountsChanged', handleAccountsChanged);
-            };
+        try{
+            const { ethereum } = window;
+            checkWalletIsConnected();
+            if (groupId === null || identity === null) {
+                navigate('/');
+            }
+            if(currentAccount)
+            checkUserAccount();
+            getBalance();
+            getInterest();
+            getMonthlyPayment();
+            getBorrower();
+            //console.log(interestRate);
+            //alert(interestRate);
+            if (ethereum) {
+                // Subscribe to accounts change
+                ethereum.on('accountsChanged', handleAccountsChanged);
+        
+                // It's important to properly clean up to avoid memory leaks
+                return () => {
+                    ethereum.removeListener('accountsChanged', handleAccountsChanged);
+                };
+            }
+            setGroupId(searchParams.get('id'));
+            setIdentity(searchParams.get('identity'));
+        }catch(err){
+            console.log(err)
         }
-        setGroupId(searchParams.get('id'));
-        setIdentity(searchParams.get('identity'));
+
     }, [currentAccount,name,interestRate,monthlyMoney,balance,location.search])
 
     return (
         <div className="outerDiv">
            <h1>Group Detail Page</h1>
-            <div className="groupinfo">
-                <div className="inner-container">
-                    <div className="info-row">
-                        <div className="info-label">Group ID: </div>
-                        <div className="info-value">{groupId}</div>
-                    </div>
-                    <div className="info-row">
-                        <div className="info-label">Identity: </div>
-                        <div className="info-value">{identity ==0 ? "Member" : "Owner"}</div>
-                    </div>
-                    <div className="info-row">
-                        <div className="info-label">Your current balance is :</div>
-                        <div className="info-value">{balance.toString()}</div>
-                    </div>
-                    <div className="info-row">
-                        <div className="info-label">Members: </div>
-                        <div className="info-value">
-                            <ul>
-                                <li> some functions to list memebers details</li>
-                                <li> Member 1</li>
-                            </ul>
+            {!(groupId === null || identity === null) && 
+            <>
+                <div className="groupinfo">
+                    <div className="inner-container">
+                        <div className="info-row">
+                            <div className="info-label">Group ID: </div>
+                            <div className="info-value">{groupId}</div>
                         </div>
-                    </div>
-                    <div className="info-row">
-                        <div className="info-label">Current Interest Rate is</div>
-                        <div className="info-value"><InputComponent/></div>
-                    </div>
-                    <div className="info-row">
-                        <div className="info-label">Everyone needs to deposit: </div>
-                        <div className="info-value">{monthlyMoney.toString()}</div>
-                    </div>
-                    <div className="info-row">
-                        <div className="info-label">Borrower: </div>
-                        <div className="info-value">{borrower.toString()}</div>
+                        <div className="info-row">
+                            <div className="info-label">Identity: </div>
+                            <div className="info-value">{identity ==0 ? "Member" : "Owner"}</div>
+                        </div>
+                        <div className="info-row">
+                            <div className="info-label">Your current balance is :</div>
+                            <div className="info-value">{balance.toString()}</div>
+                        </div>
+                        <div className="info-row">
+                            <div className="info-label">Members: </div>
+                            <div className="info-value">
+                                <ul>
+                                    <li> some functions to list memebers details</li>
+                                    <li> Member 1</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="info-row">
+                            <div className="info-label">Current Interest Rate is</div>
+                            <div className="info-value"><InputComponent/></div>
+                        </div>
+                        <div className="info-row">
+                            <div className="info-label">Everyone needs to deposit: </div>
+                            <div className="info-value">{monthlyMoney.toString()}</div>
+                        </div>
+                        <div className="info-row">
+                            <div className="info-label">Borrower: </div>
+                            <div className="info-value">{borrower.toString()}</div>
+                        </div>
                     </div>
                 </div>
-            </div>
+                {identity === "1" && 
+                    <div className="ownerFunctions">
+                        <h2>Group Owner Functions</h2>
 
-            {identity === "1" && 
-                <div className="ownerFunctions">
-                    <h2>Group Owner Functions</h2>
-
-                    <div className="firstThreeButtons">
-                        <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                            <button className='cta-button mint-nft-button' onClick={resetMonthlyEvent}>Reset Monthly Event</button>
+                        <div className="firstThreeButtons">
+                            <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                                <button className='cta-button mint-nft-button' onClick={resetMonthlyEvent}>Reset Monthly Event</button>
+                            </div>
+                            <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                                <button className='cta-button mint-nft-button' onClick={closeApplication}>Close Borrow Application</button>
+                            </div>
+                            <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                                <button className='cta-button mint-nft-button' onClick={returnSaving}>Return Saving</button>
+                            </div>
                         </div>
-                        <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                            <button className='cta-button mint-nft-button' onClick={closeApplication}>Close Borrow Application</button>
-                        </div>
-                        <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                            <button className='cta-button mint-nft-button' onClick={returnSaving}>Return Saving</button>
+                        <hr className="grey-line" />
+                        <div className="setMonthlyMoney">
+                            <button className='cta-button mint-nft-button' onClick={() => setIsSettingPayment(true)}>Set Monthly Money Amount</button>
+                            {isSettingPayment && (
+                                <div>
+                                    <div>
+                                        <input type="number" placeholder="Monthly Money" value={inputMoney} onChange={e => setInputMoney(e.target.value)} />
+                                        <button onClick={setMonthlyPayment}>Confirm</button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
+                }
+                <div className="memberFunctions">
+                    <h2>Group Member Functions</h2>         
+                    <div className="buttonContainer">
+                        <button onClick={makePayment} className='cta-button mint-nft-button'>Make Term (Monthly) Deposit</button>
+                        <button onClick={applyBorrow} className='cta-button mint-nft-button'>Apply waitlist</button>
+
+                    </div>
                     <hr className="grey-line" />
-                    <div className="setMonthlyMoney">
-                        <button className='cta-button mint-nft-button' onClick={() => setIsSettingPayment(true)}>Set Monthly Money Amount</button>
-                        {isSettingPayment && (
-                            <div>
+                    <div className="setMonthlyMoneyGroup">
+                        <div className="setMonthlyMoney">
+                            <button className='cta-button mint-nft-button' onClick={() => setIsRepaying(true)}>Repay Loan</button>
+                            {isRepaying && (
                                 <div>
-                                    <input type="number" placeholder="Monthly Money" value={inputMoney} onChange={e => setInputMoney(e.target.value)} />
-                                    <button onClick={setMonthlyPayment}>Confirm</button>
+                                    <input type="number" placeholder="Repay Amount" value={repayAmount} onChange={e => setRepayAmount(e.target.value)}/>
+                                    <button onClick={returnMoney}>Confirm</button>
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
+
+                        <div className="setMonthlyMoney">
+                            <button className='cta-button mint-nft-button' onClick={() => setIsStartingExpel(true) } disabled={isVotingExpel}>Initiate Member Dismissal</button>
+                            {isStartingExpel && (
+                                <div className="setMonthlyMoney">
+                                    <input type="text" placeholder="User Address" value={userAddress} onChange={e => setUserAddress(e.target.value)}/>
+                                    <button onClick={startExpel}>Confirm</button>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="setMonthlyMoney">
+                            <button className='cta-button mint-nft-button' onClick={() => setIsVotingExpel(true) } disabled={!isStartingExpel}>Vote</button>
+                            {isVotingExpel && (
+                                <div className="setMonthlyMoney">
+                                    <div className="radioButtons">
+                                        <label>
+                                            <input type="radio" value={true} checked={voteResult === true} onChange={e => setVoteResult(true)}/> Yes
+                                        </label>
+                                        <label>
+                                            <input type="radio" value={false} checked={voteResult === false} onChange={e => setVoteResult(false)}/> No
+                                        </label>
+                                    </div>
+                                    <button onClick={voteExpel}>Confirm</button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </>
+            }
+            <br></br>
+            <br></br>
+            <br></br>
+            { (groupId === null || identity === null) && 
+                <div className="overlay">
+                    <div className="message">
+                        <p>You must have a wallet to access this page</p>
+                        <Link to="/">Go to Home</Link>
                     </div>
                 </div>
             }
-
-            <div className="memberFunctions">
-                <h2>Group Member Functions</h2>         
-                <div className="buttonContainer">
-                    <button onClick={makePayment} className='cta-button mint-nft-button'>Make Term (Monthly) Deposit</button>
-                    <button onClick={applyBorrow} className='cta-button mint-nft-button'>Apply waitlist</button>
-
-                </div>
-                <hr className="grey-line" />
-                <div className="setMonthlyMoneyGroup">
-                    <div className="setMonthlyMoney">
-                        <button className='cta-button mint-nft-button' onClick={() => setIsRepaying(true)}>Repay Loan</button>
-                        {isRepaying && (
-                            <div>
-                                <input type="number" placeholder="Repay Amount" value={repayAmount} onChange={e => setRepayAmount(e.target.value)}/>
-                                <button onClick={returnMoney}>Confirm</button>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="setMonthlyMoney">
-                        <button className='cta-button mint-nft-button' onClick={() => setIsStartingExpel(true) } disabled={isVotingExpel}>Initiate Member Dismissal</button>
-                        {isStartingExpel && (
-                            <div className="setMonthlyMoney">
-                                <input type="text" placeholder="User Address" value={userAddress} onChange={e => setUserAddress(e.target.value)}/>
-                                <button onClick={startExpel}>Confirm</button>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="setMonthlyMoney">
-                        <button className='cta-button mint-nft-button' onClick={() => setIsVotingExpel(true) } disabled={!isStartingExpel}>Vote</button>
-                        {isVotingExpel && (
-                            <div className="setMonthlyMoney">
-                                <div className="radioButtons">
-                                    <label>
-                                        <input type="radio" value={true} checked={voteResult === true} onChange={e => setVoteResult(true)}/> Yes
-                                    </label>
-                                    <label>
-                                        <input type="radio" value={false} checked={voteResult === false} onChange={e => setVoteResult(false)}/> No
-                                    </label>
-                                </div>
-                                <button onClick={voteExpel}>Confirm</button>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
-
-            <br></br>
-            <br></br>
-            <br></br>
 
 
 
