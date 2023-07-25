@@ -22,7 +22,7 @@ export async function get(req, res) {
   const groupId = req.query.groupId;
   if (groupId) {
     const vote = await prisma.vote.findUnique({
-      where: { groupId: groupId },
+      where: { groupId: Number(groupId) },
     });
     res.json(vote);
   } else {
@@ -36,13 +36,13 @@ export async function put(req, res) {
   const { ...updateData } = req.body; // Extract groupId from the request body
   if (groupId) {
     const vote = await prisma.vote.findUnique({
-      where: { groupId: groupId },
+      where: { groupId: Number(groupId) },
     });
     if (vote){
       const voteJson = JSON.parse(vote.voteResult)
       // const dataJson = JSON.parse(updateData) // this may not be needed since updateData is already parsed as json.
       const updatedVote = await prisma.vote.update({
-        where: { groupId: groupId }, // Use groupId as the where clause
+        where: { groupId: Number(groupId) }, // Use groupId as the where clause
         data: {
           voteResult: JSON.stringify({...voteJson, ...updateData})
         }, // Exclude groupId from the update data
@@ -61,7 +61,7 @@ export async function del(req, res) {
   const groupId = req.query.groupId;
   if (groupId) {
     const deletedVote = await prisma.vote.delete({
-      where: { groupId: groupId },
+      where: { groupId: Number(groupId) },
     });
     res.json(deletedVote);
   } else {
