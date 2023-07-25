@@ -262,13 +262,13 @@ groupManagerContract.on("db_createGroup", (...args) => {
       alert(args);
       console.log(args);
       const payload = {
-          id: args.index,
-          index: args.index,
+          // id: args.index,
+          // index: args.index,
           voteOpen: args.status.voteOpen,
           depositOpen: args.status.depositOpen,
           applicationOpen: args.status.applicationOpen,
       }        
-      handleUpdateGroup(0, payload, args);
+      handleUpdateGroup(args.index, payload, args);
     }
   });
   groupManagerContract.on("db_updateInterestRate", (...args) => {
@@ -276,11 +276,11 @@ groupManagerContract.on("db_createGroup", (...args) => {
       alert(args);
       console.log(args);
       const payload = {
-          id: args.index,
-          index: args.index,
+          // id: args.index,
+          // index: args.index,
           interestRate: args.interestRate,
       }        
-      handleUpdateGroup(0, payload, args);
+      handleUpdateGroup(args.index, payload, args);
     }
   });
   groupManagerContract.on("db_updateMonthlyPayment", (...args) => {
@@ -288,12 +288,12 @@ groupManagerContract.on("db_createGroup", (...args) => {
       alert(args);
       console.log(args);
       const payload = {
-          id: args.index,
-          index: args.index,
+          // id: args.index,
+          // index: args.index,
           name: args.name,
           monthlyPayment: args.monthlyPayment,
       }        
-      handleUpdateGroup(0, payload, args);
+      handleUpdateGroup(args.index, payload, args);
     }
   });
   groupManagerContract.on("db_updatePeriod", (...args) => {
@@ -301,11 +301,11 @@ groupManagerContract.on("db_createGroup", (...args) => {
       alert(args);
       console.log(args);
       const payload = {
-          id: args.index,
-          index: args.index,
+          // id: args.index,
+          // index: args.index,
           period: args.period,
       }        
-      handleUpdateGroup(0, payload, args);
+      handleUpdateGroup(args.index, payload, args);
     }
   });
     return () => {
