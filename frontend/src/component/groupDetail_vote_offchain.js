@@ -334,7 +334,8 @@ export function GroupDetail_vote_offchain(){
             if(currentAccount == null) return;
             // const tradeContract = new ethers.Contract(contractAddress, abi, signer);
             // await tradeContract.voteExpel(groupId, voteResult);
-            const payload = {groupId, [signer]:voteResult}  //voteResult is boolean
+            // const payload = {groupId, [signer]:voteResult}  //voteResult is boolean
+            const payload = {[signer]:voteResult}  //voteResult is boolean
             const args = true // not needed
             handleUpdateVote(groupId, payload, args)
         } else {
