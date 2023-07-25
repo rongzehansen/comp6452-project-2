@@ -19,7 +19,6 @@ export async function runMiddleware(req, res, fn) {
 
 // Handle GET requests with an ID
 export async function get(req, res) {
-    console.log('query', req.query)
   const id = req.query.id;
   if (id) {
     const group = await prisma.group.findUnique({
