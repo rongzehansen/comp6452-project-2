@@ -32,7 +32,8 @@ export async function get(req, res) {
 
 // Handle PUT requests
 export async function put(req, res) {
-  const { groupId, ...updateData } = req.body; // Extract groupId from the request body
+  const groupId = req.query.groupId;
+  const { ...updateData } = req.body; // Extract groupId from the request body
   if (groupId) {
     const vote = await prisma.vote.findUnique({
       where: { groupId: groupId },
@@ -43,7 +44,6 @@ export async function put(req, res) {
       const updatedVote = await prisma.vote.update({
         where: { groupId: groupId }, // Use groupId as the where clause
         data: {
-          groupId: groupId,
           voteResult: JSON.stringify({...voteJson, ...updateData})
         }, // Exclude groupId from the update data
       });
@@ -58,7 +58,7 @@ export async function put(req, res) {
 
 // Handle DELETE requests
 export async function del(req, res) {
-  const { groupId } = req.body;
+  const groupId = req.query.groupId;
   if (groupId) {
     const deletedVote = await prisma.vote.delete({
       where: { groupId: groupId },

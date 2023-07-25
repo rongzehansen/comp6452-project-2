@@ -18,9 +18,12 @@ export async function runMiddleware(req, res, fn) {
 }
 
 // Handle GET requests without a groupId
+// export async function get(req, res) {
+//   const votes = await prisma.vote.findMany();
+//   res.json(votes);
+// }
 export async function get(req, res) {
-  const votes = await prisma.vote.findMany();
-  res.json(votes);
+  res.status(400).send('Bad Request: groupId is required');
 }
 
 // Handle POST requests
