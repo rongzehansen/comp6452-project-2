@@ -133,11 +133,12 @@ export function UserInfo(){
                 console.log("Create account");
                 let tradeTxn = await tradeContract.getGroupsInfo();
                 setGroupInfo(tradeTxn);
+                localStorage.setItem('groupId', String(tradeTxn[0].id))
+                localStorage.setItem('identity', String(tradeTxn[0].identity))
             }
             else{
                 console.log("Ethereum object does not exist");
             }
-
         } 
         catch(err){
             console.log(err);

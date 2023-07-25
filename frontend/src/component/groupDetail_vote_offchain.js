@@ -17,8 +17,10 @@ export function GroupDetail_vote_offchain(){
     //get props from previous page
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
-    const [groupId, setGroupId] = useState(searchParams.get('id'));
-    const [identity, setIdentity] = useState(searchParams.get('identity'));
+    // const [groupId, setGroupId] = useState(searchParams.get('id'));
+    // const [identity, setIdentity] = useState(searchParams.get('identity'));
+    const [groupId, setGroupId] = useState(localStorage.getItem("groupId"));
+    const [identity, setIdentity] = useState(localStorage.getItem('identity'));
 
     const navigate = useNavigate();
 
@@ -427,6 +429,7 @@ export function GroupDetail_vote_offchain(){
         try{
             const { ethereum } = window;
             checkWalletIsConnected();
+
             if (groupId === null || identity === null) {
                 navigate('/');
             }
