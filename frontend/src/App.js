@@ -9,8 +9,8 @@ import { GroupDetail_vote_offchain } from './component/groupDetail_vote_offchain
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
 
-export const contractAddress = "0x24522A1D5D945C29bB0ef3D1d12385AC231a3a59";
-export const groupManagerContractAddress = "0xA90fF86e1181BF88036261132100c1a150E866a3";
+export const contractAddress = "0xa8aed318E7b5750D0d4205A0b677e7f8623101b2";
+export const groupManagerContractAddress = "0x24089A257528254AA4b33B198383b63c6d65A300";
 function App() {
 
   
