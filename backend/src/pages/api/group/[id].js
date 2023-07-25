@@ -19,10 +19,10 @@ export async function runMiddleware(req, res, fn) {
 
 // Handle GET requests with an ID
 export async function get(req, res) {
-  const id = req.query.id;
-  if (id) {
+  const index = req.query.id;
+  if (index) {
     const group = await prisma.group.findUnique({
-      where: { index: Number(id) },
+      where: { index: Number(index) },
     });
     res.json(group);
   } else {
@@ -32,7 +32,8 @@ export async function get(req, res) {
 
 // Handle PUT requests
 export async function put(req, res) {
-  const { index, ...updateData } = req.body; // Extract index from the request body
+  const index = req.query.id;
+  const { ...updateData } = req.body; // Extract index from the request body
   if (index) {
     const updatedGroup = await prisma.group.update({
       where: { index: Number(index) }, // Use index as the where clause
@@ -46,7 +47,8 @@ export async function put(req, res) {
 
 // Handle DELETE requests
 export async function del(req, res) {
-  const { index } = req.body;
+  const index = req.query.id;
+//   const { index } = req.body;
   if (index) {
     const deletedGroup = await prisma.group.delete({
       where: { index: Number(index) },
