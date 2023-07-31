@@ -43,11 +43,13 @@ contract AccountManager {
     event Deposit(address sender, uint256 amount);
     event Transfer(address sender, address receiver, uint256 amount);
 
+    //function to receive fund
     function deposit() public payable haveAccount {
         emit Deposit(msg.sender, msg.value);
         users[msg.sender].balance += msg.value;
     }
 
+    //get groups info
     function getGroupsInfo()
         public
         view
@@ -57,6 +59,7 @@ contract AccountManager {
         return users[msg.sender].groupInfo;
     }
 
+    //create a new group
     function createGroup(string memory groupName) public haveAccount {
         GroupInfo memory temp;
         temp.id = groupManagerAddress.createGroup(msg.sender, groupName);
@@ -65,24 +68,33 @@ contract AccountManager {
         users[msg.sender].groupIdentity[temp.id].id = temp.id;
         users[msg.sender].groupIdentity[temp.id].identity = Identity.owner;
     }
+
+    //get interest rate
     function getInterestRate(uint groupId)public view returns(uint){
         return groupManagerAddress.getInterestRate(groupId);
     }
+
+    //get monthly payment amount
     function getMonthlyPayment(uint groupId)public view returns(uint){
         return groupManagerAddress.getMonthlyPayment(groupId);
     }
+
+    //do vote
     function voteExpel(uint256 groupId, bool result) public {
         groupManagerAddress.vote(msg.sender, groupId, result);
     }
 
+    //get the borrower list
     function getBorrowers(uint groupId) public view  returns(address[] memory){
         return groupManagerAddress.getBorrorwers(groupId);
     }
-    //Start a expel event
+
+    //start a expel event
     function startExpel(uint256 groupId, address userAddress) public {
         groupManagerAddress.voteDismiss(msg.sender, userAddress, groupId);
     }
 
+    //for a user is expeled from from the group
     function leaveGroup(uint256 groupId, address userAddress) external {
         for (uint256 i = 0; i < users[userAddress].groupInfo.length; i++) {
             if (users[userAddress].groupInfo[i].id == groupId) {
@@ -95,27 +107,34 @@ contract AccountManager {
         users[userAddress].groupIdentity[groupId].id=0;
         users[userAddress].groupIdentity[groupId].identity=Identity.member;
     }
+
+    //if user is a borrower, this is the function to repay the fund
     function repay(uint groupId,uint256 amount) public haveAccount{
         require(users[msg.sender].balance >= amount, "Insufficient funds");
         groupManagerAddress.repayLoan{value:amount}(msg.sender,groupId);
         users[msg.sender].balance-=amount;
     }
 
+    //accept fund from group manager contract
     function getMoney(address targetUser) external payable {
         require(msg.sender==groupManagerContract,"Can only execute by group manager");
         users[targetUser].balance += msg.value;
     }
 
+    //accept fund from group manager contract
     function getFundFromGroupManager() external payable{
         require(msg.sender==groupManagerContract,"Can only execute by group manager");
         emit Deposit(msg.sender, msg.value);
     }
+
+    //accept fund from group manager contract (overload)
     function getFundFromGroupManager(address target) external payable{
         require(msg.sender==groupManagerContract,"Can only execute by group manager");
         emit Deposit(msg.sender, msg.value);
         users[target].balance+=msg.value;
     }
 
+    //for group owner to reset monthly payment and open application for joining borrower waitlist
     function resetMonthlyEvent(uint groupId) public{
         require(
             users[msg.sender].groupIdentity[groupId].id != 0 &&
@@ -126,6 +145,7 @@ contract AccountManager {
         groupManagerAddress.reset(groupId);
         groupManagerAddress.openApplication(groupId);
     }
+    //close application for joining borrower waitlist
     function closeApplication(uint groupId) public{
         require(
             users[msg.sender].groupIdentity[groupId].id != 0 &&
@@ -218,6 +238,21 @@ contract AccountManager {
         }
     }
 
+    //transfer address to string (debug purpose)
+    function addressToString(address _addr) public pure returns(string memory) {
+        bytes32 value = bytes32(uint256(uint160(_addr)));
+        bytes memory alphabet = "0123456789abcdef";
+
+        bytes memory str = new bytes(42);
+        str[0] = '0';
+        str[1] = 'x';
+        for (uint i = 0; i < 20; i++) {
+            str[2+i*2] = alphabet[uint8(value[i + 12] >> 4)];
+            str[3+i*2] = alphabet[uint8(value[i + 12] & 0x0f)];
+        }
+        return string(str);
+    }
+
     //If sender is a borrower, pay interest to other member in the group
     function releaseFunds(
         address senderAddress,
@@ -226,11 +261,11 @@ contract AccountManager {
     ) external {
         require(
             bytes(users[senderAddress].name).length != 0,
-            "Account does not exist"
+            string(abi.encodePacked("Sender ", addressToString(senderAddress), " does not exist"))
         );
         require(
-            bytes(users[targetAddress].name).length != 0,
-            "Account does not exist"
+            bytes(users[senderAddress].name).length != 0,
+            string(abi.encodePacked("Target ", addressToString(targetAddress), " does not exist"))
         );
         require(users[senderAddress].balance >= amount, "Insufficient funds");
 
@@ -242,7 +277,6 @@ contract AccountManager {
     function getBalance(address userAddress)
         public
         view
-        haveAccount
         returns (uint256)
     {
         return users[userAddress].balance;
