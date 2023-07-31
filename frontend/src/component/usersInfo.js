@@ -8,6 +8,7 @@ import './userInfo.css'
 
 const abi = contract;
 
+// a group card to show basic group details
 function GroupCard(props){
     
     //alert(props.group.identity);
@@ -47,6 +48,7 @@ export function UserInfo(){
 
     const navigate = useNavigate();
 
+    //some handler functions
     const handleGroupInputChange = (event) => {
         setGroupInput(event.target.value);
     };
@@ -69,6 +71,7 @@ export function UserInfo(){
         }
     };
 
+    //Checking if Metamask Wallet Exists
     const checkWalletIsConnected = async () => {     
         const { ethereum } = window;
         if(!ethereum){
@@ -94,6 +97,7 @@ export function UserInfo(){
         
     }
 
+    //Check wether UserAccount has been created
     const checkUserAccount = async()=>{
         try{
             const { ethereum } = window;
@@ -120,6 +124,7 @@ export function UserInfo(){
 
     }
 
+    //get group infomation from smart contract
     const getGroupInfo = async()=>{
         try{
             const { ethereum } = window;
@@ -144,6 +149,8 @@ export function UserInfo(){
             console.log(err);
         }
     }
+
+    //function to create a new group
     const createGroup = async()=>{
         try{
             const { ethereum } = window;
@@ -168,6 +175,7 @@ export function UserInfo(){
         }
     }
 
+    //get user information from smart contract
     const getUserInfo = async()=>{
         try{
             const { ethereum } = window;
@@ -191,6 +199,7 @@ export function UserInfo(){
         }
     }
 
+    //function to add memebers to a created group
     const addMember = async() =>{
         console.log("Adding member");
         try{
@@ -218,6 +227,7 @@ export function UserInfo(){
         
     }
 
+    //function to show current user balance
     const getBalance = async() => {
         const { ethereum } = window;
         if(ethereum) {

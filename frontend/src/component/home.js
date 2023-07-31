@@ -9,6 +9,8 @@ const abi = contract;
 
 export function Home() {
   const navigate = useNavigate();
+
+  //Checking if Metamask Wallet Exists
   const checkWalletIsConnected = async () => {
     const { ethereum } = window;
     if (!ethereum) {
@@ -32,6 +34,7 @@ export function Home() {
 
   }
 
+  //Check wether UserAccount has been created
   const checkUserAccount = async () => {
     try {
       const { ethereum } = window;
@@ -61,6 +64,8 @@ export function Home() {
   const [name, setName] = useState('');
   const [input, setInput] = useState('');
   const [params, setParams] = useState([]);
+
+  //Connecting to Metamask
   const connectWalletHandler = async () => {
     const { ethereum } = window;
     if (!ethereum) {
@@ -80,6 +85,7 @@ export function Home() {
 
   const [payAmount, setPayAmount] = useState('');
 
+  //handle the window to charge money
   const paymentHandler = async () => {
     const { ethereum } = window;
 
@@ -104,6 +110,7 @@ export function Home() {
     }
   };
 
+  // connect to wallet button
   const connectWalletButton = () => {
     return (
       <button onClick={connectWalletHandler} className='cta-button connect-wallet-button'>

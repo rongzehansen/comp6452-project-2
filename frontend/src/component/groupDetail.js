@@ -67,6 +67,7 @@ export function GroupDetail(){
         }
     };
 
+    //Checking if Metamask Wallet Exists
     const checkWalletIsConnected = async () => {     
         const { ethereum } = window;
         if(!ethereum){
@@ -90,6 +91,7 @@ export function GroupDetail(){
         
     }
 
+    //Check wether UserAccount has been created
     const checkUserAccount = async()=>{
         try{
             const { ethereum } = window;
@@ -115,6 +117,7 @@ export function GroupDetail(){
 
     }
 
+     //function to show current user balance
     const getBalance = async() => {
         const { ethereum } = window;
         if(ethereum) {
@@ -129,7 +132,8 @@ export function GroupDetail(){
         }
 
       }
-
+      
+      //funtion to get interest rate from the smart contract
       const getInterest = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -146,6 +150,7 @@ export function GroupDetail(){
         }
     };
 
+    // set the current group's interest rate, might not be used due to better version impleted, only group manager can do
     const setInterest = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -162,6 +167,7 @@ export function GroupDetail(){
         }
     };
 
+    //get the money every memeber need to pay from the smart contract
     const getMonthlyPayment = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -178,6 +184,7 @@ export function GroupDetail(){
         }
     };
 
+    //set the amount of money that every member need to pay each month, only group manager can do
     const setMonthlyPayment = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -194,6 +201,7 @@ export function GroupDetail(){
         }
     }
 
+    //by click the button, it will excute the function and charge the money into group account
     const makePayment = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -207,6 +215,8 @@ export function GroupDetail(){
             console.log("Ethereum object does not exist");
         }
     };
+
+    //better set current interest function, only group manager can do
     const InputComponent=()=>{
         const handleBlur = () => {
             // Wait for 200ms before handling the blur event
@@ -248,6 +258,7 @@ export function GroupDetail(){
 
     }
 
+    // if some memeber is unsatisified with other, he can inittiae a kicking vote
     const startExpel = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -261,7 +272,8 @@ export function GroupDetail(){
             console.log("Ethereum object does not exist");
         }
     };
-    
+
+    // other memebers can choose agree no not agree with the kicking vote    
     const voteExpel = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -342,6 +354,7 @@ export function GroupDetail(){
     //     }
     // };
    
+    //every memeber in the group can apply for the waitlist if the want the amount of money at that month
     const applyBorrow = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -355,6 +368,7 @@ export function GroupDetail(){
         }
     };
 
+    //The random chosen borrower need to return the money he borrowed
     const returnMoney = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -369,6 +383,7 @@ export function GroupDetail(){
         }
     };
 
+    // This reset monthly event like kicking vote or money borrow applications, only group manager can do
     const resetMonthlyEvent = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -382,6 +397,7 @@ export function GroupDetail(){
         }
     };
 
+    //only group manager can close the application, after closing no one can apply for the borrower this month
     const closeApplication = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -395,6 +411,7 @@ export function GroupDetail(){
         }
     };
 
+    //get the borrower's acccount address from the smart caontract
     const getBorrower = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -408,7 +425,8 @@ export function GroupDetail(){
             console.log("Ethereum object does not exist");
         }
     };
-    
+
+    //once the certain time period is up, gorup manager should click the button and excute this function to return all money back to members' accounts    
     const returnSaving = async () => {
         const { ethereum } = window;
         if(ethereum) {
