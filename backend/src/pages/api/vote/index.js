@@ -1,11 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 import Cors from 'cors';
 
+// Prisma is an open-source database toolkit.
 const prisma = new PrismaClient();
+
+// Cors is a node.js package for providing a Connect/Express middleware 
+// that can be used to enable CORS with various options.
 const cors = Cors({
   methods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE'],
 });
 
+// a helper function to run middleware function for requests.
 export async function runMiddleware(req, res, fn) {
   return new Promise((resolve, reject) => {
     fn(req, res, (result) => {
@@ -42,6 +47,10 @@ export async function post(req, res) {
   }
 }
 
+// the main request handler.
+// It first runs the CORS middleware, and then dispatches the request to the appropriate handler function
+// based on the HTTP method of the request.
+// If the method is not one of GET, POST, it returns a 405 error.
 export default async function handler(req, res) {
   await runMiddleware(req, res, cors);
 
