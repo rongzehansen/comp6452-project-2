@@ -4,7 +4,8 @@ Project 2 – Blockchain-Based Application Design and Development
 
 | How to run the frontend     |
 | :-------------------------- |
-| go to frontend folder       |
+| Go to frontend folder       |
+| "npm install"               |
 | "npm start"                 |
 | go to http://localhost:3000 |
 |                             |
