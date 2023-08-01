@@ -11,14 +11,14 @@ import { Link } from 'react-router-dom';
 
 const abi = contract;
 
-
+// This component has the same functions as GroupDetail except voting.
+// This component' voting is done off-chain and the final result is sent back to on-chain.
+// This is called Oracle pattern.
 export function GroupDetail_vote_offchain(){
 
     //get props from previous page
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
-    // const [groupId, setGroupId] = useState(searchParams.get('id'));
-    // const [identity, setIdentity] = useState(searchParams.get('identity'));
     const [groupId, setGroupId] = useState(localStorage.getItem("groupId"));
     const [identity, setIdentity] = useState(localStorage.getItem('identity'));
 
@@ -69,6 +69,7 @@ export function GroupDetail_vote_offchain(){
         }
     };
 
+    //Checking if Metamask Wallet Exists
     const checkWalletIsConnected = async () => {     
         const { ethereum } = window;
         if(!ethereum){
@@ -91,7 +92,8 @@ export function GroupDetail_vote_offchain(){
         }
         
     }
-
+    
+    //Check wether UserAccount has been created
     const checkUserAccount = async()=>{
         try{
             const { ethereum } = window;
@@ -117,6 +119,7 @@ export function GroupDetail_vote_offchain(){
 
     }
 
+    //function to show current user balance
     const getBalance = async() => {
         const { ethereum } = window;
         if(ethereum) {
@@ -132,6 +135,7 @@ export function GroupDetail_vote_offchain(){
 
       }
 
+      //funtion to get interest rate from the smart contract
       const getInterest = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -147,7 +151,8 @@ export function GroupDetail_vote_offchain(){
             console.log("Ethereum object does not exist");
         }
     };
-
+    
+    // set the current group's interest rate, might not be used due to better version impleted, only group manager can do
     const setInterest = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -164,6 +169,7 @@ export function GroupDetail_vote_offchain(){
         }
     };
 
+    //get the money every memeber need to pay from the smart contract
     const getMonthlyPayment = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -180,6 +186,7 @@ export function GroupDetail_vote_offchain(){
         }
     };
 
+    //set the amount of money that every member need to pay each month, only group manager can do
     const setMonthlyPayment = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -196,6 +203,7 @@ export function GroupDetail_vote_offchain(){
         }
     }
 
+    //by click the button, it will excute the function and charge the money into group account
     const makePayment = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -209,6 +217,8 @@ export function GroupDetail_vote_offchain(){
             console.log("Ethereum object does not exist");
         }
     };
+
+   //better set current interest function, only group manager can do    
     const InputComponent=()=>{
         const handleBlur = () => {
             // Wait for 200ms before handling the blur event
@@ -249,33 +259,8 @@ export function GroupDetail_vote_offchain(){
         );
 
     }
-
-    // const startExpel = async () => {
-    //     const { ethereum } = window;
-    //     if(ethereum) {
-    //         const provider = new ethers.BrowserProvider(ethereum);
-    //         const signer = await provider.getSigner();
-    //         if(currentAccount == null) return;
-    //         const tradeContract = new ethers.Contract(contractAddress, abi, signer);
-    //         await tradeContract.startExpel(groupId, userAddress);
-    //         setIsVotingExpel(true); 
-    //     } else {
-    //         console.log("Ethereum object does not exist");
-    //     }
-    // };
-    
-    // const voteExpel = async () => {
-    //     const { ethereum } = window;
-    //     if(ethereum) {
-    //         const provider = new ethers.BrowserProvider(ethereum);
-    //         const signer = await provider.getSigner();
-    //         if(currentAccount == null) return;
-    //         const tradeContract = new ethers.Contract(contractAddress, abi, signer);
-    //         await tradeContract.voteExpel(groupId, voteResult);
-    //     } else {
-    //         console.log("Ethereum object does not exist");
-    //     }
-    // };
+    // if some memeber is unsatisified with other, he can initiate a kicking vote.
+    // This method creates vote and save it in DB off-chain not on-chain 
     const handleCreateVote = async (payload, args) => {
         try {
           const response = await fetch('http://localhost:5000/api/vote', {
@@ -292,7 +277,9 @@ export function GroupDetail_vote_offchain(){
           console.error('Error in creating vote:', error);
         }
     };
-      
+    
+    // other memebers can choose agree no not agree with the kicking vote. 
+    // This method accumulates the each member's voting in DB off-chain not on-chain
     const handleUpdateVote = async (groupId, payload, args) => {
         try {
             const response = await fetch(`http://localhost:5000/api/vote/${groupId}`, {
@@ -310,6 +297,7 @@ export function GroupDetail_vote_offchain(){
         }
     };
       
+    // proper member can call "handleCreateVote"
     const startExpel = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -328,6 +316,7 @@ export function GroupDetail_vote_offchain(){
         }
     };
     
+    // proper member can call "handleUpdateVote"
     const voteExpel = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -344,7 +333,8 @@ export function GroupDetail_vote_offchain(){
             console.log("Ethereum object does not exist");
         }
     };
-   
+
+    //every memeber in the group can apply for the waitlist if the want the amount of money at that month
     const applyBorrow = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -358,6 +348,7 @@ export function GroupDetail_vote_offchain(){
         }
     };
 
+    //The random chosen borrower need to return the money he borrowed
     const returnMoney = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -372,6 +363,7 @@ export function GroupDetail_vote_offchain(){
         }
     };
 
+    // This reset monthly event like kicking vote or money borrow applications, only group manager can do
     const resetMonthlyEvent = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -385,6 +377,7 @@ export function GroupDetail_vote_offchain(){
         }
     };
 
+    //only group manager can close the application, after closing no one can apply for the borrower this month
     const closeApplication = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -398,6 +391,7 @@ export function GroupDetail_vote_offchain(){
         }
     };
 
+    //get the borrower's acccount address from the smart caontract
     const getBorrower = async () => {
         const { ethereum } = window;
         if(ethereum) {
@@ -412,6 +406,8 @@ export function GroupDetail_vote_offchain(){
         }
     };
     
+    // once the certain time period is up, gorup manager should click the button and 
+    // excute this function to return all money back to members' accounts 
     const returnSaving = async () => {
         const { ethereum } = window;
         if(ethereum) {
